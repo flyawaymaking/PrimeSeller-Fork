@@ -24,9 +24,12 @@ import org.bukkit.entity.Player;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
 
+import java.text.DecimalFormat;
+
 public class Eco {
     private static PrimeSeller plugin;
     private static Currency currency;
+    private static final DecimalFormat format = new DecimalFormat("##.##");
 
     public static void init(PrimeSeller plugin) {
         Eco.plugin = plugin;
@@ -47,6 +50,11 @@ public class Eco {
         } catch (Exception e) {
             plugin.getLogger().warning("AddBalance error: " + e.getMessage());
         }
+    }
+
+    public static String format(double amount) {
+        return currency.format(Double.parseDouble(format.format(amount).replace(",", ".")))
+                .replace(",", " ");
     }
 
     public static boolean isEconomyAvailable() {

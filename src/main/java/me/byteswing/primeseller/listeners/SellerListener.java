@@ -176,7 +176,7 @@ public class SellerListener implements Listener {
             Understating.takePrice(slot, count);
             Chat.sendMessage(e.getWhoClicked(), Config.getMessage("sell")
                     .replace("%item%", LanguageManager.translate(item.getType()))
-                    .replace("%price%", String.valueOf(price))
+                    .replace("%price%", Eco.format(price))
                     .replace("%amount%", "x" + count));
             item.setAmount(count);
             player.getInventory().removeItem(item);
@@ -213,7 +213,7 @@ public class SellerListener implements Listener {
 
         Eco.addBalance(player, price);
         Chat.sendMessage(e.getWhoClicked(), Config.getMessage("sell-inventory")
-                .replace("%price%", format.format(price).replace(",", "."))
+                .replace("%price%", Eco.format(price))
                 .replace("%amount%", "x" + amount));
     }
 

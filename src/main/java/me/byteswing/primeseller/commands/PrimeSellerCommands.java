@@ -129,8 +129,8 @@ public class PrimeSellerCommands implements CommandExecutor {
     private void sendAddedMessage(Player player, String itemName, double minPrice, double maxPrice) {
         String message = Config.getMessage("commands.added")
                 .replace("%item%", itemName)
-                .replace("%min-price%", String.valueOf(minPrice).replace(".", ","))
-                .replace("%max-price%", String.valueOf(maxPrice).replace(".", ","));
+                .replace("%min-price%", Eco.format(minPrice))
+                .replace("%max-price%", Eco.format(maxPrice));
         Chat.sendMessage(player, message);
     }
 }
