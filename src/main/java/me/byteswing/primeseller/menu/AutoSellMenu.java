@@ -51,7 +51,7 @@ public class AutoSellMenu {
         if (inv.getHolder() instanceof AutoSellInventoryHolder holder) {
             holder.setCurrentPage(page);
         }
-        createDividers(player, inv);
+        createDividers(player, inv, page);
         createToggleButton(player, inv);
         createInfoButton(player, inv);
         createAutoSellSlots(player, inv, page);
@@ -66,7 +66,7 @@ public class AutoSellMenu {
         return 0;
     }
 
-    private static void createDividers(Player player, Inventory inv) {
+    private static void createDividers(Player player, Inventory inv, int page) {
         Material dividerMaterial = Material.valueOf(Config.getAutoSellConfig().getString("divider.material", "GRAY_STAINED_GLASS_PANE"));
         String dividerName = Config.getAutoSellConfig().getString("divider.name", "<white> ");
         List<String> dividerLore = Config.getAutoSellConfig().getStringList("divider.lore");
@@ -78,8 +78,23 @@ public class AutoSellMenu {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         divider.setItemMeta(meta);
 
+        List<Integer> itemSlots = getItemSlotsFromConfig();
+
+        int maxSlots = AutoSellManager.getMaxAutoSellSlots(player);
+
+        int slotsPerPage = itemSlots.size();
+        int startGlobalSlot = page * slotsPerPage;
+
         for (int i = 0; i < inv.getSize(); i++) {
-            if (inv.getItem(i) == null) {
+            if (inv.getItem(i) != null) continue;
+
+            if (itemSlots.contains(i)) {
+                int slotIndexInPage = itemSlots.indexOf(i);
+                int globalSlotIndex = startGlobalSlot + slotIndexInPage;
+                if (globalSlotIndex >= maxSlots) {
+                    inv.setItem(i, divider);
+                }
+            } else {
                 inv.setItem(i, divider);
             }
         }
@@ -173,7 +188,7 @@ public class AutoSellMenu {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(meta);
 
-        int slot = Config.getAutoSellConfig().getInt("toggle-slot", 50);
+        int slot = Config.getAutoSellConfig().getInt("toggle-slot", 48);
         inv.setItem(slot, item);
     }
 
@@ -198,7 +213,7 @@ public class AutoSellMenu {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(meta);
 
-        int slot = Config.getAutoSellConfig().getInt("info-slot", 48);
+        int slot = Config.getAutoSellConfig().getInt("info-slot", 50);
         inv.setItem(slot, item);
     }
 

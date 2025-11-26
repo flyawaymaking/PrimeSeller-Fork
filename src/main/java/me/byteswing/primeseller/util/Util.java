@@ -39,15 +39,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Util {
 
     public static boolean update = false;
-
-    private static final DecimalFormat format = new DecimalFormat("##.##");
 
     public static HashMap<UUID, Integer> playerSellItems = new HashMap<>();
 
@@ -157,11 +154,11 @@ public class Util {
             ItemStack item = entry.getValue().getItem().clone();
             if (sql.isLimited(next)) {
                 double price = sql.getPrice(next);
-                String price64 = format.format(price * 64).replace(",", ".");
-                String priceall = format.format(Util.calc(player, item) * price).replace(",", ".");
+                String price64 = Eco.format(price * 64);
+                String priceall = Eco.format(Util.calc(player, item) * price);
                 for (String s : Config.getMenuConfig().getStringList("lim-items.lore")) {
                     lim.add(Chat.toComponent(s
-                            .replace("%price-x1%", format.format(price).replace(",", "."))
+                            .replace("%price-x1%", Eco.format(price))
                             .replace("%price-x64%", price64)
                             .replace("%price-all%", priceall)
                             .replace("%sell%", String.valueOf(Util.playerSellItems.get(playerId)))
@@ -181,11 +178,11 @@ public class Util {
                 continue;
             }
             double price = sql.getPrice(next);
-            String price64 = format.format(price * 64).replace(",", ".");
-            String priceall = format.format(Util.calc(player, item) * price).replace(",", ".");
+            String price64 = Eco.format(price * 64);
+            String priceall = Eco.format(Util.calc(player, item) * price);
             for (String s : Config.getMenuConfig().getStringList("unlim-items.lore")) {
                 unlim.add(Chat.toComponent(s
-                        .replace("%price-x1%", format.format(price).replace(",", "."))
+                        .replace("%price-x1%", Eco.format(price))
                         .replace("%price-all%", priceall)
                         .replace("%price-x64%", price64)));
             }

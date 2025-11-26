@@ -256,7 +256,7 @@ public class AutoSellManager {
                 String itemName = LanguageManager.translate(material);
                 Chat.sendMessage(player, Config.getMessage("autosell.sell")
                         .replace("%item%", itemName)
-                        .replace("%price%", String.valueOf(price))
+                        .replace("%price%", Eco.format(price))
                         .replace("%amount%", "x" + count));
                 break;
             }

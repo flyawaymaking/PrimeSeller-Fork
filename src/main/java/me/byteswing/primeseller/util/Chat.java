@@ -22,8 +22,6 @@ package me.byteswing.primeseller.util;
 import me.byteswing.primeseller.PrimeSeller;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -31,14 +29,7 @@ import java.util.List;
 
 public class Chat {
     private static String prefix = "";
-    private static final MiniMessage miniMessage = MiniMessage.builder()
-            .tags(
-                    TagResolver.builder()
-                            .resolver(StandardTags.defaults())
-                            .resolver(StandardTags.translatable())
-                            .build()
-            )
-            .build();
+    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public static void init(PrimeSeller plugin) {
         prefix = plugin.getConfig().getString("prefix", "<gradient:#5637bc:#9258ff>SELLER</gradient> <#b9b9b9>|");
@@ -51,11 +42,6 @@ public class Chat {
     public static void sendMessage(CommandSender sender, String msg) {
         if (msg == null || msg.isEmpty()) return;
         sender.sendMessage(toComponent(prefix + " " + msg));
-    }
-
-    public static void sendMessage(CommandSender sender, Component msg) {
-        if (msg == null || msg.equals(Component.empty())) return;
-        sender.sendMessage(toComponent(prefix).append(msg));
     }
 
     public static void broadcast(List<String> messages) {
