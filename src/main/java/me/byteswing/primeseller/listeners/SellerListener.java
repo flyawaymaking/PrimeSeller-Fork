@@ -19,6 +19,7 @@
 
 package me.byteswing.primeseller.listeners;
 
+import me.byteswing.primeseller.managers.LanguageManager;
 import me.byteswing.primeseller.menu.SellerInventoryHolder;
 import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.configurations.Config;
@@ -159,7 +160,7 @@ public class SellerListener implements Listener {
             double price = Double.parseDouble(format.format(sql.getPrice(slot) * count).replace(",", "."));
             Understating.takePrice(slot, count);
             Chat.sendMessage(e.getWhoClicked(), Config.getMessage("sell")
-                    .replace("%item%", item.getType().toString())
+                    .replace("%item%", LanguageManager.translate(item.getType().translationKey(), player.locale()))
                     .replace("%price%", String.valueOf(price))
                     .replace("%amount%", "x" + count));
             item.setAmount(count);

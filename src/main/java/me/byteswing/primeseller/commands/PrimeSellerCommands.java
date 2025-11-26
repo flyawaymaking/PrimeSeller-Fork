@@ -19,6 +19,7 @@
 
 package me.byteswing.primeseller.commands;
 
+import me.byteswing.primeseller.managers.LanguageManager;
 import me.byteswing.primeseller.util.Eco;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -99,7 +100,7 @@ public class PrimeSellerCommands implements CommandExecutor {
         boolean isLimited = subCommand.equals("addlimited");
         Items.addItem(handItem, minPrice, maxPrice, isLimited);
 
-        sendAddedMessage(player, handItem.getType().toString(), minPrice, maxPrice);
+        sendAddedMessage(player, LanguageManager.translate(handItem.getType().translationKey(), player.locale()), minPrice, maxPrice);
         return true;
     }
 
