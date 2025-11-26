@@ -1,0 +1,21 @@
+name: PrimeSeller-Fork
+version: '1.0.0'
+main: me.byteswing.primeseller.PrimeSeller
+api-version: 1.21
+depend: [ CoinsEngine ]
+softdepend: [ PlaceholderAPI ]
+author: destroydevs, golovin12
+website: https://github.com/flyawaymaking
+description: |
+  PrimeSeller - Fork maintained by flyawaymaking
+  Original plugin by destroydevs
+  Licensed under Apache License 2.0
+
+commands:
+  seller:
+    aliases:
+      - 'sell'
+      - 'buyer'
+  primeseller:
+    aliases:
+      - 'psell'

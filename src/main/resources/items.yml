@@ -1,0 +1,348 @@
+unlimited:
+  update: 21600
+  enable: true
+  items:
+    ARROW:
+      min-price: 4
+      max-price: 5
+    SHULKER_SHELL:
+      min-price: 65
+      max-price: 70
+    QUARTZ:
+      min-price: 13
+      max-price: 15
+    REDSTONE:
+      min-price: 15
+      max-price: 18
+    LAPIS_LAZULI:
+      min-price: 15
+      max-price: 18
+    COAL:
+      min-price: 13
+      max-price: 15
+    COPPER_INGOT:
+      min-price: 5
+      max-price: 8
+    IRON_INGOT:
+      min-price: 55
+      max-price: 60
+    GOLD_INGOT:
+      min-price: 65
+      max-price: 70
+    DIAMOND:
+      min-price: 120
+      max-price: 130
+    EMERALD:
+      min-price: 150
+      max-price: 170
+    NETHERITE_INGOT:
+      min-price: 500
+      max-price: 600
+    PUFFERFISH:
+      min-price: 5
+      max-price: 8
+    SPIDER_EYE:
+      min-price: 3
+      max-price: 5
+    ROTTEN_FLESH:
+      min-price: 2
+      max-price: 3
+    TROPICAL_FISH:
+      min-price: 4
+      max-price: 6
+    POTATO:
+      min-price: 3
+      max-price: 4
+    BEETROOT:
+      min-price: 2
+      max-price: 3
+    CHICKEN:
+      min-price: 4
+      max-price: 6
+    MELON_SLICE:
+      min-price: 2
+      max-price: 3
+    SWEET_BERRIES:
+      min-price: 3
+      max-price: 4
+    GLOW_BERRIES:
+      min-price: 4
+      max-price: 6
+    COD:
+      min-price: 4
+      max-price: 6
+    SALMON:
+      min-price: 5
+      max-price: 7
+    MUTTON:
+      min-price: 5
+      max-price: 7
+    RABBIT:
+      min-price: 6
+      max-price: 8
+    BEEF:
+      min-price: 6
+      max-price: 8
+    CARROT:
+      min-price: 3
+      max-price: 4
+    PORKCHOP:
+      min-price: 6
+      max-price: 8
+    APPLE:
+      min-price: 5
+      max-price: 7
+    HONEY_BOTTLE:
+      min-price: 45
+      max-price: 50
+    CHORUS_FRUIT:
+      min-price: 10
+      max-price: 12
+    STONE:
+      min-price: 2
+      max-price: 3
+    DIORITE:
+      min-price: 2
+      max-price: 3
+    GRANITE:
+      min-price: 2
+      max-price: 3
+    ANDESITE:
+      min-price: 2
+      max-price: 3
+    COBBLESTONE:
+      min-price: 1
+      max-price: 2
+    SNOW_BLOCK:
+      min-price: 3
+      max-price: 5
+    ICE:
+      min-price: 3
+      max-price: 5
+    PACKED_ICE:
+      min-price: 3
+      max-price: 5
+    DIRT:
+      min-price: 1
+      max-price: 2
+    COARSE_DIRT:
+      min-price: 1
+      max-price: 2
+    SAND:
+      min-price: 2
+      max-price: 3
+    RED_SAND:
+      min-price: 2
+      max-price: 3
+    GRAVEL:
+      min-price: 2
+      max-price: 3
+    OBSIDIAN:
+      min-price: 80
+      max-price: 90
+    NETHERRACK:
+      min-price: 1
+      max-price: 2
+    SOUL_SAND:
+      min-price: 4
+      max-price: 6
+    SOUL_SOIL:
+      min-price: 4
+      max-price: 6
+    BASALT:
+      min-price: 3
+      max-price: 5
+    BLACKSTONE:
+      min-price: 3
+      max-price: 5
+    END_STONE:
+      min-price: 3
+      max-price: 4
+    OAK_LOG:
+      min-price: 4
+      max-price: 5
+    SPRUCE_LOG:
+      min-price: 4
+      max-price: 5
+    BIRCH_LOG:
+      min-price: 4
+      max-price: 5
+    JUNGLE_LOG:
+      min-price: 4
+      max-price: 5
+    ACACIA_LOG:
+      min-price: 4
+      max-price: 5
+    DARK_OAK_LOG:
+      min-price: 4
+      max-price: 5
+    MANGROVE_LOG:
+      min-price: 4
+      max-price: 5
+    CHERRY_LOG:
+      min-price: 4
+      max-price: 5
+    CRIMSON_STEM:
+      min-price: 5
+      max-price: 6
+    WARPED_STEM:
+      min-price: 5
+      max-price: 6
+    PALE_OAK_LOG:
+      min-price: 4
+      max-price: 5
+    BLAZE_ROD:
+      min-price: 8
+      max-price: 10
+    NETHER_WART:
+      min-price: 5
+      max-price: 6
+    GLOWSTONE_DUST:
+      min-price: 6
+      max-price: 8
+    GUNPOWDER:
+      min-price: 16
+      max-price: 18
+    AMETHYST_SHARD:
+      min-price: 10
+      max-price: 12
+    FLINT:
+      min-price: 3
+      max-price: 4
+    WHEAT:
+      min-price: 3
+      max-price: 4
+    BONE:
+      min-price: 3
+      max-price: 5
+    STRING:
+      min-price: 3
+      max-price: 4
+    FEATHER:
+      min-price: 3
+      max-price: 4
+    SNOWBALL:
+      min-price: 1
+      max-price: 2
+    LEATHER:
+      min-price: 6
+      max-price: 8
+    RESIN_CLUMP:
+      min-price: 10
+      max-price: 15
+    ENDER_PEARL:
+      min-price: 12
+      max-price: 15
+    BREEZE_ROD:
+      min-price: 40
+      max-price: 50
+    PRISMARINE_CRYSTALS:
+      min-price: 8
+      max-price: 10
+    TURTLE_SCUTE:
+      min-price: 25
+      max-price: 30
+    ARMADILLO_SCUTE:
+      min-price: 20
+      max-price: 25
+    SLIME_BALL:
+      min-price: 8
+      max-price: 10
+    CLAY_BALL:
+      min-price: 3
+      max-price: 4
+    EXPERIENCE_BOTTLE:
+      min-price: 40
+      max-price: 45
+    SUGAR_CANE:
+      min-price: 2
+      max-price: 3
+    BAMBOO:
+      min-price: 2
+      max-price: 3
+    CACTUS:
+      min-price: 2
+      max-price: 3
+    PUMPKIN:
+      min-price: 3
+      max-price: 4
+    MAGMA_CREAM:
+      min-price: 10
+      max-price: 12
+    KELP:
+      min-price: 2
+      max-price: 3
+
+limited:
+  limit: 20
+  update: 43200
+  enable: true
+  limit-per-items: 10
+  items:
+    TOTEM_OF_UNDYING:
+      min-price: 1140
+      max-price: 1200
+
+    TRIDENT:
+      min-price: 1520
+      max-price: 1600
+
+    HEAVY_CORE:
+      min-price: 3800
+      max-price: 4000
+
+    LEATHER_HORSE_ARMOR:
+      min-price: 188
+      max-price: 200
+
+    IRON_HORSE_ARMOR:
+      min-price: 380
+      max-price: 400
+
+    GOLDEN_HORSE_ARMOR:
+      min-price: 568
+      max-price: 600
+
+    DIAMOND_HORSE_ARMOR:
+      min-price: 1140
+      max-price: 1200
+
+    ELYTRA:
+      min-price: 3800
+      max-price: 4000
+
+    SKELETON_SKULL:
+      min-price: 760
+      max-price: 800
+
+    CREEPER_HEAD:
+      min-price: 1520
+      max-price: 1600
+
+    ZOMBIE_HEAD:
+      min-price: 1000
+      max-price: 1200
+
+    PIGLIN_HEAD:
+      min-price: 1000
+      max-price: 1200
+
+    WITHER_SKELETON_SKULL:
+      min-price: 1100
+      max-price: 1300
+
+    DRAGON_HEAD:
+      min-price: 1500
+      max-price: 2000
+
+    HEART_OF_THE_SEA:
+      min-price: 1400
+      max-price: 1500
+
+    NETHER_STAR:
+      min-price: 2000
+      max-price: 3000
+
+    NAUTILUS_SHELL:
+      min-price: 380
+      max-price: 400

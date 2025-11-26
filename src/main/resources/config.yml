@@ -1,0 +1,125 @@
+# Конфигурация PrimeSeller-Fork
+# Поддержка MiniMessage формата: https://docs.advntr.dev/minimessage/format.html
+
+# Настройки времени
+time-zone: "Europe/Moscow"  # все time-zone: https://timeie.com/
+time-format: "hhч. mmм. ssс."
+
+inv-sell-priority: "LIMITED"
+# включить ли право на использование команды? primeseller.open
+enable-permission: false
+
+# Валюта из CoinsEngine
+currency: "money"
+
+# Включить снижение цены при продаже
+# (percent = Процент, на который будет снижена цена при продаже)
+understating-price:
+  enable: true
+  items: 64  # Сколько предметов надо продать для уменьшения цены
+  percent: '0,025'  # Меньше 0,01 устанавливать не стоит, не будет работать (вместо этого увеличивайте items)
+  min-percent: 30  # Минимальный процент от суммы, ниже которого цена не опустится
+
+prefix: "<gradient:#5637bc:#9258ff>SELLER</gradient> <#b9b9b9>|"
+
+# Сообщения
+messages:
+  # Основные сообщения
+  sell-inventory: "<#dddddd>Вы успешно продали <yellow>свой инвентарь. <#dddddd>Результаты продажи: <yellow>%amount% <#dddddd>за <#53fb31>$%price%!"
+  sell: "<#dddddd>Вы успешно продали <yellow>%item% %amount% <#dddddd>за <#53fb31>$%price%!"
+  limit: "<#ff4141>Ваш лимит на продажу этого предмета исчерпан! Приходите в другой раз."
+  amount: "<#ff4141>Недостаточно предметов."
+  items-loading: "<red>Предметы скупщика всё ещё загружаются... Подождите"
+
+  # Сообщения об обновлении
+  limited-update-cast:
+    - ""
+    - "<#dddddd>Скупщик с лимитом обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
+    - ""
+  unlimited-update-cast:
+    - ""
+    - "<#dddddd>Скупщик без лимита обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
+    - ""
+  update-cast:
+    - ""
+    - "<#dddddd>Скупщик полностью обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
+    - ""
+
+  # Сообщения команд
+  commands:
+    permission: "<<#ff4141>У Вас нет прав."
+    reload: "<green>Конфигурация успешно перезагружена!"
+    update: "<#00d328>Список продаваемых предметов успешно обновлен!"
+    added: "<#dddddd>Предмет <#eaff43>%item% <#dddddd>успешно добавлен в список товаров. Его цена колеблется от <#53fb31>$%min-price% <#dddddd>до <#53fb31>$%max-price%<#dddddd> за штуку."
+    addlimited-use: "<red>Использование: /primeseller addlimited (мин. цена) (макс. цена) за шт. (Держите предмет в руке) - Добавить предмет в продажу."
+    addunlimited-use: "<red>Использование: /primeseller addunlimited (мин. цена) (макс. цена) за шт. (Держите предмет в руке) - Добавить предмет в продажу."
+    update-use: "<red>Использование: /primeseller update - Обновить список торгов"
+    player-only: "<red>Только для игроков!"
+    addlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."
+    addunlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."
+    not-number: "<red>Введите правильное число."
+
+# Настройки меню
+menu:
+  title: "<gradient:#5637bc:#9258ff><italic>Скупщик предметов</italic></gradient>"
+  size: 54
+
+  # Кнопка продажи инвентаря
+  sell-inventory:
+    material: "CHEST"
+    name: "<green>Продать инвентарь"
+    lore: [ ]
+    slots: [ 49 ]
+
+  # Кнопка закрытия
+  exit:
+    material: "RED_STAINED_GLASS_PANE"
+    name: "<#ff4141>Закрыть"
+    commands: [ "[close]", "[cmd] menu" ]
+    slots: [ 45, 53 ]
+
+  # Таймер обновления
+  countdown:
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg2YjlkNThiY2QxYTU1NWY5M2U3ZDg2NTkxNTljZmQyNWI4ZGQ2ZTliY2UxZTk3MzgyMjgyNDI5MTg2MiJ9fX0="
+    name: "<#dddddd>До след обновления:"
+    lore:
+      - ""
+      - "<#dddddd>Обновление лимитированного скупщика через:"
+      - "<#eaff43>> <#7348dd>%lim-time% <gray>| <dark_gray>%lim-time-format%"
+      - ""
+      - "<#dddddd>Обновление скупщика без лимита через:"
+      - "<#eaff43>> <#7348dd>%unlim-time% <gray>| <dark_gray>%unlim-time-format%"
+      - ""
+    slots: [ 4 ]
+
+  # Лимитированные предметы
+  lim-items:
+    lore:
+      - ""
+      - "<#dddddd>Цена за <#a9e3ff>х1: <#53fb31>$%price-x1% <#b9b9b9>(ЛКМ)"
+      - "<#dddddd>Цена за <#a9e3ff>х64: <#53fb31>$%price-x64% <#b9b9b9>(ПКМ)"
+      - ""
+      - "<#dddddd>Цена за <#a9e3ff>всё: <#53fb31>$%price-all% <#b9b9b9>(ЛКМ+SHIFT)"
+      - ""
+      - "<#dddddd>Предметы в этой строке <#ff4141>ограничены</#ff4141>!"
+      - "<#dddddd>Продано из общ. кол-ва: <#7348dd>%sell% <dark_gray>из <#7348dd>%max%"
+      - "<#dddddd>Продано таких предметов: <#7348dd>%sell-items% <dark_gray>из <#7348dd>%max-items%"
+    slots: [ 9, 18, 27, 36 ]
+
+  # Нелимитированные предметы
+  unlim-items:
+    lore:
+      - ""
+      - "<#dddddd>Цена за <#a9e3ff>х1: <#53fb31>$%price-x1% <gray>(ЛКМ)"
+      - "<#dddddd>Цена за <#a9e3ff>х64: <#53fb31>$%price-x64% <gray>(ПКМ)"
+      - ""
+      - "<#dddddd>Цена за <#a9e3ff>всё: <#53fb31>$%price-all% <gray>(ЛКМ+SHIFT)"
+      - ""
+      - "<#dddddd>Предметы <green>не ограничены</green>!"
+    slots: [ 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 29, 30, 31, 32, 33, 34, 35, 38, 39, 40, 41, 42, 43, 44 ]
+
+  # Разделители
+  divider:
+    material: "BLACK_STAINED_GLASS_PANE"
+    name: "<gray>"
+    slots: [ 0, 1, 2, 3, 5, 6, 7, 8, 10, 19, 28, 37, 49, 48, 47, 46, 50, 51, 52 ]

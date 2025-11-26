@@ -1,7 +1,1 @@
-rootProject.name = 'PrimeSeller'
-include 'primeseller-standalone'
-include 'primeseller-common'
-include 'primeseller-standalone:primeseller-bukkit'
-include 'primeseller-bukkit'
-include 'primeseller-paper'
-include 'primeseller-folia'
+rootProject.name = 'PrimeSeller-Fork'

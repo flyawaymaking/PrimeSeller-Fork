@@ -1,49 +1,32 @@
 plugins {
     id 'java'
-    id 'com.gradleup.shadow' version '9.1.0'
 }
 
-group = 'me.byteswing'
-version = '2.4.7'
+group = 'me.byteswing.primeseller'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 repositories {
     mavenCentral()
     maven {
-        url = "https://jitpack.io"
+        name = "papermc"
+        url = "https://repo.papermc.io/repository/maven-public/"
     }
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url = 'https://repo.nightexpressdev.com/releases'}
 }
 
 dependencies {
-    implementation(project(":primeseller-standalone"))
+    compileOnly 'io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT'
+    compileOnly 'su.nightexpress.coinsengine:CoinsEngine:2.5.0'
+    compileOnly 'me.clip:placeholderapi:2.11.6'
 }
 
-def targetJavaVersion = 17
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
+tasks.jar {
+    archiveBaseName.set("PrimeSeller-Fork")
 }
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-
-    if (targetJavaVersion >= 10 && JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
-    }
-}
-
-
-shadowJar {
-    archiveBaseName.set(project.name)
-    archiveClassifier.set('')
-
-    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'module-info.class'
-
-    // jar minimization
-    // exclude 'javax/**', 'javassist/**'
-}
-
-tasks.build.dependsOn tasks.shadowJar
