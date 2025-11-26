@@ -3,6 +3,7 @@ package me.byteswing.primeseller.listeners;
 import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.configurations.Config;
 import me.byteswing.primeseller.managers.AutoSellManager;
+import me.byteswing.primeseller.managers.LanguageManager;
 import me.byteswing.primeseller.menu.AutoSellInventoryHolder;
 import me.byteswing.primeseller.menu.AutoSellMenu;
 import me.byteswing.primeseller.menu.GuiMenu;
@@ -60,7 +61,7 @@ public class AutoSellListener implements Listener {
                 if (AutoSellManager.addAutoSellMaterial(player, material)) {
                     AutoSellManager.savePlayerData(player);
                     Chat.sendMessage(player, Config.getMessage("autosell.added")
-                            .replace("%item%", material.name()));
+                            .replace("%item%", LanguageManager.translate(material)));
                 } else {
                     if (AutoSellManager.getAutoSellMaterials(player).size() >= AutoSellManager.getMaxAutoSellSlots(player)) {
                         Chat.sendMessage(player, Config.getMessage("autosell.limit-reached")
@@ -106,7 +107,7 @@ public class AutoSellListener implements Listener {
                 if (AutoSellManager.removeAutoSellMaterial(player, material)) {
                     AutoSellManager.savePlayerData(player);
                     Chat.sendMessage(player, Config.getMessage("autosell.removed")
-                            .replace("%item%", material.name()));
+                            .replace("%item%", LanguageManager.translate(material)));
                 }
                 AutoSellMenu.updateAutoSellMenu(player, e.getView().getTopInventory(), plugin, currentPage);
             }
