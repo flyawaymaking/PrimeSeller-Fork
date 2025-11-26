@@ -20,6 +20,7 @@
 package me.byteswing.primeseller.listeners;
 
 import me.byteswing.primeseller.managers.LanguageManager;
+import me.byteswing.primeseller.menu.AutoSellMenu;
 import me.byteswing.primeseller.menu.SellerInventoryHolder;
 import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.configurations.Config;
@@ -69,6 +70,7 @@ public class SellerListener implements Listener {
             player.updateInventory();
 
             handleSellInvSlots(e, player, sql);
+            handleAutoSellInvSlots(e, player);
             handleExitSlots(e, player);
             handleCountdownSlots(e, player);
 
@@ -97,6 +99,7 @@ public class SellerListener implements Listener {
                     }
                 }
                 e.setCancelled(true);
+                break;
             }
         }
     }
@@ -106,6 +109,7 @@ public class SellerListener implements Listener {
             if (e.getSlot() == i) {
                 sellAllItems(sql, e, player);
                 e.setCancelled(true);
+                break;
             }
         }
     }
@@ -115,6 +119,17 @@ public class SellerListener implements Listener {
             if (e.getSlot() == i) {
                 GuiMenu.update(player, e.getClickedInventory(), plugin);
                 e.setCancelled(true);
+                break;
+            }
+        }
+    }
+
+    private void handleAutoSellInvSlots(InventoryClickEvent e, Player player) {
+        for (Integer i : Config.getMenuConfig().getIntegerList("autosell.slots")) {
+            if (e.getSlot() == i) {
+                AutoSellMenu.openAutoSellMenu(player, plugin);
+                e.setCancelled(true);
+                break;
             }
         }
     }
@@ -160,7 +175,7 @@ public class SellerListener implements Listener {
             double price = Double.parseDouble(format.format(sql.getPrice(slot) * count).replace(",", "."));
             Understating.takePrice(slot, count);
             Chat.sendMessage(e.getWhoClicked(), Config.getMessage("sell")
-                    .replace("%item%", LanguageManager.translate(item.getType().translationKey(), player.locale()))
+                    .replace("%item%", LanguageManager.translate(item.getType()))
                     .replace("%price%", String.valueOf(price))
                     .replace("%amount%", "x" + count));
             item.setAmount(count);

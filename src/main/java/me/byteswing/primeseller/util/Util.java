@@ -27,6 +27,7 @@ import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.configurations.database.SellItem;
 import me.byteswing.primeseller.configurations.database.SkinData;
 import com.destroystokyo.paper.profile.PlayerProfile;
+import me.byteswing.primeseller.managers.AutoSellManager;
 import net.kyori.adventure.text.Component;
 import com.google.gson.Gson;
 import org.bukkit.Bukkit;
@@ -192,34 +193,30 @@ public class Util {
             if (meta != null) {
                 meta.lore(unlim);
                 meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            };
+            }
+            ;
             item.setItemMeta(meta);
             inv.setItem(next, item);
             unlim.clear();
         }
-
-        if (Config.getConfig().contains("divider")) {
-            for (String s : Config.getMenuConfig().getConfigurationSection("divider").getKeys(false)) {
-                for (Integer i : Config.getMenuConfig().getIntegerList("divider." + s + ".slots")) {
-                    String items = Config.getMenuConfig().getString("divider." + s + ".material");
-                    List<Component> lore = Config.getMenuConfig().getStringList("divider." + s + ".lore").stream()
-                            .map(Chat::toComponent)
-                            .toList();
-                    ItemStack item;
-                    try {
-                        item = new ItemStack(Material.valueOf(items));
-                    } catch (IllegalArgumentException e) {
-                        plugin.getLogger().warning("Неизвестный предмет: " + items);
-                        continue;
-                    }
-                    ItemMeta meta = item.getItemMeta();
-                    meta.lore(lore);
-                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                    meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("divider." + s + ".name")));
-                    item.setItemMeta(meta);
-                    inv.setItem(i, item);
-                }
+        for (Integer i : Config.getMenuConfig().getIntegerList("divider.slots")) {
+            String items = Config.getMenuConfig().getString("divider.material");
+            List<Component> lore = Config.getMenuConfig().getStringList("divider.lore").stream()
+                    .map(Chat::toComponent)
+                    .toList();
+            ItemStack item;
+            try {
+                item = new ItemStack(Material.valueOf(items));
+            } catch (IllegalArgumentException e) {
+                plugin.getLogger().warning("Неизвестный предмет: " + items);
+                continue;
             }
+            ItemMeta meta = item.getItemMeta();
+            meta.lore(lore);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("divider.name")));
+            item.setItemMeta(meta);
+            inv.setItem(i, item);
         }
         for (Integer i : Config.getMenuConfig().getIntegerList("exit.slots")) {
             String items = Config.getMenuConfig().getString("exit.material");
@@ -262,7 +259,7 @@ public class Util {
         for (Integer i : Config.getMenuConfig().getIntegerList("countdown.slots")) {
             String material = Config.getMenuConfig().getString("countdown.material");
             ItemStack item = new ItemStack(Material.BARRIER);
-            if(material != null) {
+            if (material != null) {
                 if (material.startsWith("basehead-")) {
                     String url = material.replace("basehead-", "");
                     item = Util.getSkull(url);
@@ -284,6 +281,28 @@ public class Util {
             item.setItemMeta(meta);
             inv.setItem(i, item);
             countdown.clear();
+        }
+        for (Integer i : Config.getMenuConfig().getIntegerList("autosell.slots")) {
+            String items = Config.getMenuConfig().getString("autosell.material");
+            List<Component> lore = Config.getMenuConfig().getStringList("autosell.lore").stream()
+                    .map(line -> line
+                            .replace("%autosell-slots%", String.valueOf(AutoSellManager.getAutoSellMaterials(player).size()))
+                            .replace("%autosell-max-slots%", String.valueOf(AutoSellManager.getMaxAutoSellSlots(player))))
+                    .map(Chat::toComponent)
+                    .toList();
+            ItemStack item;
+            try {
+                item = new ItemStack(Material.valueOf(items));
+            } catch (IllegalArgumentException e) {
+                plugin.getLogger().warning("Неизвестный предмет: " + items);
+                break;
+            }
+            ItemMeta meta = item.getItemMeta();
+            meta.lore(lore);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("autosell.name")));
+            item.setItemMeta(meta);
+            inv.setItem(i, item);
         }
     }
 

@@ -34,12 +34,13 @@ import me.byteswing.primeseller.managers.ConfigManager;
 import me.byteswing.primeseller.util.Chat;
 import me.byteswing.primeseller.util.Updater;
 
+
 public class PrimeSellerCommands implements CommandExecutor {
     private final PrimeSeller plugin;
 
     public PrimeSellerCommands(PrimeSeller main) {
         this.plugin = main;
-        main.getCommand("PrimeSeller").setExecutor(this);
+        main.getCommand("primeseller").setExecutor(this);
     }
 
     @Override
@@ -100,13 +101,14 @@ public class PrimeSellerCommands implements CommandExecutor {
         boolean isLimited = subCommand.equals("addlimited");
         Items.addItem(handItem, minPrice, maxPrice, isLimited);
 
-        sendAddedMessage(player, LanguageManager.translate(handItem.getType().translationKey(), player.locale()), minPrice, maxPrice);
+        sendAddedMessage(player, LanguageManager.translate(handItem.getType()), minPrice, maxPrice);
         return true;
     }
 
     private void reloadConfig() {
         ConfigManager.reloadConfigurations();
-        plugin.reloadConfig();
+        String lang = Config.getConfig().getString("language", "ru_ru");
+        LanguageManager.reload(plugin, lang);
         Eco.init(plugin);
         Chat.init(plugin);
     }

@@ -47,6 +47,10 @@ public class Config {
         return config.getConfigurationSection("menu");
     }
 
+    public static ConfigurationSection getAutoSellConfig() {
+        return config.getConfigurationSection("autosell-gui");
+    }
+
     public static String getMessage(String key) {
         return config.getString("messages." + key, "<red>message-" + key + ": not found");
     }

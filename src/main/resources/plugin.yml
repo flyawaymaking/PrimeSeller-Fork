@@ -1,5 +1,5 @@
 name: PrimeSeller-Fork
-version: '1.0.1'
+version: '1.1.0'
 main: me.byteswing.primeseller.PrimeSeller
 api-version: 1.21
 depend: [ CoinsEngine ]
@@ -16,6 +16,10 @@ commands:
     aliases:
       - 'sell'
       - 'buyer'
+  autoseller:
+    aliases:
+      - 'autosell'
+      - 'asell'
   primeseller:
     aliases:
       - 'psell'
@@ -23,4 +27,7 @@ commands:
 permissions:
   primeseller.open:
     default: op
-
+  primeseller.autosell.*:
+    default: op
+  primeseller.autosell.bypass:
+    default: op

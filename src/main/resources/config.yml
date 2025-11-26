@@ -1,6 +1,10 @@
 # Конфигурация PrimeSeller-Fork
 # Поддержка MiniMessage формата: https://docs.advntr.dev/minimessage/format.html
 
+# формат: language_COUNTRY
+# после изменения этого параметра сервер загрузит имена материалов по умолчанию
+language: ru_RU
+
 # Настройки времени
 time-zone: "Europe/Moscow"  # все time-zone: https://timeie.com/
 time-format: "hhч. mmм. ssс."
@@ -19,6 +23,10 @@ understating-price:
   items: 64  # Сколько предметов надо продать для уменьшения цены
   percent: '0,025'  # Меньше 0,01 устанавливать не стоит, не будет работать (вместо этого увеличивайте items)
   min-percent: 30  # Минимальный процент от суммы, ниже которого цена не опустится
+
+# Автопродажа
+autosell:
+  check-interval: 100  # Как часто нужно проверять инвентари для автопродажи
 
 prefix: "<gradient:#5637bc:#9258ff>SELLER</gradient> <#b9b9b9>|"
 
@@ -59,6 +67,16 @@ messages:
     addunlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."
     not-number: "<red>Введите правильное число."
 
+  # Сообщения автопродажи
+  autosell:
+    enabled: "<green>Автопродажа включена!"
+    disabled: "<red>Автопродажа выключена!"
+    added: "<green>Предмет %item% добавлен в автопродажу"
+    removed: "<red>Предмет %item% удален из автопродажи"
+    already-added: "<red>Этот предмет уже добавлен в автопродажу"
+    limit-reached: "<red>Вы достигли лимита автопродажи! Максимум: %max-slots% предметов"
+    sell: "<green>Автопродажа: <gray>%amount% %item% продано за %price%"
+
 # Настройки меню
 menu:
   title: "<gradient:#5637bc:#9258ff><italic>Скупщик предметов</italic></gradient>"
@@ -70,6 +88,15 @@ menu:
     name: "<green>Продать инвентарь"
     lore: [ ]
     slots: [ 49 ]
+
+  # Автопродажа
+  autosell:
+    slots: [ 50 ]
+    material: "HOPPER"
+    name: "<gold>Автопродажа"
+    lore:
+      - "<gray>Нажмите чтобы открыть настройки автопродажи"
+      - "<gray>Добавленные предметы: <yellow>%autosell-slots%/%autosell-max-slots%"
 
   # Кнопка закрытия
   exit:
@@ -122,4 +149,74 @@ menu:
   divider:
     material: "BLACK_STAINED_GLASS_PANE"
     name: "<gray>"
-    slots: [ 0, 1, 2, 3, 5, 6, 7, 8, 10, 19, 28, 37, 49, 48, 47, 46, 50, 51, 52 ]
+    slots: [ 0, 1, 2, 3, 5, 6, 7, 8, 10, 19, 28, 37, 49, 48, 47, 46, 51, 52 ]
+
+# GUI автопродажи
+autosell-gui:
+  title: "<gold>Автопродажа"
+  toggle-slot: 50
+  toggle-enabled:
+    name: "<green>Автопродажа включена"
+    lore:
+      - "<gray>Нажмите чтобы выключить автопродажу"
+      - ""
+      - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
+      - "<gray>Статус: <green>ВКЛЮЧЕНО"
+  toggle-disabled:
+    name: "<red>Автопродажа выключена"
+    lore:
+      - "<gray>Нажмите чтобы включить автопродажу"
+      - ""
+      - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
+      - "<gray>Статус: <red>ВЫКЛЮЧЕНО"
+  info-slot: 48
+  info:
+    material: "BOOK"
+    name: "<yellow>Информация"
+    lore:
+      - "<gray>Как пользоваться автопродажей:"
+      - "<gray>1. Включите автопродажу"
+      - "<gray>2. Добавьте предметы кликом по ним"
+      - "<gray>3. Получайте автоматическую продажу!"
+      - ""
+      - "<yellow>ЛКМ по предмету в инвентаре - <green>добавить"
+      - "<yellow>ЛКМ по предмету в GUI - <red>удалить"
+  back-slot: 49
+  back:
+    material: "RED_STAINED_GLASS_PANE"
+    name: "<red>Назад"
+    lore:
+      - "<gray>Вернуться в главное меню"
+  item-slots: [1,2,3,4,5,6,7,10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34,37,38,39,40,41,42,43,46,47,48,48,49,50,51]
+  item-lore:
+    - "<gray>Нажмите чтобы удалить из автопродажи"
+
+  # Разделитель для пустых слотов
+  divider:
+    material: "GRAY_STAINED_GLASS_PANE"
+    name: "<white> "
+    lore: [ ]
+
+  # Навигация
+  navigation:
+    previous:
+      material: "ARROW"
+      name: "<yellow>Предыдущая страница"
+      lore:
+        - "<gray>Нажмите чтобы перейти"
+        - "<gray>на предыдущую страницу"
+        - ""
+        - "<gray>Текущая страница: <white>%current-page%</white>"
+        - "<gray>Всего страниц: <white>%total-pages%</white>"
+    previous-slot: 45
+
+    next:
+      material: "ARROW"
+      name: "<yellow>Следующая страница"
+      lore:
+        - "<gray>Нажмите чтобы перейти"
+        - "<gray>на следующую страницу"
+        - ""
+        - "<gray>Текущая страница: <white>%current-page%</white>"
+        - "<gray>Всего страниц: <white>%total-pages%</white>"
+    next-slot: 53

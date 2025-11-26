@@ -15,7 +15,7 @@ import java.util.List;
 public class Completer implements TabCompleter {
 
     public Completer(PrimeSeller main) {
-        main.getCommand("PrimeSeller").setTabCompleter(this);
+        main.getCommand("primeseller").setTabCompleter(this);
     }
 
     @Override
