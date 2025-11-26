@@ -33,6 +33,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -169,7 +170,10 @@ public class Util {
                             ))));
                 }
                 ItemMeta meta = item.getItemMeta();
-                if (meta != null) meta.lore(lim);
+                if (meta != null) {
+                    meta.lore(lim);
+                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                }
                 item.setItemMeta(meta);
                 inv.setItem(next, item);
                 lim.clear();
@@ -185,7 +189,10 @@ public class Util {
                         .replace("%price-x64%", price64)));
             }
             ItemMeta meta = item.getItemMeta();
-            if (meta != null) meta.lore(unlim);
+            if (meta != null) {
+                meta.lore(unlim);
+                meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            };
             item.setItemMeta(meta);
             inv.setItem(next, item);
             unlim.clear();
@@ -207,6 +214,7 @@ public class Util {
                     }
                     ItemMeta meta = item.getItemMeta();
                     meta.lore(lore);
+                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                     meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("divider." + s + ".name")));
                     item.setItemMeta(meta);
                     inv.setItem(i, item);
@@ -227,6 +235,7 @@ public class Util {
             }
             ItemMeta meta = item.getItemMeta();
             meta.lore(lore);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("exit.name")));
             item.setItemMeta(meta);
             inv.setItem(i, item);
@@ -245,6 +254,7 @@ public class Util {
             }
             ItemMeta meta = item.getItemMeta();
             meta.lore(lore);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("sell-inventory.name")));
             item.setItemMeta(meta);
             inv.setItem(i, item);
@@ -269,6 +279,7 @@ public class Util {
                         .replace("%unlim-time-format%", Util.unlimitedFormat)));
             }
             meta.lore(countdown);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("countdown.name")));
             item.setItemMeta(meta);
             inv.setItem(i, item);

@@ -44,6 +44,7 @@ public final class PrimeSeller extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+        LanguageManager.init(this);
         Chat.init(this);
         loadManager(new ListenerManager(), this);
         loadManager(new CommandManager(), this);
