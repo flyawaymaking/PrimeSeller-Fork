@@ -253,11 +253,13 @@ public class AutoSellManager {
 
                 Eco.addBalance(player, price);
 
-                String itemName = LanguageManager.translate(material);
-                Chat.sendMessage(player, Config.getMessage("autosell.sell")
-                        .replace("%item%", itemName)
-                        .replace("%price%", Eco.format(price))
-                        .replace("%amount%", "x" + count));
+                if (Config.getConfig().getBoolean("autosell.enable-autosell-messages", false)) {
+                    String itemName = LanguageManager.translate(material);
+                    Chat.sendMessage(player, Config.getMessage("autosell.sell")
+                            .replace("%item%", itemName)
+                            .replace("%price%", Eco.format(price))
+                            .replace("%amount%", "x" + count));
+                }
                 break;
             }
         }

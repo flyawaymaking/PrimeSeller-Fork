@@ -27,6 +27,7 @@ understating-price:
 # Автопродажа
 autosell:
   check-interval: 100  # Как часто нужно проверять инвентари для автопродажи
+  enable-autosell-messages: false  # включение сообщений об авто-продаже продаже предметов
 
 prefix: "<gradient:#5637bc:#9258ff>SELLER</gradient> <#b9b9b9>|"
 
