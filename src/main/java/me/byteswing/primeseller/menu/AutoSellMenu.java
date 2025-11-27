@@ -5,6 +5,7 @@ import me.byteswing.primeseller.configurations.Config;
 import me.byteswing.primeseller.managers.AutoSellManager;
 import me.byteswing.primeseller.managers.LanguageManager;
 import me.byteswing.primeseller.util.Chat;
+import me.byteswing.primeseller.util.Eco;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -236,7 +237,15 @@ public class AutoSellMenu {
             String itemName = LanguageManager.translate(material);
             meta.displayName(Chat.toComponent("<yellow>" + itemName));
 
-            List<String> lore = Config.getAutoSellConfig().getStringList("item-lore");
+            int itemsSold = AutoSellManager.getItemsSoldForMaterial(player, material);
+            double moneyEarned = AutoSellManager.getMoneyEarnedForMaterial(player, material);
+
+            List<String> loreConfig = Config.getAutoSellConfig().getStringList("item-lore");
+            List<String> lore = new ArrayList<>();
+            for (String line : loreConfig) {
+                lore.add(line.replace("%items-sold%", String.valueOf(itemsSold))
+                        .replace("%money-earned%", Eco.format(moneyEarned)));
+            }
 
             meta.lore(lore.stream().map(Chat::toComponent).toList());
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

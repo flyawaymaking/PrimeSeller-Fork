@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,13 +19,14 @@
 
 package me.byteswing.primeseller.util;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.configurations.Config;
 import me.byteswing.primeseller.configurations.Items;
 import me.byteswing.primeseller.configurations.database.MapBase;
+import me.byteswing.primeseller.managers.AutoSellManager;
 import me.byteswing.primeseller.menu.SellerMenu;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -74,14 +75,6 @@ public class Updater {
         return "0";
     }
 
-    public static int getLimitedTime() {
-        return counter.get("limited");
-    }
-
-    public static int getUnLimitedTime() {
-        return counter.get("unlimited");
-    }
-
     public static String getUnLimitedTime(int type) {
         if (type == 1) {
             return counter.get("unlimited") + "сек.";
@@ -119,6 +112,7 @@ public class Updater {
         SellerMenu.createUnLimItems();
         SellerMenu.createLimItems();
         Understating.resetCounters();
+        AutoSellManager.resetAllStats();
     }
 
     public static void clearAndCreateLimited() {

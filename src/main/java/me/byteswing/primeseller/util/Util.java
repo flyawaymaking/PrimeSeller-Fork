@@ -316,14 +316,6 @@ public class Util {
         return count;
     }
 
-    private static SkinData decodeBase64(String url) {
-        String json = new String(Base64.getDecoder().decode(url));
-
-        Gson gson = new Gson();
-
-        return gson.fromJson(json, SkinData.class);
-    }
-
     public static ItemStack getSkull(String base64Texture) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();

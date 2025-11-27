@@ -40,6 +40,7 @@ public class AutoSellManager {
     private static PrimeSeller plugin;
     private static final Map<UUID, Boolean> autoSellEnabled = new HashMap<>();
     private static final Map<UUID, Set<Material>> autoSellMaterials = new HashMap<>();
+    private static final Map<UUID, Map<Material, ItemStats>> itemStats = new HashMap<>();
     private static final DecimalFormat format = new DecimalFormat("##.##");
 
     private static File dataFile;
@@ -238,6 +239,8 @@ public class AutoSellManager {
                 double price = Double.parseDouble(format.format(sql.getPrice(slot) * count).replace(",", "."));
                 Understating.takePrice(slot, count);
 
+                getItemStats(player, material).addSale(count, price);
+
                 int remaining = count;
                 for (ItemStack item : itemsToRemove) {
                     if (remaining <= 0) break;
@@ -262,6 +265,52 @@ public class AutoSellManager {
                 }
                 break;
             }
+        }
+    }
+
+    public static ItemStats getItemStats(Player player, Material material) {
+        Map<Material, ItemStats> playerStats = itemStats.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>());
+        return playerStats.computeIfAbsent(material, k -> new ItemStats());
+    }
+
+    public static int getItemsSoldForMaterial(Player player, Material material) {
+        ItemStats stats = getItemStats(player, material);
+        return stats.getItemsSold();
+    }
+
+    public static double getMoneyEarnedForMaterial(Player player, Material material) {
+        ItemStats stats = getItemStats(player, material);
+        return stats.getMoneyEarned();
+    }
+
+    public static void resetAllStats() {
+        for (Map<Material, ItemStats> playerStats : itemStats.values()) {
+            for (ItemStats stats : playerStats.values()) {
+                stats.reset();
+            }
+        }
+    }
+
+    public static class ItemStats {
+        private int itemsSold = 0;
+        private double moneyEarned = 0.0;
+
+        public void addSale(int items, double money) {
+            this.itemsSold += items;
+            this.moneyEarned += money;
+        }
+
+        public int getItemsSold() {
+            return itemsSold;
+        }
+
+        public double getMoneyEarned() {
+            return moneyEarned;
+        }
+
+        public void reset() {
+            itemsSold = 0;
+            moneyEarned = 0.0;
         }
     }
 }
