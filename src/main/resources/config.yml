@@ -1,226 +1,223 @@
-# Конфигурация PrimeSeller-Fork
-# Поддержка MiniMessage формата: https://docs.advntr.dev/minimessage/format.html
+# PrimeSeller-Fork Configuration
+# MiniMessage format support: https://docs.advntr.dev/minimessage/format.html
 
-# формат: language_COUNTRY
-# после изменения этого параметра сервер загрузит имена материалов по умолчанию
-language: ru_RU
+# format: language_COUNTRY
+# after changing this parameter, the server will load default material names
+language: en_US
 
-# Настройки времени
-time-zone: "Europe/Moscow"  # все time-zone: https://timeie.com/
-time-format: "hhч. mmм. ssс."
+# Time settings
+time-zone: "Europe/Moscow"  # all time-zones: https://timeie.com/
+time-format: "hhh. mmm. sss."
 
 inv-sell-priority: "LIMITED"
-# включить ли право на использование команды? primeseller.open
+# enable command usage permission? primeseller.open
 enable-permission: false
 
-# Валюта из CoinsEngine
+# Currency from CoinsEngine
 currency: "money"
 
-# Включить снижение цены при продаже
-# (percent = Процент, на который будет снижена цена при продаже)
+# Enable price reduction when selling
+# (percent = Percentage by which price will decrease when selling)
 understating-price:
   enable: true
-  items: 64  # Сколько предметов надо продать для уменьшения цены
-  percent: '0,025'  # Меньше 0,01 устанавливать не стоит, не будет работать (вместо этого увеличивайте items)
-  min-percent: 30  # Минимальный процент от суммы, ниже которого цена не опустится
+  items: 64  # How many items need to be sold to reduce price
+  percent: '0,025'  # Not recommended to set below 0.01, won't work (instead increase items)
+  min-percent: 30  # Minimum percentage of original price below which price won't drop
 
-# Автопродажа
+# Auto Sell
 autosell:
-  check-interval: 100  # Как часто нужно проверять инвентари для автопродажи
-  enable-autosell-messages: false  # включение сообщений об автопродаже продаже предметов
+  check-interval: 100  # How often to check inventories for auto sell
+  enable-autosell-messages: false  # enable auto sell item sale messages
 
 prefix: "<gradient:#5637bc:#9258ff>SELLER</gradient> <#b9b9b9>|"
 
-# Сообщения
 messages:
-  # Основные сообщения
-  sell-inventory: "<#dddddd>Вы успешно продали <yellow>свой инвентарь. <#dddddd>Результаты продажи: <yellow>%amount% <#dddddd>за <#53fb31>%price%!"
-  sell: "<#dddddd>Вы успешно продали <yellow>%item% %amount% <#dddddd>за <#53fb31>%price%!"
-  limit: "<#ff4141>Ваш лимит на продажу этого предмета исчерпан! Приходите в другой раз."
-  amount: "<#ff4141>Недостаточно предметов."
-  items-loading: "<red>Предметы скупщика всё ещё загружаются... Подождите"
+  # Main messages
+  sell-inventory: "<#dddddd>You successfully sold <yellow>your inventory. <#dddddd>Sale results: <yellow>%amount% <#dddddd>for <#53fb31>%price%!"
+  sell: "<#dddddd>You successfully sold <yellow>%item% %amount% <#dddddd>for <#53fb31>%price%!"
+  limit: "<#ff4141>Your selling limit for this item is exhausted! Come back another time."
+  amount: "<#ff4141>Not enough items."
+  items-loading: "<red>Seller items are still loading... Please wait"
 
-  # Сообщения об обновлении
+  # Update messages
   limited-update-cast:
     - ""
-    - "<#dddddd>Скупщик с лимитом обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
+    - "<#dddddd>Limited seller has been updated! - <hover:show_text:'<#00d328>Click to open seller'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
     - ""
   unlimited-update-cast:
     - ""
-    - "<#dddddd>Скупщик без лимита обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
+    - "<#dddddd>Unlimited seller has been updated! - <hover:show_text:'<#00d328>Click to open seller'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
     - ""
 
-  # Сообщения команд
+  # Command messages
   commands:
-    permission: "<<#ff4141>У Вас нет прав."
-    reload: "<green>Конфигурация успешно перезагружена!"
-    update: "<#00d328>Список продаваемых предметов успешно обновлен!"
-    update-lim: "<#00d328>Список продаваемых предметов с лимитом успешно обновлен!"
-    update-unlim: "<#00d328>Список продаваемых предметов без лимита успешно обновлен!"
-    added: "<#dddddd>Предмет <#eaff43>%item% <#dddddd>успешно добавлен в список товаров. Его цена колеблется от <#53fb31>%min-price% <#dddddd>до <#53fb31>%max-price%<#dddddd> за штуку."
-    addlimited-use: "<red>Использование: /primeseller addlimited (мин. цена) (макс. цена) за шт. (Держите предмет в руке) - Добавить предмет в продажу."
-    addunlimited-use: "<red>Использование: /primeseller addunlimited (мин. цена) (макс. цена) за шт. (Держите предмет в руке) - Добавить предмет в продажу."
-    update-use: "<red>Использование: /primeseller update - Обновить список торгов"
-    update-use-lim: "<red>Использование: /primeseller update [limited|unlimited]"
-    player-only: "<red>Только для игроков!"
-    addlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."
-    addunlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."
-    not-number: "<red>Введите правильное число."
+    permission: "<<#ff4141>You don't have permission."
+    reload: "<green>Configuration successfully reloaded!"
+    update: "<#00d328>List of sellable items successfully updated!"
+    update-lim: "<#00d328>Limited sellable items list successfully updated!"
+    update-unlim: "<#00d328>Unlimited sellable items list successfully updated!"
+    added: "<#dddddd>Item <#eaff43>%item% <#dddddd>successfully added to item list. Its price ranges from <#53fb31>%min-price% <#dddddd>to <#53fb31>%max-price%<#dddddd> per piece."
+    addlimited-use: "<red>Usage: /primeseller addlimited (min price) (max price) per piece (Hold item in hand) - Add item for sale."
+    addunlimited-use: "<red>Usage: /primeseller addunlimited (min price) (max price) per piece (Hold item in hand) - Add item for sale."
+    update-use: "<red>Usage: /primeseller update - Update trade list"
+    update-use-lim: "<red>Usage: /primeseller update [limited|unlimited]"
+    player-only: "<red>Players only!"
+    addlimited-error: "<white>Cannot <red>add anything<white> to buyable items list."
+    addunlimited-error: "<white>Cannot <red>add anything<white> to buyable items list."
+    not-number: "<red>Enter a valid number."
 
-  # Сообщения автопродажи
+  # Auto sell messages
   autosell:
-    enabled: "<green>Автопродажа включена!"
-    disabled: "<red>Автопродажа выключена!"
-    added: "<green>Предмет <yellow>%item% <green>добавлен в автопродажу"
-    removed: "<red>Предмет <yellow>%item% <red>удален из автопродажи"
-    already-added: "<red>Этот предмет уже добавлен в автопродажу"
-    limit-reached: "<red>Вы достигли лимита автопродажи! Максимум: %max-slots% предметов"
-    sell: "<green>Автопродажа: <gray>%amount% <yellow>%item% <gray>продано за <green>%price%"
+    enabled: "<green>Auto sell enabled!"
+    disabled: "<red>Auto sell disabled!"
+    added: "<green>Item <yellow>%item% <green>added to auto sell"
+    removed: "<red>Item <yellow>%item% <red>removed from auto sell"
+    already-added: "<red>This item is already added to auto sell"
+    limit-reached: "<red>You reached auto sell limit! Maximum: %max-slots% items"
+    sell: "<green>Auto Sell: <gray>%amount% <yellow>%item% <gray>sold for <green>%price%"
 
-# Настройки меню
 menu:
-  title: "<gradient:#5637bc:#9258ff><italic>Скупщик предметов</italic></gradient>"
+  title: "<gradient:#5637bc:#9258ff><italic>Item Buyer</italic></gradient>"
   size: 54
 
-  # Кнопка продажи инвентаря
+  # Sell inventory button
   sell-inventory:
     material: "CHEST"
-    name: "<green>Продать инвентарь"
+    name: "<green>Sell Inventory"
     lore: [ ]
     slots: [ 49 ]
 
-  # Автопродажа
+  # Auto Sell
   autosell:
     slots: [ 50 ]
     material: "HOPPER"
-    name: "<gold>Автопродажа"
+    name: "<gold>Auto Sell"
     lore:
-      - "<gray>Нажмите чтобы открыть настройки автопродажи"
-      - "<gray>Добавленные предметы: <yellow>%autosell-slots%/%autosell-max-slots%"
+      - "<gray>Click to open auto sell settings"
+      - "<gray>Added items: <yellow>%autosell-slots%/%autosell-max-slots%"
 
-  # Кнопка закрытия
+  # Close button
   exit:
     material: "RED_STAINED_GLASS_PANE"
-    name: "<#ff4141>Закрыть"
+    name: "<#ff4141>Close"
     commands: [ "[close]", "[cmd] menu" ]
     slots: [ 45, 53 ]
 
-  # Таймер обновления
+  # Update countdown
   countdown:
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg2YjlkNThiY2QxYTU1NWY5M2U3ZDg2NTkxNTljZmQyNWI4ZGQ2ZTliY2UxZTk3MzgyMjgyNDI5MTg2MiJ9fX0="
-    name: "<#dddddd>До след обновления:"
+    name: "<#dddddd>Until next update:"
     lore:
       - ""
-      - "<#dddddd>Обновление лимитированного скупщика через:"
+      - "<#dddddd>Limited seller update in:"
       - "<#eaff43>> <#7348dd>%lim-time% <gray>| <dark_gray>%lim-time-format%"
       - ""
-      - "<#dddddd>Обновление скупщика без лимита через:"
+      - "<#dddddd>Unlimited seller update in:"
       - "<#eaff43>> <#7348dd>%unlim-time% <gray>| <dark_gray>%unlim-time-format%"
       - ""
     slots: [ 4 ]
 
-  # Лимитированные предметы
+  # Limited items
   lim-items:
     lore:
       - ""
-      - "<#dddddd>Цена за <#a9e3ff>х1: <#53fb31>%price-x1% <#b9b9b9>(ЛКМ)"
-      - "<#dddddd>Цена за <#a9e3ff>х64: <#53fb31>%price-x64% <#b9b9b9>(ПКМ)"
+      - "<#dddddd>Price for <#a9e3ff>x1: <#53fb31>%price-x1% <#b9b9b9>(LMB)"
+      - "<#dddddd>Price for <#a9e3ff>x64: <#53fb31>%price-x64% <#b9b9b9>(RMB)"
       - ""
-      - "<#dddddd>Цена за <#a9e3ff>всё: <#53fb31>%price-all% <#b9b9b9>(ЛКМ+SHIFT)"
+      - "<#dddddd>Price for <#a9e3ff>all: <#53fb31>%price-all% <#b9b9b9>(SHIFT+LMB)"
       - ""
-      - "<#dddddd>Предметы в этой строке <#ff4141>ограничены</#ff4141>!"
-      - "<#dddddd>Продано из общ. кол-ва: <#7348dd>%sell% <dark_gray>из <#7348dd>%max%"
-      - "<#dddddd>Продано таких предметов: <#7348dd>%sell-items% <dark_gray>из <#7348dd>%max-items%"
+      - "<#dddddd>Items in this row are <#ff4141>limited</#ff4141>!"
+      - "<#dddddd>Sold from total: <#7348dd>%sell% <dark_gray>of <#7348dd>%max%"
+      - "<#dddddd>Such items sold: <#7348dd>%sell-items% <dark_gray>of <#7348dd>%max-items%"
     slots: [ 9, 18, 27, 36 ]
 
-  # Нелимитированные предметы
+  # Unlimited items
   unlim-items:
     lore:
       - ""
-      - "<#dddddd>Цена за <#a9e3ff>х1: <#53fb31>%price-x1% <gray>(ЛКМ)"
-      - "<#dddddd>Цена за <#a9e3ff>х64: <#53fb31>%price-x64% <gray>(ПКМ)"
+      - "<#dddddd>Price for <#a9e3ff>x1: <#53fb31>%price-x1% <gray>(LMB)"
+      - "<#dddddd>Price for <#a9e3ff>x64: <#53fb31>%price-x64% <gray>(RMB)"
       - ""
-      - "<#dddddd>Цена за <#a9e3ff>всё: <#53fb31>%price-all% <gray>(ЛКМ+SHIFT)"
+      - "<#dddddd>Price for <#a9e3ff>all: <#53fb31>%price-all% <gray>(SHIFT+LMB)"
       - ""
-      - "<#dddddd>Предметы <green>не ограничены</green>!"
+      - "<#dddddd>Items are <green>unlimited</green>!"
     slots: [ 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 29, 30, 31, 32, 33, 34, 35, 38, 39, 40, 41, 42, 43, 44 ]
 
-  # Разделители
+  # Dividers
   divider:
     material: "BLACK_STAINED_GLASS_PANE"
     name: "<gray>"
     slots: [ 0, 1, 2, 3, 5, 6, 7, 8, 10, 19, 28, 37, 49, 48, 47, 46, 51, 52 ]
 
-# GUI автопродажи
 autosell-gui:
-  title: "<gold>Автопродажа"
+  title: "<gold>Auto Sell"
   toggle-slot: 48
   toggle-enabled:
-    name: "<green>Автопродажа включена"
+    name: "<green>Auto Sell Enabled"
     lore:
-      - "<gray>Нажмите чтобы выключить автопродажу"
+      - "<gray>Click to disable auto sell"
       - ""
-      - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
-      - "<gray>Статус: <green>ВКЛЮЧЕНО"
+      - "<gray>Items added: <yellow>%slots%/%max-slots%"
+      - "<gray>Status: <green>ENABLED"
   toggle-disabled:
-    name: "<red>Автопродажа выключена"
+    name: "<red>Auto Sell Disabled"
     lore:
-      - "<gray>Нажмите чтобы включить автопродажу"
+      - "<gray>Click to enable auto sell"
       - ""
-      - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
-      - "<gray>Статус: <red>ВЫКЛЮЧЕНО"
+      - "<gray>Items added: <yellow>%slots%/%max-slots%"
+      - "<gray>Status: <red>DISABLED"
   info-slot: 50
   info:
     material: "BOOK"
-    name: "<yellow>Информация"
+    name: "<yellow>Information"
     lore:
-      - "<gray>Как пользоваться автопродажей:"
-      - "<gray>1. Включите автопродажу"
-      - "<gray>2. Добавьте предметы кликом по ним"
-      - "<gray>3. Получайте автоматическую продажу!"
+      - "<gray>How to use auto sell:"
+      - "<gray>1. Enable auto sell"
+      - "<gray>2. Add items by clicking on them"
+      - "<gray>3. Get automatic selling!"
       - ""
-      - "<yellow>ЛКМ по предмету в инвентаре - <green>добавить"
-      - "<yellow>ЛКМ по предмету в GUI - <red>удалить"
+      - "<yellow>LMB on item in inventory - <green>add"
+      - "<yellow>LMB on item in GUI - <red>remove"
   back-slot: 49
   back:
     material: "RED_STAINED_GLASS_PANE"
-    name: "<red>Назад"
+    name: "<red>Back"
     lore:
-      - "<gray>Вернуться в главное меню"
+      - "<gray>Return to main menu"
   item-slots: [1,2,3,4,5,6,7,10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34,37,38,39,40,41,42,43,46,47,48,48,49,50,51]
   item-lore:
-    - "<gray>Нажмите чтобы удалить из автопродажи"
+    - "<gray>Click to remove from auto sell"
     - ""
-    - "<yellow>Статистика автопродаж:"
-    - "<green>Продано: %items-sold% шт."
-    - "<green>Заработано: %money-earned%"
+    - "<yellow>Auto Sell Statistics:"
+    - "<green>Sold: %items-sold% pcs."
+    - "<green>Earned: %money-earned%"
 
-  # Разделитель для пустых слотов
+  # Divider for empty slots
   divider:
     material: "GRAY_STAINED_GLASS_PANE"
     name: "<white> "
     lore: [ ]
 
-  # Навигация
+  # Navigation
   navigation:
     previous:
       material: "ARROW"
-      name: "<yellow>Предыдущая страница"
+      name: "<yellow>Previous Page"
       lore:
-        - "<gray>Нажмите чтобы перейти"
-        - "<gray>на предыдущую страницу"
+        - "<gray>Click to go"
+        - "<gray>to previous page"
         - ""
-        - "<gray>Текущая страница: <white>%current-page%</white>"
-        - "<gray>Всего страниц: <white>%total-pages%</white>"
+        - "<gray>Current page: <white>%current-page%</white>"
+        - "<gray>Total pages: <white>%total-pages%</white>"
     previous-slot: 45
 
     next:
       material: "ARROW"
-      name: "<yellow>Следующая страница"
+      name: "<yellow>Next Page"
       lore:
-        - "<gray>Нажмите чтобы перейти"
-        - "<gray>на следующую страницу"
+        - "<gray>Click to go"
+        - "<gray>to next page"
         - ""
-        - "<gray>Текущая страница: <white>%current-page%</white>"
-        - "<gray>Всего страниц: <white>%total-pages%</white>"
+        - "<gray>Current page: <white>%current-page%</white>"
+        - "<gray>Total pages: <white>%total-pages%</white>"
     next-slot: 53
