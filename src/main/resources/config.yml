@@ -49,20 +49,19 @@ messages:
     - ""
     - "<#dddddd>Скупщик без лимита обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
     - ""
-  update-cast:
-    - ""
-    - "<#dddddd>Скупщик полностью обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
-    - ""
 
   # Сообщения команд
   commands:
     permission: "<<#ff4141>У Вас нет прав."
     reload: "<green>Конфигурация успешно перезагружена!"
     update: "<#00d328>Список продаваемых предметов успешно обновлен!"
+    update-lim: "<#00d328>Список продаваемых предметов с лимитом успешно обновлен!"
+    update-unlim: "<#00d328>Список продаваемых предметов без лимита успешно обновлен!"
     added: "<#dddddd>Предмет <#eaff43>%item% <#dddddd>успешно добавлен в список товаров. Его цена колеблется от <#53fb31>%min-price% <#dddddd>до <#53fb31>%max-price%<#dddddd> за штуку."
     addlimited-use: "<red>Использование: /primeseller addlimited (мин. цена) (макс. цена) за шт. (Держите предмет в руке) - Добавить предмет в продажу."
     addunlimited-use: "<red>Использование: /primeseller addunlimited (мин. цена) (макс. цена) за шт. (Держите предмет в руке) - Добавить предмет в продажу."
     update-use: "<red>Использование: /primeseller update - Обновить список торгов"
+    update-use-lim: "<red>Использование: /primeseller update [limited|unlimited]"
     player-only: "<red>Только для игроков!"
     addlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."
     addunlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."

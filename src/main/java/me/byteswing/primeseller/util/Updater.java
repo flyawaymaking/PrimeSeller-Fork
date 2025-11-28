@@ -25,8 +25,10 @@ import me.byteswing.primeseller.configurations.Items;
 import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.managers.AutoSellManager;
 import me.byteswing.primeseller.menu.SellerMenu;
+import me.byteswing.primeseller.tasks.UpdaterTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -36,10 +38,12 @@ import java.util.concurrent.TimeUnit;
 
 public class Updater {
     private static final HashMap<String, Integer> counter = new HashMap<>();
-
     private static final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
 
-    public static void startCountdown() {
+    private static BukkitTask unlimTask;
+    private static BukkitTask limTask;
+
+    private static void startCountdown() {
         if (counter.get("limited") == null || counter.get("unlimited") == null) {
             counter.put("unlimited", Items.getConfig().getInt("unlimited.update"));
             counter.put("limited", Items.getConfig().getInt("limited.update"));
@@ -94,75 +98,89 @@ public class Updater {
         return "0";
     }
 
-    public static void update() {
-        MapBase sql = new MapBase();
-        sql.clear();
-        Chat.broadcast(Config.getConfig().getStringList("messages.update-cast"));
-
-        Util.update = true;
-        Util.playerSellItems.clear();
-
-        counter.put("unlimited", Items.getConfig().getInt("unlimited.update"));
-        counter.put("limited", Items.getConfig().getInt("limited.update"));
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            Util.playerSellItems.put(p.getUniqueId(), 0);
-        }
-        Util.unlimitedFormat = Util.formattedTime(Items.getConfig().getInt("unlimited.update"));
-        Util.limitedFormat = Util.formattedTime(Items.getConfig().getInt("limited.update"));
-        SellerMenu.createUnLimItems();
-        SellerMenu.createLimItems();
-        Understating.resetCounters();
-        AutoSellManager.resetAllStats();
+    public static void update(PrimeSeller plugin) {
+        clearAndCreateUnLimited(plugin, true);
+        clearAndCreateLimited(plugin, true);
     }
 
-    public static void clearAndCreateLimited() {
+    public static void clearAndCreateLimited(PrimeSeller plugin, boolean needTaskRestart) {
         try {
+            if (needTaskRestart && limTask != null) {
+                limTask.cancel();
+            }
             counter.put("limited", Items.getConfig().getInt("limited.update"));
             Util.update = true;
+
             Util.playerSellItems.clear();
             for (Player p : Bukkit.getOnlinePlayers()) {
                 Util.playerSellItems.put(p.getUniqueId(), 0);
             }
+
             MapBase sql = new MapBase();
             sql.clearLimited();
+
+            Understating.resetCounters();
+            AutoSellManager.resetAllStats();
+
             Util.limitedFormat = Util.formattedTime(Items.getConfig().getInt("limited.update"));
+
+            if (!Items.getConfig().getBoolean("limited.enable", true)) return;
             SellerMenu.createLimItems();
             Chat.broadcast(Config.getConfig().getStringList("messages.limited-update-cast"));
+
+            if (needTaskRestart) {
+                long updateInterval = Items.getConfig().getInt("limited.update") * 20L;
+                UpdaterTask task = new UpdaterTask(plugin, true);
+                limTask = task.runTaskTimer(plugin, updateInterval, updateInterval);
+            }
         } catch (Exception e) {
-            clearAndCreateLimited();
+            plugin.getLogger().severe("Ошибка при обновлении лимитированных предметов: " + e.getMessage());
         }
     }
 
-    public static void clearAndCreateUnLimited() {
+    public static void clearAndCreateUnLimited(PrimeSeller plugin, boolean needTaskRestart) {
         try {
+            if (needTaskRestart && unlimTask != null) {
+                unlimTask.cancel();
+            }
+
             counter.put("unlimited", Items.getConfig().getInt("unlimited.update"));
             Util.update = true;
+
             MapBase sql = new MapBase();
             sql.clearUnLimited();
+
             Util.unlimitedFormat = Util.formattedTime(Items.getConfig().getInt("unlimited.update"));
+
+            if (!Items.getConfig().getBoolean("unlimited.enable", true)) return;
             SellerMenu.createUnLimItems();
             Chat.broadcast(Config.getConfig().getStringList("messages.unlimited-update-cast"));
+
+            if (needTaskRestart) {
+                long updateInterval = Items.getConfig().getInt("unlimited.update") * 20L;
+                UpdaterTask task = new UpdaterTask(plugin, false);
+                unlimTask = task.runTaskTimer(plugin, updateInterval, updateInterval);
+            }
         } catch (Exception e) {
-            clearAndCreateLimited();
+            plugin.getLogger().severe("Ошибка при обновлении нелимитированных предметов: " + e.getMessage());
         }
-    }
-
-
-    public static void startUnLim(PrimeSeller plugin) {
-        plugin.getPluginScheduler().runTaskTimer(plugin, Updater::clearAndCreateUnLimited, 0, Items.getConfig().getInt("unlimited.update") * 20L);
-    }
-
-    public static void startLim(PrimeSeller plugin) {
-        plugin.getPluginScheduler().runTaskTimer(plugin, Updater::clearAndCreateLimited, 0, Items.getConfig().getInt("limited.update") * 20L);
     }
 
     public static void start(PrimeSeller plugin) {
-        if (Items.getConfig().getBoolean("unlimited.enable", true)) {
-            startUnLim(plugin);
+        startCountdown();
+        clearAndCreateUnLimited(plugin, true);
+        clearAndCreateLimited(plugin, true);
+    }
+
+    public static void stop() {
+        if (unlimTask != null) {
+            unlimTask.cancel();
         }
-        if (Items.getConfig().getBoolean("limited.enable", true)) {
-            startLim(plugin);
+        if (limTask != null) {
+            limTask.cancel();
         }
-        Util.update = true;
+        if (!timer.isShutdown()) {
+            timer.shutdown();
+        }
     }
 }

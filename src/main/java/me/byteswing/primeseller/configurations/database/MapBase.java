@@ -44,5 +44,4 @@ public class MapBase {
     public boolean isLimited(int slot) {
         return getSlot(slot).isLimited();
     }
-
 }

@@ -27,66 +27,66 @@ This is a fork of the original PrimeSeller plugin, updated and maintained by [fl
 - ✅ Intuitive for players
 - ✅ Supports modern Minecraft versions
 
-## 🆕 Изменения в форке
+## 🆕 Fork Changes
 
-Основные изменения относительно оригинального плагина:
+Main changes compared to the original plugin:
 
 ```
-1. **Поддержка серверов** - отключена поддержка всех серверов кроме Paper для улучшения стабильности
-2. **Форматирование текста** - вместо устаревших цветов используется современный MiniMessages format
-3. **Экономика** - заменена система экономики с Vault на CoinsEngine
-4. **Система понижения цены** - добавлена настройка `understating-price.items` для контроля частоты понижения цены
-5. **Исправление багов** - исправлена ошибка с понижением цены при маленькой стоимости предмета
-6. **Локализация** - все сообщения вынесены в config.yml для удобной поддержки разных языков. Добавлена поддержка русского перевода для предметов
-7. **Метрика** - отключена система сбора метрик
-8. **Скупка** - теперь для продажи всех предметов надо нажимать SHIFT+ЛКМ
-9. **Автопродажа** - теперь есть функция автопродажи (продаются предметы доступные сейчас к продаже).
+1. **Server Support** - Support for all servers except Paper has been disabled to improve stability
+2. **Text Formatting** - Legacy color codes replaced with modern MiniMessages format
+3. **Economy** - Economy system switched from Vault to CoinsEngine
+4. **Price Reduction System** - Added `understating-price.items` setting to control price reduction frequency
+5. **Bug Fixes** - Fixed price reduction bug with low-value items. Fixed /psell update command issue
+6. **Localization** - All messages moved to config.yml for easy multi-language support. Added Russian translation for items
+7. **Metrics** - Metrics collection system disabled
+8. **Selling** - Now requires SHIFT+LEFT_CLICK to sell all items
+9. **Auto Sell** - Added auto-sell feature (sells items currently available for sale)
 ```
 
-## Использование автопродажи
-### Быстрый старт
+## Auto Sell Usage
+### Quick Start
 ```
-Откройте меню: /autoseller
+Open menu: /autoseller
 
-Включите автопродажу: Нажмите кнопку в 50 слоте
+Enable auto sell: Click button in slot 50
 
-Добавьте предметы: ЛКМ по предметам в вашем инвентаре
+Add items: LEFT_CLICK on items in your inventory
 
-Готово! Предметы будут продаваться автоматически каждые 5 секунд
-```
-
-### 🎯 Основные действия
-✅ Добавить предмет
-```
-В меню автопродажи → кликните ЛКМ по предмету в вашем инвентаре
-
-✅ Предмет добавится в список автопродажи
-```
-❌ Удалить предмет
-```
-В меню автопродажи → кликните ЛКМ по предмету в GUI
-
-❌ Предмет удалится из автопродажи
+Done! Items will be sold automatically every 5 seconds
 ```
 
-### Команды
+### 🎯 Main Actions
+✅ Add Item
+```
+In auto sell menu → LEFT_CLICK on item in your inventory
+
+✅ Item will be added to auto sell list
+```
+❌ Remove Item
+```
+In auto sell menu → LEFT_CLICK on item in GUI
+
+❌ Item will be removed from auto sell
+```
+
+### Commands
 ```bash
-/autoseller          # Открыть меню
-/autoseller on       # Включить
-/autoseller off      # Выключить
-/autoseller toggle   # Переключить
+/autoseller          # Open menu
+/autoseller on       # Enable
+/autoseller off      # Disable
+/autoseller toggle   # Toggle
 ```
 
-### Лимиты
-1) Базовый: 0 слотов (нужны права)
-2) С правами: `primeseller.autosell.10` = 10 слотов
-3) Без лимита: `primeseller.autosell.bypass`
+### Limits
+1) Basic: 0 slots (requires permissions)
+2) With permissions: `primeseller.autosell.10` = 10 slots
+3) Unlimited: `primeseller.autosell.bypass`
 
-### Особенности
-1) 🔄 Автопроверка каждые 5 секунд
-2) 💰 Деньги сразу на баланс
-3) 📢 Уведомления в чате о продажах
-4) Продаются только предметы, которые сейчас доступны к продаже!
+### Features
+1) 🔄 Auto-check every 5 seconds
+2) 💰 Money goes directly to balance
+3) 📢 Chat notifications about sales (can be disabled)
+4) Only sells items that are currently available for sale!
 
 ## ⚙️ Plugin Installation
 
@@ -116,12 +116,14 @@ This is a fork of the original PrimeSeller plugin, updated and maintained by [fl
 ```
 > without permissions (configurable)
 - /seller - Open the seller interface
+- /autoseller - Open the autoseller interface
 ```
 
 ### Admin Commands
 ```
 > Permission: primeseller.admin
 - /seller update - Force update seller items
+- /seller update [limited|unlimitted]- Force update limited|unlimitted seller items
 - /seller addunlimited - Add unlimited buyer
 - /seller addlimited - Add limited buyer
 - /seller reload - Reload plugin configuration

@@ -37,8 +37,8 @@ public class LanguageManager {
     private static final Gson gson = new GsonBuilder().create();
     private static final YamlConfiguration translations = new YamlConfiguration();
 
-    public static void reload(JavaPlugin plugin, String lang) {
-        lang = lang.toLowerCase();
+    public static void reload(JavaPlugin plugin) {
+        String lang = plugin.getConfig().getString("language", "ru_ru").toLowerCase();
 
         File file = new File(plugin.getDataFolder(), "translations/" + lang + ".yml");
         file.getParentFile().mkdirs();

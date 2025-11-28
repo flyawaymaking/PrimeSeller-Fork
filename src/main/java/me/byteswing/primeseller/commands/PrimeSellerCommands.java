@@ -34,7 +34,6 @@ import me.byteswing.primeseller.managers.ConfigManager;
 import me.byteswing.primeseller.util.Chat;
 import me.byteswing.primeseller.util.Updater;
 
-
 public class PrimeSellerCommands implements CommandExecutor {
     private final PrimeSeller plugin;
 
@@ -59,9 +58,25 @@ public class PrimeSellerCommands implements CommandExecutor {
 
         switch (subCommand) {
             case "update":
-                Updater.update();
-                Chat.sendMessage(sender, Config.getMessage("commands.update"));
-                return true;
+                if (args.length > 1) {
+                    switch (args[1].toLowerCase()) {
+                        case "limited":
+                            Updater.clearAndCreateLimited(plugin, true);
+                            Chat.sendMessage(sender, Config.getMessage("commands.update-lim"));
+                            return true;
+                        case "unlimited":
+                            Updater.clearAndCreateUnLimited(plugin, true);
+                            Chat.sendMessage(sender, Config.getMessage("commands.update-unlim"));
+                            return true;
+                        default:
+                            Chat.sendMessage(sender, Config.getMessage("commands.update-usage"));
+                            return true;
+                    }
+                } else {
+                    Updater.update(plugin);
+                    Chat.sendMessage(sender, Config.getMessage("commands.update"));
+                    return true;
+                }
             case "reload":
                 reloadConfig();
                 Chat.sendMessage(sender, Config.getMessage("commands.reload"));
@@ -107,8 +122,7 @@ public class PrimeSellerCommands implements CommandExecutor {
 
     private void reloadConfig() {
         ConfigManager.reloadConfigurations();
-        String lang = Config.getConfig().getString("language", "ru_ru");
-        LanguageManager.reload(plugin, lang);
+        LanguageManager.reload(plugin);
         Eco.init(plugin);
         Chat.init(plugin);
     }

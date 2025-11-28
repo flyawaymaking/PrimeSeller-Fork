@@ -21,6 +21,7 @@ import me.byteswing.primeseller.configurations.Config;
 import me.byteswing.primeseller.configurations.Items;
 import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.configurations.database.SellItem;
+import me.byteswing.primeseller.tasks.AutoSellTask;
 import me.byteswing.primeseller.util.Chat;
 import me.byteswing.primeseller.util.Eco;
 import me.byteswing.primeseller.util.Understating;
@@ -30,6 +31,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +44,7 @@ public class AutoSellManager {
     private static final Map<UUID, Set<Material>> autoSellMaterials = new HashMap<>();
     private static final Map<UUID, Map<Material, ItemStats>> itemStats = new HashMap<>();
     private static final DecimalFormat format = new DecimalFormat("##.##");
+    private static BukkitTask autoSellTask;
 
     private static File dataFile;
     private static YamlConfiguration dataConfig;
@@ -49,6 +52,22 @@ public class AutoSellManager {
     public static void init(PrimeSeller plugin) {
         AutoSellManager.plugin = plugin;
         setupDataFile();
+        startAutoSellTask(plugin);
+    }
+
+    private static void startAutoSellTask(PrimeSeller plugin) {
+        if (autoSellTask != null) {
+            autoSellTask.cancel();
+        }
+        int interval = plugin.getConfig().getInt("autosell.check-interval", 100); // 100 тиков = 5 секунд
+        autoSellTask = new AutoSellTask(plugin).runTaskTimer(plugin, interval, interval);
+        plugin.getLogger().info("Задача автопродажи запущена с интервалом " + interval + " тиков");
+    }
+
+    public static void disable() {
+        if (autoSellTask != null) {
+            autoSellTask.cancel();
+        }
     }
 
     private static void setupDataFile() {
