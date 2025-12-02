@@ -1,9 +1,8 @@
 name: PrimeSeller-Fork
-version: '1.2.0'
+version: '1.3.0'
 main: me.byteswing.primeseller.PrimeSeller
 api-version: 1.21
-depend: [ CoinsEngine ]
-softdepend: [ PlaceholderAPI ]
+softdepend: [ Vault, CoinsEngine, PlaceholderAPI ]
 author: destroydevs, golovin12
 website: https://github.com/flyawaymaking
 description: |
@@ -25,9 +24,23 @@ commands:
       - 'psell'
 
 permissions:
-  primeseller.open:
-    default: op
+  primeseller.user:
+    description: Права игрока
+    children:
+      primeseller.seller: true
+      primeseller.autoseller: true
+  primeseller.seller:
+    description: Право открытия меню продажи
+    default: true
+  primeseller.autoseller:
+    description: Право открытия меню автопродажи
+    default: true
   primeseller.autosell.*:
-    default: op
+    description: Лимит на предметы в автопродаже
+    default: false
   primeseller.autosell.bypass:
+    description: Отключение лимита предметов в автопродаже
+    default: op
+  primeseller.admin:
+    description: Доступ к командам админа
     default: op

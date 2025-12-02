@@ -24,6 +24,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class Chat {
         prefix = plugin.getConfig().getString("prefix", "<gradient:#5637bc:#9258ff>SELLER</gradient> <#b9b9b9>|");
     }
 
-    public static Component toComponent(String message) {
+    public static Component toComponent(@NotNull String message) {
         return miniMessage.deserialize(message);
     }
 

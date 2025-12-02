@@ -47,13 +47,13 @@ public class Expansions extends PlaceholderExpansion {
             return Util.unlimitedFormat;
         }
         if (params.equalsIgnoreCase("unlimited_time")) {
-            return Updater.getUnLimitedTime(2);
+            return Updater.getUnLimitedTime();
         }
         if (params.equalsIgnoreCase("limited_time_formatted")) {
             return Util.limitedFormat;
         }
         if (params.equalsIgnoreCase("limited_time")) {
-            return Updater.getLimitedTime(2);
+            return Updater.getLimitedTime();
         }
         if (params.equalsIgnoreCase("selled_items")) {
             return Util.playerSellItems.get(player.getUniqueId()).toString();

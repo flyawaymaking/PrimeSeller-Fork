@@ -50,7 +50,7 @@ public class LanguageManager {
             } catch (Exception ignored) {}
         }
 
-        plugin.getLogger().info("Загрузка языка " + lang + "...");
+        plugin.getLogger().info("Loading the language " + lang + "...");
 
         String version = plugin.getServer().getMinecraftVersion();
         String url = "https://api.github.com/repos/InventivetalentDev/minecraft-assets"
@@ -85,11 +85,11 @@ public class LanguageManager {
             }
 
             translations.save(file);
-            plugin.getLogger().info("Язык успешно загружен.");
+            plugin.getLogger().info("The language was uploaded successfully.");
 
         } catch (Exception ex) {
             plugin.getLogger().warning(ex.getMessage());
-            plugin.getLogger().severe("Ошибка загрузки языка!");
+            plugin.getLogger().severe("Language loading error!");
         }
     }
 

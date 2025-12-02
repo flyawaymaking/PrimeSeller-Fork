@@ -19,6 +19,7 @@
 
 package me.byteswing.primeseller.listeners;
 
+import me.byteswing.primeseller.managers.EconomyManager;
 import me.byteswing.primeseller.managers.LanguageManager;
 import me.byteswing.primeseller.menu.AutoSellMenu;
 import me.byteswing.primeseller.menu.SellerInventoryHolder;
@@ -29,7 +30,6 @@ import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.configurations.database.SellItem;
 import me.byteswing.primeseller.menu.GuiMenu;
 import me.byteswing.primeseller.util.Chat;
-import me.byteswing.primeseller.util.Eco;
 import me.byteswing.primeseller.util.Understating;
 import me.byteswing.primeseller.util.Util;
 import org.bukkit.Bukkit;
@@ -125,6 +125,7 @@ public class SellerListener implements Listener {
     }
 
     private void handleAutoSellInvSlots(InventoryClickEvent e, Player player) {
+        if (!player.hasPermission("primeseller.autoseller")) return;
         for (Integer i : Config.getMenuConfig().getIntegerList("autosell.slots")) {
             if (e.getSlot() == i) {
                 AutoSellMenu.openAutoSellMenu(player, plugin);
@@ -176,11 +177,11 @@ public class SellerListener implements Listener {
             Understating.takePrice(slot, count);
             Chat.sendMessage(e.getWhoClicked(), Config.getMessage("sell")
                     .replace("%item%", LanguageManager.translate(item.getType()))
-                    .replace("%price%", Eco.format(price))
+                    .replace("%price%", EconomyManager.format(price))
                     .replace("%amount%", "x" + count));
             item.setAmount(count);
             player.getInventory().removeItem(item);
-            Eco.addBalance(player, price);
+            EconomyManager.addBalance(player, price);
             GuiMenu.update(player, e.getClickedInventory(), plugin);
             e.setCancelled(true);
         }
@@ -211,9 +212,9 @@ public class SellerListener implements Listener {
             }
         }
 
-        Eco.addBalance(player, price);
+        EconomyManager.addBalance(player, price);
         Chat.sendMessage(e.getWhoClicked(), Config.getMessage("sell-inventory")
-                .replace("%price%", Eco.format(price))
+                .replace("%price%", EconomyManager.format(price))
                 .replace("%amount%", "x" + amount));
     }
 

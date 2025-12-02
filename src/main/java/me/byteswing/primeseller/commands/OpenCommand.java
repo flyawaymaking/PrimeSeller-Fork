@@ -25,15 +25,13 @@ public class OpenCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player p) {
-            if (Config.getConfig().getBoolean("enable-permission")) {
-                if (!p.hasPermission("primeseller.open")) {
-                    Chat.sendMessage(sender, Config.getMessage("commands.permission"));
-                    return true;
-                }
+        if (sender instanceof Player player) {
+            if (!player.hasPermission("primeseller.seller")) {
+                Chat.sendMessage(sender, Config.getMessage("commands.permission"));
+                return true;
             }
-            GuiMenu.open(p, main);
-            p.playSound(p.getLocation(), Sound.UI_TOAST_IN, 1, 1);
+            GuiMenu.open(player, main);
+            player.playSound(player.getLocation(), Sound.UI_TOAST_IN, 1, 1);
         }
         return true;
     }

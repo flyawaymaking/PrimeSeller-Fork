@@ -1,5 +1,4 @@
 /**
- * Copyright 2025 destroydevs (https://github.com/destroydevs/primeseller)
  * Copyright 2025 flyawaymaking (https://github.com/flyawaymaking)
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +14,7 @@
  * limitations under the License.
  */
 
-// This file was modified by flyawaymaking (https://github.com/flyawaymaking) from the original version.
-
-package me.byteswing.primeseller.util;
+package me.byteswing.primeseller.economy;
 
 import me.byteswing.primeseller.PrimeSeller;
 import org.bukkit.entity.Player;
@@ -26,21 +23,25 @@ import su.nightexpress.coinsengine.api.currency.Currency;
 
 import java.text.DecimalFormat;
 
-public class Eco {
-    private static PrimeSeller plugin;
-    private static Currency currency;
-    private static final DecimalFormat format = new DecimalFormat("##.##");
+public class CoinsEngineEconomy implements EconomyProvider {
+    private final PrimeSeller plugin;
+    private Currency currency;
+    private final DecimalFormat format = new DecimalFormat("##.##");
 
-    public static void init(PrimeSeller plugin) {
-        Eco.plugin = plugin;
-        String currencyName = plugin.getConfig().getString("currency", "money");
-        currency = CoinsEngineAPI.getCurrency(currencyName);
+    public CoinsEngineEconomy(PrimeSeller plugin) {
+        this.plugin = plugin;
+        String currencyName = plugin.getConfig().getString("economy.coins-engine.currency", "money");
+        if (plugin.getServer().getPluginManager().getPlugin("CoinsEngine") != null) {
+            currency = CoinsEngineAPI.getCurrency(currencyName);
+        }
         if (currency == null) {
-            plugin.getLogger().warning("Валюта '" + currencyName + "' не найдена в CoinsEngine!");
+            plugin.getLogger().warning("Currency '" + currencyName + "' not found in CoinsEngine!");
+        } else {
+            plugin.getLogger().info("CoinsEngineEconomy use '" + currencyName + "' currency!");
         }
     }
 
-    public static void addBalance(Player player, double amount) {
+    public void addBalance(Player player, double amount) {
         if (currency == null) {
             return;
         }
@@ -52,12 +53,14 @@ public class Eco {
         }
     }
 
-    public static String format(double amount) {
-        return currency.format(Double.parseDouble(format.format(amount).replace(",", ".")))
-                .replace(",", "");
+    public String format(double amount) {
+        if (currency == null) {
+            return format.format(amount);
+        }
+        return currency.format(Double.parseDouble(format.format(amount).replace(",", ".")));
     }
 
-    public static boolean isEconomyAvailable() {
+    public boolean isAvailable() {
         return currency != null;
     }
 }

@@ -27,6 +27,7 @@ import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.configurations.database.SellItem;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import me.byteswing.primeseller.managers.AutoSellManager;
+import me.byteswing.primeseller.managers.EconomyManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -46,11 +47,18 @@ public class Util {
 
     public static HashMap<UUID, Integer> playerSellItems = new HashMap<>();
 
-    public static String limitedFormat = "Загрузка...";
-    public static String unlimitedFormat = "Загрузка...";
+    public static String limitedFormat = "Loading...";
+    public static String unlimitedFormat = "Loading...";
 
     public static String formattedTime(int time) {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy HH:mm");
+        String defaultFormat = "yy-MM-dd HH:mm";
+        String fmt = Config.getConfig().getString("datetime-format", defaultFormat);
+        SimpleDateFormat format;
+        try {
+            format = new SimpleDateFormat(fmt);
+        } catch (IllegalArgumentException ex) {
+            format = new SimpleDateFormat(defaultFormat);
+        }
         long milliseconds = time * 1000L;
 
         String timeZone = Config.getConfig().getString("time-zone");
@@ -152,11 +160,11 @@ public class Util {
             ItemStack item = entry.getValue().getItem().clone();
             if (sql.isLimited(next)) {
                 double price = sql.getPrice(next);
-                String price64 = Eco.format(price * 64);
-                String priceall = Eco.format(Util.calc(player, item) * price);
+                String price64 = EconomyManager.format(price * 64);
+                String priceall = EconomyManager.format(Util.calc(player, item) * price);
                 for (String s : Config.getMenuConfig().getStringList("lim-items.lore")) {
                     lim.add(Chat.toComponent(s
-                            .replace("%price-x1%", Eco.format(price))
+                            .replace("%price-x1%", EconomyManager.format(price))
                             .replace("%price-x64%", price64)
                             .replace("%price-all%", priceall)
                             .replace("%sell%", String.valueOf(Util.playerSellItems.get(playerId)))
@@ -176,11 +184,11 @@ public class Util {
                 continue;
             }
             double price = sql.getPrice(next);
-            String price64 = Eco.format(price * 64);
-            String priceall = Eco.format(Util.calc(player, item) * price);
+            String price64 = EconomyManager.format(price * 64);
+            String priceall = EconomyManager.format(Util.calc(player, item) * price);
             for (String s : Config.getMenuConfig().getStringList("unlim-items.lore")) {
                 unlim.add(Chat.toComponent(s
-                        .replace("%price-x1%", Eco.format(price))
+                        .replace("%price-x1%", EconomyManager.format(price))
                         .replace("%price-all%", priceall)
                         .replace("%price-x64%", price64)));
             }
@@ -194,25 +202,6 @@ public class Util {
             inv.setItem(next, item);
             unlim.clear();
         }
-        for (Integer i : Config.getMenuConfig().getIntegerList("divider.slots")) {
-            String items = Config.getMenuConfig().getString("divider.material");
-            List<Component> lore = Config.getMenuConfig().getStringList("divider.lore").stream()
-                    .map(Chat::toComponent)
-                    .toList();
-            ItemStack item;
-            try {
-                item = new ItemStack(Material.valueOf(items));
-            } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Неизвестный предмет: " + items);
-                continue;
-            }
-            ItemMeta meta = item.getItemMeta();
-            meta.lore(lore);
-            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("divider.name")));
-            item.setItemMeta(meta);
-            inv.setItem(i, item);
-        }
         for (Integer i : Config.getMenuConfig().getIntegerList("exit.slots")) {
             String items = Config.getMenuConfig().getString("exit.material");
             List<Component> lore = Config.getMenuConfig().getStringList("exit.lore").stream()
@@ -222,13 +211,13 @@ public class Util {
             try {
                 item = new ItemStack(Material.valueOf(items));
             } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Неизвестный предмет: " + items);
+                plugin.getLogger().warning("Unknown object: " + items);
                 break;
             }
             ItemMeta meta = item.getItemMeta();
             meta.lore(lore);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("exit.name")));
+            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("exit.name", "exit")));
             item.setItemMeta(meta);
             inv.setItem(i, item);
         }
@@ -241,13 +230,13 @@ public class Util {
             try {
                 item = new ItemStack(Material.valueOf(items));
             } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Неизвестный предмет: " + items);
+                plugin.getLogger().warning("Unknown object: " + items);
                 break;
             }
             ItemMeta meta = item.getItemMeta();
             meta.lore(lore);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("sell-inventory.name")));
+            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("sell-inventory.name", "sell_inventory")));
             item.setItemMeta(meta);
             inv.setItem(i, item);
         }
@@ -265,37 +254,60 @@ public class Util {
             ItemMeta meta = item.getItemMeta();
             for (String s : Config.getMenuConfig().getStringList("countdown.lore")) {
                 countdown.add(Chat.toComponent(s
-                        .replace("%lim-time%", Updater.getLimitedTime(2))
-                        .replace("%unlim-time%", Updater.getUnLimitedTime(2))
+                        .replace("%lim-time%", Updater.getLimitedTime())
+                        .replace("%unlim-time%", Updater.getUnLimitedTime())
                         .replace("%lim-time-format%", Util.limitedFormat)
                         .replace("%unlim-time-format%", Util.unlimitedFormat)));
             }
             meta.lore(countdown);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("countdown.name")));
+            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("countdown.name", "countdown")));
             item.setItemMeta(meta);
             inv.setItem(i, item);
             countdown.clear();
         }
-        for (Integer i : Config.getMenuConfig().getIntegerList("autosell.slots")) {
-            String items = Config.getMenuConfig().getString("autosell.material");
-            List<Component> lore = Config.getMenuConfig().getStringList("autosell.lore").stream()
-                    .map(line -> line
-                            .replace("%autosell-slots%", String.valueOf(AutoSellManager.getAutoSellMaterials(player).size()))
-                            .replace("%autosell-max-slots%", String.valueOf(AutoSellManager.getMaxAutoSellSlots(player))))
+        if (player.hasPermission("primeseller.autoseller")) {
+            for (Integer i : Config.getMenuConfig().getIntegerList("autosell.slots")) {
+                String items = Config.getMenuConfig().getString("autosell.material");
+                List<Component> lore = Config.getMenuConfig().getStringList("autosell.lore").stream()
+                        .map(line -> line
+                                .replace("%autosell-slots%", String.valueOf(AutoSellManager.getAutoSellMaterials(player).size()))
+                                .replace("%autosell-max-slots%", String.valueOf(AutoSellManager.getMaxAutoSellSlots(player))))
+                        .map(Chat::toComponent)
+                        .toList();
+                ItemStack item;
+                try {
+                    item = new ItemStack(Material.valueOf(items));
+                } catch (IllegalArgumentException e) {
+                    plugin.getLogger().warning("Unknown object: " + items);
+                    break;
+                }
+                ItemMeta meta = item.getItemMeta();
+                meta.lore(lore);
+                meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("autosell.name", "autosell")));
+                item.setItemMeta(meta);
+                inv.setItem(i, item);
+            }
+        }
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (inv.getItem(i) != null) continue;
+
+            String items = Config.getMenuConfig().getString("divider.material");
+            List<Component> lore = Config.getMenuConfig().getStringList("divider.lore").stream()
                     .map(Chat::toComponent)
                     .toList();
             ItemStack item;
             try {
                 item = new ItemStack(Material.valueOf(items));
             } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Неизвестный предмет: " + items);
-                break;
+                plugin.getLogger().warning("Unknown object: " + items);
+                continue;
             }
             ItemMeta meta = item.getItemMeta();
             meta.lore(lore);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("autosell.name")));
+            meta.displayName(Chat.toComponent(Config.getMenuConfig().getString("divider.name", "divider")));
             item.setItemMeta(meta);
             inv.setItem(i, item);
         }

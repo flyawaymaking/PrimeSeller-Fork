@@ -8,13 +8,15 @@ language: en_US
 # Time settings
 time-zone: "Europe/Moscow"  # all time-zones: https://timeie.com/
 time-format: "hhh. mmm. sss."
+datetime-format: "yy-MM-dd HH:mm"
 
 inv-sell-priority: "LIMITED"
-# enable command usage permission? primeseller.open
-enable-permission: false
 
-# Currency from CoinsEngine
-currency: "money"
+economy:
+  # Can use CoinsEngine instead of Vault
+  coins-engine:
+    enable: false  # If disabled, Vault will be used.
+    currency: "money"
 
 # Enable price reduction when selling
 # (percent = Percentage by which price will decrease when selling)
@@ -51,7 +53,7 @@ messages:
 
   # Command messages
   commands:
-    permission: "<<#ff4141>You don't have permission."
+    permission: "<#ff4141>You don't have the rights to use this command.."
     reload: "<green>Configuration successfully reloaded!"
     update: "<#00d328>List of sellable items successfully updated!"
     update-lim: "<#00d328>Limited sellable items list successfully updated!"
@@ -110,10 +112,10 @@ menu:
     lore:
       - ""
       - "<#dddddd>Limited seller update in:"
-      - "<#eaff43>> <#7348dd>%lim-time% <gray>| <dark_gray>%lim-time-format%"
+      - "<#eaff43> <#7348dd>%lim-time% <gray>| <dark_gray>%lim-time-format%"
       - ""
       - "<#dddddd>Unlimited seller update in:"
-      - "<#eaff43>> <#7348dd>%unlim-time% <gray>| <dark_gray>%unlim-time-format%"
+      - "<#eaff43> <#7348dd>%unlim-time% <gray>| <dark_gray>%unlim-time-format%"
       - ""
     slots: [ 4 ]
 
@@ -147,10 +149,12 @@ menu:
   divider:
     material: "BLACK_STAINED_GLASS_PANE"
     name: "<gray>"
-    slots: [ 0, 1, 2, 3, 5, 6, 7, 8, 10, 19, 28, 37, 49, 48, 47, 46, 51, 52 ]
 
 autosell-gui:
   title: "<gold>Auto Sell"
+  status:
+    enabled: "<green>enabled"
+    disabled: "<red>disabled"
   toggle-slot: 48
   toggle-enabled:
     name: "<green>Auto Sell Enabled"

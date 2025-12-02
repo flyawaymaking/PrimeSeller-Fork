@@ -19,9 +19,9 @@ package me.byteswing.primeseller.menu;
 import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.configurations.Config;
 import me.byteswing.primeseller.managers.AutoSellManager;
+import me.byteswing.primeseller.managers.EconomyManager;
 import me.byteswing.primeseller.managers.LanguageManager;
 import me.byteswing.primeseller.util.Chat;
-import me.byteswing.primeseller.util.Eco;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -52,7 +52,7 @@ public class AutoSellMenu {
     }
 
     public static void openAutoSellMenu(Player player, PrimeSeller plugin, int page) {
-        String title = Config.getAutoSellConfig().getString("title", "<gold>Автопродажа") + " [" + (page + 1) + "]";
+        String title = Config.getAutoSellConfig().getString("title", "<gold>Auto sell") + " [" + (page + 1) + "]";
         AutoSellInventoryHolder holder = new AutoSellInventoryHolder();
         Inventory inv = Bukkit.createInventory(holder, 54, Chat.toComponent(title));
         holder.setInventory(inv);
@@ -68,12 +68,12 @@ public class AutoSellMenu {
         if (inv.getHolder() instanceof AutoSellInventoryHolder holder) {
             holder.setCurrentPage(page);
         }
-        createDividers(player, inv, page);
         createToggleButton(player, inv);
         createInfoButton(player, inv);
         createAutoSellSlots(player, inv, page);
         createNavigationButtons(player, inv, page);
         createBackButton(player, inv);
+        createDividers(player, inv, page);
     }
 
     public static int getCurrentPage(Inventory inventory) {
@@ -124,7 +124,7 @@ public class AutoSellMenu {
 
         if (page > 0) {
             Material prevMaterial = Material.valueOf(Config.getAutoSellConfig().getString("navigation.previous.material", "ARROW"));
-            String prevName = Config.getAutoSellConfig().getString("navigation.previous.name", "<yellow>Предыдущая страница");
+            String prevName = Config.getAutoSellConfig().getString("navigation.previous.name", "<yellow>Previous page");
             List<String> prevLore = Config.getAutoSellConfig().getStringList("navigation.previous.lore");
 
             ItemStack prevItem = new ItemStack(prevMaterial);
@@ -151,7 +151,7 @@ public class AutoSellMenu {
 
         if (page < totalPages - 1) {
             Material nextMaterial = Material.valueOf(Config.getAutoSellConfig().getString("navigation.next.material", "ARROW"));
-            String nextName = Config.getAutoSellConfig().getString("navigation.next.name", "<yellow>Следующая страница");
+            String nextName = Config.getAutoSellConfig().getString("navigation.next.name", "<yellow>Next page");
             List<String> nextLore = Config.getAutoSellConfig().getStringList("navigation.next.lore");
 
             ItemStack nextItem = new ItemStack(nextMaterial);
@@ -182,8 +182,8 @@ public class AutoSellMenu {
 
         Material material = enabled ? Material.LIME_DYE : Material.GRAY_DYE;
         String name = enabled ?
-                Config.getAutoSellConfig().getString("toggle-enabled.name", "<green>Автопродажа включена") :
-                Config.getAutoSellConfig().getString("toggle-disabled.name", "<red>Автопродажа выключена");
+                Config.getAutoSellConfig().getString("toggle-enabled.name", "<green>Auto sell enabled") :
+                Config.getAutoSellConfig().getString("toggle-disabled.name", "<red>Auto sell disabled");
 
         List<String> loreConfig = enabled ?
                 Config.getAutoSellConfig().getStringList("toggle-enabled.lore") :
@@ -194,7 +194,7 @@ public class AutoSellMenu {
             lore.add(line
                     .replace("%slots%", String.valueOf(AutoSellManager.getAutoSellMaterials(player).size()))
                     .replace("%max-slots%", String.valueOf(AutoSellManager.getMaxAutoSellSlots(player)))
-                    .replace("%status%", enabled ? "<green>включена" : "<red>выключена")
+                    .replace("%status%", Config.getAutoSellConfig().getString(enabled ? "status.enabled" : "status.disabled", "enabled: " + enabled))
                     .replace("%player%", player.getName()));
         }
 
@@ -210,8 +210,9 @@ public class AutoSellMenu {
     }
 
     private static void createInfoButton(Player player, Inventory inv) {
+        boolean enabled = AutoSellManager.isAutoSellEnabled(player);
         Material material = Material.valueOf(Config.getAutoSellConfig().getString("info.material", "BOOK"));
-        String name = Config.getAutoSellConfig().getString("info.name", "<yellow>Информация");
+        String name = Config.getAutoSellConfig().getString("info.name", "<yellow>Info");
         List<String> loreConfig = Config.getAutoSellConfig().getStringList("info.lore");
 
         List<String> lore = new ArrayList<>();
@@ -219,7 +220,7 @@ public class AutoSellMenu {
             lore.add(line
                     .replace("%slots%", String.valueOf(AutoSellManager.getAutoSellMaterials(player).size()))
                     .replace("%max-slots%", String.valueOf(AutoSellManager.getMaxAutoSellSlots(player)))
-                    .replace("%status%", AutoSellManager.isAutoSellEnabled(player) ? "<green>включена" : "<red>выключена")
+                    .replace("%status%", Config.getAutoSellConfig().getString(enabled ? "status.enabled" : "status.disabled", "enabled: " + enabled))
                     .replace("%player%", player.getName()));
         }
 
@@ -260,7 +261,7 @@ public class AutoSellMenu {
             List<String> lore = new ArrayList<>();
             for (String line : loreConfig) {
                 lore.add(line.replace("%items-sold%", String.valueOf(itemsSold))
-                        .replace("%money-earned%", Eco.format(moneyEarned)));
+                        .replace("%money-earned%", EconomyManager.format(moneyEarned)));
             }
 
             meta.lore(lore.stream().map(Chat::toComponent).toList());
@@ -272,8 +273,9 @@ public class AutoSellMenu {
     }
 
     private static void createBackButton(Player player, Inventory inv) {
+        if (!player.hasPermission("primeseller.seller")) return;
         Material material = Material.valueOf(Config.getAutoSellConfig().getString("back.material", "RED_STAINED_GLASS_PANE"));
-        String name = Config.getAutoSellConfig().getString("back.name", "<red>Назад");
+        String name = Config.getAutoSellConfig().getString("back.name", "<red>Back");
         List<String> lore = Config.getAutoSellConfig().getStringList("back.lore");
 
         ItemStack item = new ItemStack(material);

@@ -8,13 +8,15 @@ language: ru_RU
 # Настройки времени
 time-zone: "Europe/Moscow"  # все time-zone: https://timeie.com/
 time-format: "hhч. mmм. ssс."
+datetime-format: "dd.MM.yy HH:mm"
 
 inv-sell-priority: "LIMITED"
-# включить ли право на использование команды? primeseller.open
-enable-permission: false
 
-# Валюта из CoinsEngine
-currency: "money"
+economy:
+  # Можно использовать CoinsEngine вместо Vault
+  coins-engine:
+    enable: false  # Если отключено, будет использоваться Vault.
+    currency: "money"
 
 # Включить снижение цены при продаже
 # (percent = Процент, на который будет снижена цена при продаже)
@@ -51,7 +53,7 @@ messages:
 
   # Сообщения команд
   commands:
-    permission: "<<#ff4141>У Вас нет прав."
+    permission: "<#ff4141>У Вас нет прав на использование данной команды."
     reload: "<green>Конфигурация успешно перезагружена!"
     update: "<#00d328>Список продаваемых предметов успешно обновлен!"
     update-lim: "<#00d328>Список продаваемых предметов с лимитом успешно обновлен!"
@@ -110,10 +112,10 @@ menu:
     lore:
       - ""
       - "<#dddddd>Обновление лимитированного скупщика через:"
-      - "<#eaff43>> <#7348dd>%lim-time% <gray>| <dark_gray>%lim-time-format%"
+      - "<#eaff43> <#7348dd>%lim-time% <gray>| <dark_gray>%lim-time-format%"
       - ""
       - "<#dddddd>Обновление скупщика без лимита через:"
-      - "<#eaff43>> <#7348dd>%unlim-time% <gray>| <dark_gray>%unlim-time-format%"
+      - "<#eaff43> <#7348dd>%unlim-time% <gray>| <dark_gray>%unlim-time-format%"
       - ""
     slots: [ 4 ]
 
@@ -143,14 +145,16 @@ menu:
       - "<#dddddd>Предметы <green>не ограничены</green>!"
     slots: [ 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 29, 30, 31, 32, 33, 34, 35, 38, 39, 40, 41, 42, 43, 44 ]
 
-  # Разделители
+  # Заполнители
   divider:
     material: "BLACK_STAINED_GLASS_PANE"
     name: "<gray>"
-    slots: [ 0, 1, 2, 3, 5, 6, 7, 8, 10, 19, 28, 37, 49, 48, 47, 46, 51, 52 ]
 
 autosell-gui:
   title: "<gold>Автопродажа"
+  status:
+    enabled: "<green>включена"
+    disabled: "<red>выключена"
   toggle-slot: 48
   toggle-enabled:
     name: "<green>Автопродажа включена"

@@ -16,18 +16,12 @@
 
 package me.byteswing.primeseller.tasks;
 
-import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.managers.AutoSellManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class AutoSellTask extends BukkitRunnable {
-    private final PrimeSeller plugin;
-
-    public AutoSellTask(PrimeSeller plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public void run() {

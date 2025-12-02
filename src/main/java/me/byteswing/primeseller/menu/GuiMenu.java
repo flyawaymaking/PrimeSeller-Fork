@@ -42,7 +42,7 @@ public class GuiMenu {
         Inventory inv = Bukkit.createInventory(
                 new SellerInventoryHolder(null),
                 Config.getMenuConfig().getInt("size"),
-                Chat.toComponent(Config.getMenuConfig().getString("title"))
+                Chat.toComponent(Config.getMenuConfig().getString("title", "title"))
         );
 
         if (!Util.playerSellItems.containsKey(playerId)) {

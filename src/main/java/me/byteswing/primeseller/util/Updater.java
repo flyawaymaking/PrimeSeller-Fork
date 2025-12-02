@@ -60,42 +60,28 @@ public class Updater {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
-    public static String getLimitedTime(int type) {
-        if (type == 1) {
-            return counter.get("limited") + "сек.";
-        } else {
-            if (type == 2) {
-                int seconds = counter.get("limited");
-                int hours = seconds / 3600;
-                int minutes = (seconds % 3600) / 60;
-                int remainingSeconds = seconds % 60;
+    public static String getLimitedTime() {
+        int seconds = counter.get("limited");
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+        int remainingSeconds = seconds % 60;
 
-                return Objects.requireNonNull(Config.getConfig().getString("time-format"))
-                        .replace("hh", String.valueOf(hours))
-                        .replace("mm", String.valueOf(minutes))
-                        .replace("ss", String.valueOf(remainingSeconds));
-            }
-        }
-        return "0";
+        return Objects.requireNonNull(Config.getConfig().getString("time-format"))
+                .replace("hh", String.valueOf(hours))
+                .replace("mm", String.valueOf(minutes))
+                .replace("ss", String.valueOf(remainingSeconds));
     }
 
-    public static String getUnLimitedTime(int type) {
-        if (type == 1) {
-            return counter.get("unlimited") + "сек.";
-        } else {
-            if (type == 2) {
-                int seconds = counter.get("unlimited");
-                int hours = seconds / 3600;
-                int minutes = (seconds % 3600) / 60;
-                int remainingSeconds = seconds % 60;
+    public static String getUnLimitedTime() {
+        int seconds = counter.get("unlimited");
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+        int remainingSeconds = seconds % 60;
 
-                return Objects.requireNonNull(Config.getConfig().getString("time-format"))
-                        .replace("hh", String.valueOf(hours))
-                        .replace("mm", String.valueOf(minutes))
-                        .replace("ss", String.valueOf(remainingSeconds));
-            }
-        }
-        return "0";
+        return Objects.requireNonNull(Config.getConfig().getString("time-format"))
+                .replace("hh", String.valueOf(hours))
+                .replace("mm", String.valueOf(minutes))
+                .replace("ss", String.valueOf(remainingSeconds));
     }
 
     public static void update(PrimeSeller plugin) {
@@ -134,7 +120,7 @@ public class Updater {
                 limTask = task.runTaskTimer(plugin, updateInterval, updateInterval);
             }
         } catch (Exception e) {
-            plugin.getLogger().severe("Ошибка при обновлении лимитированных предметов: " + e.getMessage());
+            plugin.getLogger().severe("Error updating limited items: " + e.getMessage());
         }
     }
 
@@ -162,7 +148,7 @@ public class Updater {
                 unlimTask = task.runTaskTimer(plugin, updateInterval, updateInterval);
             }
         } catch (Exception e) {
-            plugin.getLogger().severe("Ошибка при обновлении нелимитированных предметов: " + e.getMessage());
+            plugin.getLogger().severe("Error when updating unlimited items: " + e.getMessage());
         }
     }
 

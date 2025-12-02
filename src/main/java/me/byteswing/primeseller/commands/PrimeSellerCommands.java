@@ -19,8 +19,8 @@
 
 package me.byteswing.primeseller.commands;
 
+import me.byteswing.primeseller.managers.EconomyManager;
 import me.byteswing.primeseller.managers.LanguageManager;
-import me.byteswing.primeseller.util.Eco;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -123,7 +123,7 @@ public class PrimeSellerCommands implements CommandExecutor {
     private void reloadConfig() {
         ConfigManager.reloadConfigurations();
         LanguageManager.reload(plugin);
-        Eco.init(plugin);
+        EconomyManager.reload();
         Chat.init(plugin);
     }
 
@@ -143,8 +143,8 @@ public class PrimeSellerCommands implements CommandExecutor {
     private void sendAddedMessage(Player player, String itemName, double minPrice, double maxPrice) {
         String message = Config.getMessage("commands.added")
                 .replace("%item%", itemName)
-                .replace("%min-price%", Eco.format(minPrice))
-                .replace("%max-price%", Eco.format(maxPrice));
+                .replace("%min-price%", EconomyManager.format(minPrice))
+                .replace("%max-price%", EconomyManager.format(maxPrice));
         Chat.sendMessage(player, message);
     }
 }

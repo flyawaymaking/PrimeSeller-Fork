@@ -23,7 +23,6 @@ import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.configurations.database.SellItem;
 import me.byteswing.primeseller.tasks.AutoSellTask;
 import me.byteswing.primeseller.util.Chat;
-import me.byteswing.primeseller.util.Eco;
 import me.byteswing.primeseller.util.Understating;
 import me.byteswing.primeseller.util.Util;
 import org.bukkit.Material;
@@ -60,8 +59,8 @@ public class AutoSellManager {
             autoSellTask.cancel();
         }
         int interval = plugin.getConfig().getInt("autosell.check-interval", 100); // 100 тиков = 5 секунд
-        autoSellTask = new AutoSellTask(plugin).runTaskTimer(plugin, interval, interval);
-        plugin.getLogger().info("Задача автопродажи запущена с интервалом " + interval + " тиков");
+        autoSellTask = new AutoSellTask().runTaskTimer(plugin, interval, interval);
+        plugin.getLogger().info("The auto sale task is started with an interval " + interval + " ticks");
     }
 
     public static void disable() {
@@ -76,12 +75,12 @@ public class AutoSellManager {
             if (!dataFile.exists()) {
                 dataFile.getParentFile().mkdirs();
                 dataFile.createNewFile();
-                plugin.getLogger().info("Создан новый файл autosell-data.yml");
+                plugin.getLogger().info("A new file has been created autosell-data.yml");
             }
             dataConfig = YamlConfiguration.loadConfiguration(dataFile);
-            plugin.getLogger().info("Файл данных автопродажи загружен");
+            plugin.getLogger().info("The autosell data file is uploaded");
         } catch (IOException e) {
-            plugin.getLogger().severe("Не удалось создать файл данных автопродажи: " + e.getMessage());
+            plugin.getLogger().severe("Couldn't create autosell data file: " + e.getMessage());
         }
     }
 
@@ -89,12 +88,13 @@ public class AutoSellManager {
         try {
             dataConfig.save(dataFile);
         } catch (IOException e) {
-            plugin.getLogger().severe("Не удалось сохранить файл данных автопродажи: " + e.getMessage());
+            plugin.getLogger().severe("Couldn't save autosell data file: " + e.getMessage());
         }
     }
 
     public static boolean isAutoSellEnabled(Player player) {
-        return autoSellEnabled.getOrDefault(player.getUniqueId(), false);
+        return player.hasPermission("primeseller.autoseller")
+                && autoSellEnabled.getOrDefault(player.getUniqueId(), false);
     }
 
     public static void setAutoSellEnabled(Player player, boolean enabled) {
@@ -190,7 +190,7 @@ public class AutoSellManager {
                     Material material = Material.valueOf(materialName);
                     materials.add(material);
                 } catch (IllegalArgumentException e) {
-                    plugin.getLogger().warning("Неизвестный материал при загрузке данных игрока " + player.getName() + ": " + materialName);
+                    plugin.getLogger().warning("Unknown material when uploading player data " + player.getName() + ": " + materialName);
                 }
             }
             autoSellMaterials.put(playerId, materials);
@@ -273,13 +273,13 @@ public class AutoSellManager {
                     }
                 }
 
-                Eco.addBalance(player, price);
+                EconomyManager.addBalance(player, price);
 
                 if (Config.getConfig().getBoolean("autosell.enable-autosell-messages", false)) {
                     String itemName = LanguageManager.translate(material);
                     Chat.sendMessage(player, Config.getMessage("autosell.sell")
                             .replace("%item%", itemName)
-                            .replace("%price%", Eco.format(price))
+                            .replace("%price%", EconomyManager.format(price))
                             .replace("%amount%", "x" + count));
                 }
                 break;

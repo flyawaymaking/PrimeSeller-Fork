@@ -24,7 +24,6 @@ import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.menu.AutoSellMenu;
 import me.byteswing.primeseller.menu.GuiMenu;
 import me.byteswing.primeseller.util.Chat;
-import me.byteswing.primeseller.util.Eco;
 import me.byteswing.primeseller.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,9 +44,9 @@ public final class PrimeSeller extends JavaPlugin {
 
         ConfigManager.loadConfigurations(this);
         saveDefaultConfig();
-        Eco.init(this);
-        if (!Eco.isEconomyAvailable()) {
-            getLogger().severe("Плагин выключен, причина - в CoinsEngine не найдена валюта из конфига");
+        EconomyManager.init(this);
+        if (!EconomyManager.isEconomyAvailable()) {
+            getLogger().severe("Plugin disabled - economy system not available");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }

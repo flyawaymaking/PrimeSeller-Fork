@@ -34,7 +34,7 @@ Main changes compared to the original plugin:
 ```
 1. **Server Support** - Support for all servers except Paper has been disabled to improve stability
 2. **Text Formatting** - Legacy color codes replaced with modern MiniMessages format
-3. **Economy** - Economy system switched from Vault to CoinsEngine
+3. **Flexible Economy** - Can be use Vault or CoinsEngine
 4. **Price Reduction System** - Added `understating-price.items` setting to control price reduction frequency
 5. **Bug Fixes** - Fixed price reduction bug with low-value items. Fixed /psell update command issue
 6. **Localization** - All messages moved to config.yml for easy multi-language support. Added Russian translation for items

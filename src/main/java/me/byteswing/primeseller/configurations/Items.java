@@ -63,7 +63,7 @@ public class Items {
         try {
             config.save(file);
         } catch (IOException e) {
-            plugin.getLogger().severe("Ошибка при сохранении конфига: " + e.getMessage());
+            plugin.getLogger().severe("Error when saving the config: " + e.getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class Items {
         try {
             config.load(file);
         } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().warning("Не удалось загрузить items.yml!");
+            plugin.getLogger().warning("Failed to upload items.yml!");
         }
 
     }
