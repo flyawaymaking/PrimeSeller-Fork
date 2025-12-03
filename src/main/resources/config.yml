@@ -28,7 +28,7 @@ understating-price:
 
 # Auto Sell
 autosell:
-  check-interval: 100  # How often to check inventories for auto sell
+  check-interval: 100  # How often to check inventories for auto sell (in ticks)
   enable-autosell-messages: false  # enable auto sell item sale messages
 
 prefix: "<gradient:#5637bc:#9258ff>SELLER</gradient> <#b9b9b9>|"

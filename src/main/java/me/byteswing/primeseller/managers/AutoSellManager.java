@@ -302,10 +302,42 @@ public class AutoSellManager {
         return stats.getMoneyEarned();
     }
 
-    public static void resetAllStats() {
+    public static void resetAllLimitedStats() {
+        MapBase mapBase = new MapBase();
+
         for (Map<Material, ItemStats> playerStats : itemStats.values()) {
-            for (ItemStats stats : playerStats.values()) {
-                stats.reset();
+            for (Map.Entry<Material, ItemStats> entry : playerStats.entrySet()) {
+                Material material = entry.getKey();
+
+                for (Map.Entry<Integer, SellItem> dbEntry : MapBase.database.entrySet()) {
+                    SellItem sellItem = dbEntry.getValue();
+                    int slot = dbEntry.getKey();
+
+                    if (sellItem.getItem().getType() == material && mapBase.isLimited(slot)) {
+                        entry.getValue().reset();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public static void resetAllUnlimitedStats() {
+        MapBase mapBase = new MapBase();
+
+        for (Map<Material, ItemStats> playerStats : itemStats.values()) {
+            for (Map.Entry<Material, ItemStats> entry : playerStats.entrySet()) {
+                Material material = entry.getKey();
+
+                for (Map.Entry<Integer, SellItem> dbEntry : MapBase.database.entrySet()) {
+                    SellItem sellItem = dbEntry.getValue();
+                    int slot = dbEntry.getKey();
+
+                    if (sellItem.getItem().getType() == material && !mapBase.isLimited(slot)) {
+                        entry.getValue().reset();
+                        break;
+                    }
+                }
             }
         }
     }
