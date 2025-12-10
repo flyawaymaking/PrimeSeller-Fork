@@ -104,7 +104,7 @@ In auto sell menu → LEFT_CLICK on item in GUI
 ## 📋 Requirements
 
 ```
-- **Server**: Paper (1.21.8+)
+- **Server**: Paper (1.21.10+)
 - **Java**: 21
 - **Required Dependencies**: CoinsEngine
 - **Optional Dependencies**: PlaceholderAPI
