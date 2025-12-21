@@ -29,7 +29,7 @@ PrimeSeller is an indispensable tool for any Minecraft server aiming to create a
 3. Start the server
 
 ## Requirements
-- Server versions: Paper 21.8
+- Server versions: Paper 1.21.8
 - Java: 21+
 - Dependencies: 
   1) Required: Vault or CoinsEngine
