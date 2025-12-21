@@ -1,14 +1,12 @@
-name: PrimeSeller-Fork
-version: '1.4.0'
-main: me.byteswing.primeseller.PrimeSeller
+name: ${name}
+version: ${version}
+main: ${group}.PrimeSeller
+author: destroydevs
+authors:
+  - golovin12
 api-version: 1.21
+description: Скупщик предметов
 softdepend: [ Vault, CoinsEngine, PlaceholderAPI ]
-author: destroydevs, golovin12
-website: https://github.com/flyawaymaking
-description: |
-  PrimeSeller - Fork maintained by flyawaymaking
-  Original plugin by destroydevs
-  Licensed under Apache License 2.0
 
 commands:
   seller:

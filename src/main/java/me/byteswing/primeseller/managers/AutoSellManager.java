@@ -216,18 +216,12 @@ public class AutoSellManager {
         MapBase sql = new MapBase();
         for (Map.Entry<Integer, SellItem> entry : MapBase.database.entrySet()) {
             SellItem sellItem = entry.getValue();
-            if (sellItem.getItem().getType() == material) {
+            ItemStack sellItemStack = sellItem.getItem();
+
+            if (sellItemStack.getType() == material) {
                 int slot = entry.getKey();
 
-                int totalCount = 0;
-                List<ItemStack> itemsToRemove = new ArrayList<>();
-
-                for (ItemStack item : player.getInventory().getContents()) {
-                    if (item != null && item.getType() == material) {
-                        totalCount += item.getAmount();
-                        itemsToRemove.add(item);
-                    }
-                }
+                int totalCount = Util.calc(player, sellItemStack);
 
                 if (totalCount <= 0) {
                     return;
@@ -260,18 +254,9 @@ public class AutoSellManager {
 
                 getItemStats(player, material).addSale(count, price);
 
-                int remaining = count;
-                for (ItemStack item : itemsToRemove) {
-                    if (remaining <= 0) break;
-
-                    if (item.getAmount() <= remaining) {
-                        remaining -= item.getAmount();
-                        player.getInventory().removeItem(item);
-                    } else {
-                        item.setAmount(item.getAmount() - remaining);
-                        remaining = 0;
-                    }
-                }
+                ItemStack itemToRemove = sellItemStack.clone();
+                itemToRemove.setAmount(count);
+                player.getInventory().removeItem(itemToRemove);
 
                 EconomyManager.addBalance(player, price);
 
