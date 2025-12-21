@@ -87,8 +87,6 @@ public class Updater {
             MapBase sql = new MapBase();
             sql.clearLimited();
 
-            Understating.resetCounters();
-
             Util.limitedFormat = Util.formattedTime(Items.getConfig().getInt("limited.update"));
 
             if (!Items.getConfig().getBoolean("limited.enable", true)) return;
@@ -117,6 +115,8 @@ public class Updater {
             AutoSellManager.resetAllUnlimitedStats();
             MapBase sql = new MapBase();
             sql.clearUnLimited();
+
+            Understating.resetCounters();
 
             Util.unlimitedFormat = Util.formattedTime(Items.getConfig().getInt("unlimited.update"));
 
