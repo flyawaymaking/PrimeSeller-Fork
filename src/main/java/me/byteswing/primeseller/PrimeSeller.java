@@ -71,13 +71,4 @@ public final class PrimeSeller extends JavaPlugin {
     private void loadManager(Manager manager, PrimeSeller plugin) {
         manager.init(plugin);
     }
-
-    public static boolean isPaper() {
-        try {
-            Class.forName("io.papermc.paper.configuration.Configuration");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
 }
