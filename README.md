@@ -1,3 +1,7 @@
+# Важно
+Пока я не могу заниматься проектом из-за технической невозможности.
+Найти обновленный плагин с улучшениями и поддержкой новых версий можете тут: [ФОРК](https://github.com/flyawaymaking/PrimeSeller-Fork)
+
 # About
 PrimeSeller is an indispensable tool for any Minecraft server aiming to create a dynamic and balanced economy. With its help, players can easily and conveniently sell their items, and administrators can control the game's economy.
 
