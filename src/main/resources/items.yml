@@ -1,5 +1,5 @@
 unlimited:
-  update: 21600
+  update: 14400
   enable: true
   items:
     ARROW:
@@ -21,14 +21,14 @@ unlimited:
       min-price: 13
       max-price: 15
     COPPER_INGOT:
-      min-price: 5
-      max-price: 8
+      min-price: 14
+      max-price: 20
     IRON_INGOT:
-      min-price: 55
-      max-price: 60
+      min-price: 40
+      max-price: 55
     GOLD_INGOT:
-      min-price: 65
-      max-price: 70
+      min-price: 42
+      max-price: 57
     DIAMOND:
       min-price: 120
       max-price: 130
@@ -39,59 +39,59 @@ unlimited:
       min-price: 500
       max-price: 600
     PUFFERFISH:
-      min-price: 5
-      max-price: 8
+      min-price: 25
+      max-price: 35
     SPIDER_EYE:
       min-price: 3
       max-price: 5
     ROTTEN_FLESH:
-      min-price: 2
-      max-price: 3
+      min-price: 20
+      max-price: 25
     TROPICAL_FISH:
-      min-price: 4
-      max-price: 6
+      min-price: 20
+      max-price: 25
     POTATO:
-      min-price: 3
-      max-price: 4
+      min-price: 9
+      max-price: 12
     BEETROOT:
-      min-price: 2
-      max-price: 3
+      min-price: 9
+      max-price: 12
     CHICKEN:
-      min-price: 4
-      max-price: 6
+      min-price: 10
+      max-price: 12
     MELON_SLICE:
-      min-price: 2
-      max-price: 3
+      min-price: 8
+      max-price: 11
     SWEET_BERRIES:
-      min-price: 3
-      max-price: 4
+      min-price: 7
+      max-price: 10
     GLOW_BERRIES:
-      min-price: 4
-      max-price: 6
+      min-price: 8
+      max-price: 11
     COD:
-      min-price: 4
-      max-price: 6
+      min-price: 20
+      max-price: 25
     SALMON:
-      min-price: 5
-      max-price: 7
+      min-price: 20
+      max-price: 25
     MUTTON:
-      min-price: 5
-      max-price: 7
+      min-price: 15
+      max-price: 20
     RABBIT:
-      min-price: 6
-      max-price: 8
+      min-price: 15
+      max-price: 20
     BEEF:
-      min-price: 6
-      max-price: 8
+      min-price: 15
+      max-price: 20
     CARROT:
-      min-price: 3
-      max-price: 4
+      min-price: 9
+      max-price: 12
     PORKCHOP:
-      min-price: 6
-      max-price: 8
+      min-price: 15
+      max-price: 20
     APPLE:
-      min-price: 5
-      max-price: 7
+      min-price: 15
+      max-price: 25
     HONEY_BOTTLE:
       min-price: 45
       max-price: 50
@@ -99,107 +99,107 @@ unlimited:
       min-price: 10
       max-price: 12
     STONE:
-      min-price: 2
-      max-price: 3
+      min-price: 10
+      max-price: 12
     DIORITE:
-      min-price: 2
-      max-price: 3
+      min-price: 10
+      max-price: 12
     GRANITE:
-      min-price: 2
-      max-price: 3
+      min-price: 10
+      max-price: 12
     ANDESITE:
-      min-price: 2
-      max-price: 3
+      min-price: 10
+      max-price: 12
     COBBLESTONE:
-      min-price: 1
-      max-price: 2
+      min-price: 10
+      max-price: 12
     SNOW_BLOCK:
-      min-price: 3
-      max-price: 5
+      min-price: 10
+      max-price: 12
     ICE:
-      min-price: 3
-      max-price: 5
+      min-price: 10
+      max-price: 12
     PACKED_ICE:
-      min-price: 3
-      max-price: 5
+      min-price: 10
+      max-price: 12
     DIRT:
-      min-price: 1
-      max-price: 2
+      min-price: 6
+      max-price: 9
     COARSE_DIRT:
-      min-price: 1
-      max-price: 2
+      min-price: 6
+      max-price: 9
     SAND:
-      min-price: 2
-      max-price: 3
+      min-price: 6
+      max-price: 9
     RED_SAND:
-      min-price: 2
-      max-price: 3
+      min-price: 6
+      max-price: 9
     GRAVEL:
-      min-price: 2
-      max-price: 3
+      min-price: 8
+      max-price: 12
     OBSIDIAN:
       min-price: 80
       max-price: 90
     NETHERRACK:
-      min-price: 1
-      max-price: 2
+      min-price: 5
+      max-price: 7
     SOUL_SAND:
-      min-price: 4
-      max-price: 6
+      min-price: 6
+      max-price: 9
     SOUL_SOIL:
-      min-price: 4
-      max-price: 6
+      min-price: 6
+      max-price: 9
     BASALT:
-      min-price: 3
-      max-price: 5
+      min-price: 10
+      max-price: 12
     BLACKSTONE:
-      min-price: 3
-      max-price: 5
+      min-price: 10
+      max-price: 12
     END_STONE:
-      min-price: 3
-      max-price: 4
+      min-price: 15
+      max-price: 19
     OAK_LOG:
-      min-price: 4
-      max-price: 5
+      min-price: 12
+      max-price: 15
     SPRUCE_LOG:
-      min-price: 4
-      max-price: 5
+      min-price: 12
+      max-price: 15
     BIRCH_LOG:
-      min-price: 4
-      max-price: 5
+      min-price: 12
+      max-price: 15
     JUNGLE_LOG:
-      min-price: 4
-      max-price: 5
+      min-price: 12
+      max-price: 15
     ACACIA_LOG:
-      min-price: 4
-      max-price: 5
+      min-price: 12
+      max-price: 15
     DARK_OAK_LOG:
-      min-price: 4
-      max-price: 5
+      min-price: 12
+      max-price: 15
     MANGROVE_LOG:
-      min-price: 4
-      max-price: 5
+      min-price: 12
+      max-price: 15
     CHERRY_LOG:
-      min-price: 4
-      max-price: 5
+      min-price: 12
+      max-price: 15
     CRIMSON_STEM:
-      min-price: 5
-      max-price: 6
+      min-price: 13
+      max-price: 16
     WARPED_STEM:
-      min-price: 5
-      max-price: 6
+      min-price: 13
+      max-price: 16
     PALE_OAK_LOG:
-      min-price: 4
-      max-price: 5
+      min-price: 12
+      max-price: 15
     BLAZE_ROD:
       min-price: 8
       max-price: 10
     NETHER_WART:
-      min-price: 5
-      max-price: 6
+      min-price: 8
+      max-price: 11
     GLOWSTONE_DUST:
-      min-price: 6
-      max-price: 8
+      min-price: 9
+      max-price: 12
     GUNPOWDER:
       min-price: 16
       max-price: 18
@@ -207,77 +207,77 @@ unlimited:
       min-price: 10
       max-price: 12
     FLINT:
-      min-price: 3
-      max-price: 4
+      min-price: 14
+      max-price: 18
     WHEAT:
-      min-price: 3
-      max-price: 4
+      min-price: 7
+      max-price: 9
     BONE:
       min-price: 3
       max-price: 5
     STRING:
       min-price: 3
-      max-price: 4
+      max-price: 5
     FEATHER:
-      min-price: 3
-      max-price: 4
+      min-price: 17
+      max-price: 21
     SNOWBALL:
-      min-price: 1
-      max-price: 2
-    LEATHER:
       min-price: 6
-      max-price: 8
+      max-price: 9
+    LEATHER:
+      min-price: 14
+      max-price: 19
     RESIN_CLUMP:
-      min-price: 10
-      max-price: 15
+      min-price: 25
+      max-price: 30
     ENDER_PEARL:
-      min-price: 12
-      max-price: 15
+      min-price: 16
+      max-price: 19
     BREEZE_ROD:
       min-price: 40
       max-price: 50
     PRISMARINE_CRYSTALS:
-      min-price: 8
-      max-price: 10
+      min-price: 30
+      max-price: 35
     TURTLE_SCUTE:
-      min-price: 25
-      max-price: 30
+      min-price: 40
+      max-price: 50
     ARMADILLO_SCUTE:
+      min-price: 40
+      max-price: 50
+    SLIME_BALL:
+      min-price: 18
+      max-price: 22
+    CLAY_BALL:
       min-price: 20
       max-price: 25
-    SLIME_BALL:
-      min-price: 8
-      max-price: 10
-    CLAY_BALL:
-      min-price: 3
-      max-price: 4
     EXPERIENCE_BOTTLE:
       min-price: 40
       max-price: 45
     SUGAR_CANE:
-      min-price: 2
-      max-price: 3
+      min-price: 6
+      max-price: 9
     BAMBOO:
-      min-price: 2
-      max-price: 3
+      min-price: 6
+      max-price: 9
     CACTUS:
-      min-price: 2
-      max-price: 3
+      min-price: 7
+      max-price: 10
     PUMPKIN:
-      min-price: 3
-      max-price: 4
+      min-price: 8
+      max-price: 13
     MAGMA_CREAM:
-      min-price: 10
-      max-price: 12
+      min-price: 23
+      max-price: 27
     KELP:
-      min-price: 2
-      max-price: 3
+      min-price: 30
+      max-price: 35
 
 limited:
   limit: 20
-  update: 43200
+  update: 21600
   enable: true
-  limit-per-items: 10
+  limit-per-items: 32
   items:
     TOTEM_OF_UNDYING:
       min-price: 1140
