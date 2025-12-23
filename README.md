@@ -12,7 +12,7 @@ PrimeSeller is an indispensable tool for any Minecraft server aiming to create a
 This is a fork of the original PrimeSeller plugin, updated and maintained by [flyawaymaking](https://github.com/flyawaymaking).
 
 ## Requirements
-- Server versions: Paper 1.21.10
+- Server versions: Paper 1.21+
 - Java: 21+
 - Dependencies:
     1) Required: Vault or CoinsEngine

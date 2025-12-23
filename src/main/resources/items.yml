@@ -227,9 +227,6 @@ unlimited:
     LEATHER:
       min-price: 14
       max-price: 19
-    RESIN_CLUMP:
-      min-price: 25
-      max-price: 30
     ENDER_PEARL:
       min-price: 16
       max-price: 19
