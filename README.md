@@ -11,6 +11,13 @@ PrimeSeller is an indispensable tool for any Minecraft server aiming to create a
 
 This is a fork of the original PrimeSeller plugin, updated and maintained by [flyawaymaking](https://github.com/flyawaymaking).
 
+## Requirements
+- Server versions: Paper 1.21.10
+- Java: 21+
+- Dependencies:
+    1) Required: Vault or CoinsEngine
+    2) Optional: PlaceholderAPI
+
 ## ✨ Features
 1. [MiniMessages-formats](https://docs.papermc.io/adventure/minimessage/format/) support
 2. Full itemstack support
@@ -25,24 +32,6 @@ This is a fork of the original PrimeSeller plugin, updated and maintained by [fl
 11. Limited and unlimited buyer
 12. Intuitive for players
 13. Auto Seller
-
-# Plugin Installation
-
-## Download
-1. Go to [Releases](../../releases)
-2. Download the latest plugin version.
-
-## Installation
-1. Stop your server (if running)
-2. Place the `.jar` file in your `plugins/` folder
-3. Start the server
-
-## Requirements
-- Server versions: Paper 1.21.10
-- Java: 21+
-- Dependencies:
-    1) Required: Vault or CoinsEngine
-    2) Optional: PlaceholderAPI
 
 ## Usage
 Permission `primeseller.user` gives players permissions: `primeseller.seller` and `primeseller.autoseller`
@@ -59,6 +48,19 @@ Commands:
 - /seller addunlimited
 - /seller addlimited
 - /seller reload
+
+
+## Plugin Installation
+1. Go to [Releases](../../releases)
+2. Download the latest plugin version.
+3. Stop your server (if running)
+4. Place the `.jar` file in your `plugins/` folder
+5. Start the server
+
+# Screenshots
+
+![SellerMenu](assets/SellerMenu.png)
+![AutoSellerMenu](assets/AutoSellerMenu.png)
 
 ## 🔗 Links
 
