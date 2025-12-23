@@ -188,9 +188,6 @@ unlimited:
     WARPED_STEM:
       min-price: 13
       max-price: 16
-    PALE_OAK_LOG:
-      min-price: 12
-      max-price: 15
     BLAZE_ROD:
       min-price: 8
       max-price: 10
@@ -227,9 +224,6 @@ unlimited:
     LEATHER:
       min-price: 14
       max-price: 19
-    RESIN_CLUMP:
-      min-price: 25
-      max-price: 30
     ENDER_PEARL:
       min-price: 16
       max-price: 19
