@@ -32,3 +32,7 @@ autosell:
   enable-autosell-messages: false  # включение сообщений об авто-продаже продаже предметов
 
 prefix: "<gradient:#5637bc:#9258ff>[Скупщик]</gradient> <#b9b9b9>|"
+
+placeholders:
+  autosell-enabled: "&eВключена"
+  autosell-disabled: "&cВыключена"

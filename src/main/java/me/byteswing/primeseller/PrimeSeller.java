@@ -57,7 +57,7 @@ public final class PrimeSeller extends JavaPlugin {
         AutoSellMenu.init(this);
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new Expansions().register();
+            new PrimeSellerExpansions(this).register();
         }
     }
 
