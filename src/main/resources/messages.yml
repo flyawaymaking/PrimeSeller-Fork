@@ -1,0 +1,44 @@
+messages:
+  # Основные сообщения
+  sell-inventory: "<#dddddd>Вы успешно продали <yellow>свой инвентарь. <#dddddd>Результаты продажи: <yellow>%amount% <#dddddd>за <#53fb31>%price%!"
+  sell: "<#dddddd>Вы успешно продали <yellow>%item% %amount% <#dddddd>за <#53fb31>%price%!"
+  limit: "<#ff4141>Ваш лимит на продажу этого предмета исчерпан! Приходите в другой раз."
+  amount: "<#ff4141>Недостаточно предметов."
+  items-loading: "<red>Предметы скупщика всё ещё загружаются... Подождите"
+
+  # Сообщения об обновлении
+  limited-update-cast:
+    - ""
+    - "<#dddddd>Скупщик с лимитом обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
+    - ""
+  unlimited-update-cast:
+    - ""
+    - "<#dddddd>Скупщик без лимита обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
+    - ""
+
+  # Сообщения команд
+  commands:
+    permission: "<#ff4141>У Вас нет прав на использование данной команды."
+    reload: "<green>Конфигурация успешно перезагружена!"
+    update: "<#00d328>Список продаваемых предметов успешно обновлен!"
+    update-lim: "<#00d328>Список продаваемых предметов с лимитом успешно обновлен!"
+    update-unlim: "<#00d328>Список продаваемых предметов без лимита успешно обновлен!"
+    added: "<#dddddd>Предмет <#eaff43>%item% <#dddddd>успешно добавлен в список товаров. Его цена колеблется от <#53fb31>%min-price% <#dddddd>до <#53fb31>%max-price%<#dddddd> за штуку."
+    addlimited-use: "<red>Использование: /primeseller addlimited (мин. цена) (макс. цена) за шт. (Держите предмет в руке) - Добавить предмет в продажу."
+    addunlimited-use: "<red>Использование: /primeseller addunlimited (мин. цена) (макс. цена) за шт. (Держите предмет в руке) - Добавить предмет в продажу."
+    update-use: "<red>Использование: /primeseller update - Обновить список торгов"
+    update-use-lim: "<red>Использование: /primeseller update [limited|unlimited]"
+    player-only: "<red>Только для игроков!"
+    addlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."
+    addunlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."
+    not-number: "<red>Введите правильное число."
+
+  # Сообщения автопродажи
+  autosell:
+    enabled: "<green>Автопродажа включена!"
+    disabled: "<red>Автопродажа выключена!"
+    added: "<green>Предмет <yellow>%item% <green>добавлен в автопродажу"
+    removed: "<red>Предмет <yellow>%item% <red>удален из автопродажи"
+    already-added: "<red>Этот предмет уже добавлен в автопродажу"
+    limit-reached: "<red>Вы достигли лимита автопродажи! Максимум: %max-slots% предметов"
+    sell: "<green>Автопродажа: <gray>%amount% <yellow>%item% <gray>продано за <green>%price%"
