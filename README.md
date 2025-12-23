@@ -1,3 +1,7 @@
+# ВНИМАНИЕ!
+## Готовлю версию 2.0.0, в которой изменю подход работы с GUI, сделаю его более настраиваемым и разделю по файлам
+## Думаю будет готово до 28.12.2025
+
 # PrimeSeller-Fork
 
 **Fork maintained by [flyawaymaking](https://github.com/flyawaymaking)**  
