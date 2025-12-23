@@ -30,7 +30,7 @@ seller-menu:
   divider:
     enabled: true  # Можно отключить заполнители
     material: "BLACK_STAINED_GLASS_PANE"
-    model-data: []
+    model-data: [ ]
     name: " "
     lore: [ ]
 
@@ -38,28 +38,31 @@ seller-menu:
   # Доступные actions: [close, sell-all, autoseller, update, cmd]
   sell-inventory:
     material: "CHEST"
-    model-data: []
+    model-data: [ ]
     name: "<green>Продать инвентарь"
     lore: [ ]
     slots: [ 49 ]
-    action: "[sell-all]"
+    actions:
+      - "[sell-all]"
 
   autosell-button:
     material: "HOPPER"
-    model-data: []
+    model-data: [ ]
     name: "<gold>Автопродажа"
     lore:
       - "<gray>Нажмите чтобы открыть настройки автопродажи"
       - "<gray>Добавленные предметы: <yellow>%autosell-slots%/%autosell-max-slots%"
     slots: [ 50 ]
-    action: "[autoseller]"
+    actions:
+      - "[autoseller]"
 
   exit:
     material: "RED_STAINED_GLASS_PANE"
-    model-data: []
+    model-data: [ ]
     name: "<#ff4141>Закрыть"
     slots: [ 45, 53 ]
-    action: "[close]"
+    actions:
+      - "[close]"
 
   countdown:
     material: "PLAYER_HEAD"
@@ -74,7 +77,8 @@ seller-menu:
       - "<#eaff43> <#7348dd>%unlim-time% <gray>| <dark_gray>%unlim-time-format%"
       - ""
     slots: [ 4 ]
-    action: "[update]"
+    actions:
+      - "[update]"
 
     # Пример предмета для перехода в основное меню
 #  main-menu:
@@ -89,7 +93,9 @@ seller-menu:
 #      - ""
 #      - "<yellow>Нажмите для перехода в основное меню"
 #    slots: [ 52 ]
-#    action: "[cmd] menu"
+#    actions:
+#      - "[close]"
+#      - "[cmd] menu"
 
 autoseller-menu:
   title: "<gradient:#5637bc:#9258ff><italic>Автопродажа %page%</italic></gradient>"
@@ -109,14 +115,14 @@ autoseller-menu:
   divider:
     enabled: true  # Можно отключить заполнители
     material: "BLACK_STAINED_GLASS_PANE"
-    model-data: []
+    model-data: [ ]
     name: " "
     lore: [ ]
 
   toggle-button:
     enabled:
       material: "LIME_DYE"
-      model-data: []
+      model-data: [ ]
       name: "<green>Автопродажа включена"
       lore:
         - ""
@@ -126,7 +132,7 @@ autoseller-menu:
         - "<gray>Статус: <green>ВКЛЮЧЕНО"
     disabled:
       material: "RED_DYE"
-      model-data: []
+      model-data: [ ]
       name: "<red>Автопродажа выключена"
       lore:
         - ""
@@ -140,7 +146,7 @@ autoseller-menu:
   # Доступные actions: [close, back, next, cmd]
   info:
     material: "BOOK"
-    model-data: []
+    model-data: [ ]
     name: "<yellow>Информация"
     lore:
       - ""
@@ -157,13 +163,14 @@ autoseller-menu:
 
   seller:
     material: "RED_STAINED_GLASS_PANE"
-    model-data: []
+    model-data: [ ]
     name: "<red>Назад к скупщику"
     lore:
       - ""
       - "<gray>Вернуться в меню скупщика"
-    slots: [49]
-    action: "[cmd] seller"
+    slots: [ 49 ]
+    actions:
+      - "[cmd] seller"
 
   previous-page:
     material: "PLAYER_HEAD"
@@ -177,7 +184,8 @@ autoseller-menu:
       - "<gray>Текущая страница: <white>%current-page%</white>"
       - "<gray>Всего страниц: <white>%total-pages%</white>"
     previous-slot: 45
-    action: "[back]"
+    actions:
+      - "[back]"
 
   next-page:
     material: "PLAYER_HEAD"
@@ -190,4 +198,5 @@ autoseller-menu:
       - "<gray>Текущая страница: <white>%current-page%</white>"
       - "<gray>Всего страниц: <white>%total-pages%</white>"
     next-slot: 53
-    action: "[next]"
+    actions:
+      - "[next]"
