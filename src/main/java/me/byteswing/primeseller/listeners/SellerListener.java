@@ -19,16 +19,18 @@
 
 package me.byteswing.primeseller.listeners;
 
+import me.byteswing.primeseller.configurations.MessagesConfig;
+import me.byteswing.primeseller.configurations.database.UnlimSoldItems;
 import me.byteswing.primeseller.managers.EconomyManager;
 import me.byteswing.primeseller.managers.LanguageManager;
-import me.byteswing.primeseller.menu.AutoSellMenu;
+import me.byteswing.primeseller.menu.AutoSellerMenu;
 import me.byteswing.primeseller.menu.SellerInventoryHolder;
 import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.configurations.Config;
-import me.byteswing.primeseller.configurations.Items;
+import me.byteswing.primeseller.configurations.ItemsConfig;
 import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.configurations.database.SellItem;
-import me.byteswing.primeseller.menu.GuiMenu;
+import me.byteswing.primeseller.menu.SellerMenu;
 import me.byteswing.primeseller.util.Chat;
 import me.byteswing.primeseller.util.Understating;
 import me.byteswing.primeseller.util.Util;
@@ -41,16 +43,11 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.text.DecimalFormat;
-import java.util.Locale;
 import java.util.Map;
 
 public class SellerListener implements Listener {
-    private static PrimeSeller plugin;
-    private final DecimalFormat format = new DecimalFormat("##.##");
 
     public SellerListener(PrimeSeller plugin) {
-        SellerListener.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -80,7 +77,7 @@ public class SellerListener implements Listener {
                 sellAction(sql, e, player, 64);
             } else {
                 if (clickType == ClickType.SHIFT_LEFT) {
-                    sellAction(sql, e, player, Util.calc(player, sql.getSlot(e.getSlot()).getItem()));
+                    sellAction(sql, e, player, Util.calc(player, sql.getSlot(e.getSlot()).getMaterial()));
                 }
             }
         }
@@ -117,7 +114,7 @@ public class SellerListener implements Listener {
     private void handleCountdownSlots(InventoryClickEvent e, Player player) {
         for (Integer i : Config.getMenuConfig().getIntegerList("countdown.slots")) {
             if (e.getSlot() == i) {
-                GuiMenu.update(player, e.getClickedInventory(), plugin);
+                SellerMenu.update(player, e.getClickedInventory());
                 e.setCancelled(true);
                 break;
             }
@@ -128,7 +125,7 @@ public class SellerListener implements Listener {
         if (!player.hasPermission("primeseller.autoseller")) return;
         for (Integer i : Config.getMenuConfig().getIntegerList("autosell.slots")) {
             if (e.getSlot() == i) {
-                AutoSellMenu.openAutoSellMenu(player, plugin);
+                AutoSellerMenu.openAutoSellMenu(player);
                 e.setCancelled(true);
                 break;
             }
@@ -136,26 +133,29 @@ public class SellerListener implements Listener {
     }
 
     private void sellAction(MapBase sql, InventoryClickEvent e, Player player, int count) {
-        if (MapBase.database.containsKey(e.getSlot())) {
-            ItemStack item = sql.getSlot(e.getSlot()).getItem().clone();
-            int slot = e.getSlot();
+        int slot = e.getSlot();
+        if (MapBase.database.containsKey(slot)) {
+            SellItem sellItem = sql.getSlot(slot);
+
             if (count <= 0) {
-                Chat.sendMessage(player, Config.getMessage("amount"));
+                Chat.sendMessage(player, MessagesConfig.getMessage("amount"));
                 e.setCancelled(true);
                 return;
             }
 
+            Material material = sellItem.getMaterial();
+            ItemStack item = ItemStack.of(material, count);
             if (!player.getInventory().containsAtLeast(item, count)) {
-                Chat.sendMessage(player, Config.getMessage("amount"));
+                Chat.sendMessage(player, MessagesConfig.getMessage("amount"));
                 e.setCancelled(true);
                 return;
             }
 
             if (sql.isLimited(slot)) {
-                int selledItems = Util.playerSellItems.get(player.getUniqueId());
-                int itemLimit = sql.getSlot(e.getSlot()).clone().getPlayerItemLimit(player);
-                int totalLimit = Items.getConfig().getInt("limited.limit");
-                int itemLimitPerItems = Items.getConfig().getInt("limited.limit-per-items");
+                int selledItems = UnlimSoldItems.get(player.getUniqueId());
+                int itemLimit = sellItem.getPlayerItemLimit(player);
+                int totalLimit = ItemsConfig.getConfig().getInt("limited.limit");
+                int itemLimitPerItems = ItemsConfig.getConfig().getInt("limited.limit-per-items");
 
                 int availableToSell = Math.min(totalLimit - selledItems, itemLimitPerItems - itemLimit);
 
@@ -164,25 +164,25 @@ public class SellerListener implements Listener {
                 }
 
                 if (count <= 0) {
-                    Chat.sendMessage(player, Config.getMessage("limit"));
+                    Chat.sendMessage(player, MessagesConfig.getMessage("limit"));
                     e.setCancelled(true);
                     return;
                 }
 
-                Util.playerSellItems.put(player.getUniqueId(), selledItems + count);
-                sql.getSlot(e.getSlot()).addItemLimit((Player) e.getWhoClicked(), count);
+                UnlimSoldItems.put(player.getUniqueId(), selledItems + count);
+                sellItem.addItemLimit((Player) e.getWhoClicked(), count);
             }
 
-            double price = Double.parseDouble(format.format(sql.getPrice(slot) * count).replace(",", "."));
+            double price = sql.getPrice(slot) * count;
             Understating.takePrice(slot, count);
-            Chat.sendMessage(e.getWhoClicked(), Config.getMessage("sell")
-                    .replace("%item%", LanguageManager.translate(item.getType()))
+            Chat.sendMessage(e.getWhoClicked(), MessagesConfig.getMessage("sell")
+                    .replace("%item%", LanguageManager.translate(material))
                     .replace("%price%", EconomyManager.format(price))
                     .replace("%amount%", "x" + count));
             item.setAmount(count);
             player.getInventory().removeItem(item);
             EconomyManager.addBalance(player, price);
-            GuiMenu.update(player, e.getClickedInventory(), plugin);
+            SellerMenu.update(player, e.getClickedInventory());
             e.setCancelled(true);
         }
     }
@@ -191,29 +191,23 @@ public class SellerListener implements Listener {
         double price = 0;
         int amount = 0;
 
-        String type = Config.getConfig().getString("inv-sell-priority", "LIMITED").toUpperCase(Locale.ENGLISH);
+        String type = Config.getConfig().getString("inv-sell-priority", "LIMITED");
 
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item == null || item.getType() == Material.AIR) {
-                continue;
-            }
-
-            if (type.equals("LIMITED")) {
-                Data lim = sellLimited(player, sql);
-                Data unlim = sellUnLimited(player, sql);
-                amount += lim.amount + unlim.amount;
-                price += lim.price + unlim.price;
-            }
-            if (type.equals("UNLIMITED")) {
-                Data unlim = sellUnLimited(player, sql);
-                Data lim = sellLimited(player, sql);
-                amount += lim.amount + unlim.amount;
-                price += lim.price + unlim.price;
-            }
+        if (type.equals("LIMITED")) {
+            Data lim = sellLimited(player, sql);
+            Data unlim = sellUnLimited(player, sql);
+            amount += lim.amount + unlim.amount;
+            price += lim.price + unlim.price;
+        }
+        if (type.equals("UNLIMITED")) {
+            Data unlim = sellUnLimited(player, sql);
+            Data lim = sellLimited(player, sql);
+            amount += lim.amount + unlim.amount;
+            price += lim.price + unlim.price;
         }
 
         EconomyManager.addBalance(player, price);
-        Chat.sendMessage(e.getWhoClicked(), Config.getMessage("sell-inventory")
+        Chat.sendMessage(e.getWhoClicked(), MessagesConfig.getMessage("sell-inventory")
                 .replace("%price%", EconomyManager.format(price))
                 .replace("%amount%", "x" + amount));
     }
@@ -226,21 +220,19 @@ public class SellerListener implements Listener {
                 continue;
             }
 
+            Material itemMaterial = item.getType();
             for (Map.Entry<Integer, SellItem> d : MapBase.database.entrySet()) {
                 if (!d.getValue().isLimited()) {
-                    ItemStack itemStack = d.getValue().getItem().clone();
-
-                    if (item.isSimilar(itemStack)) {
+                    if (itemMaterial.equals(d.getValue().getMaterial())) {
                         int slot = d.getKey();
-                        int count = Util.calc(player, itemStack);
+                        int count = Util.calc(player, itemMaterial);
                         if (count <= 0) {
                             continue;
                         }
 
                         amount += count;
-                        price += Double.parseDouble(format.format(sql.getPrice(slot) * count).replace(",", "."));
-                        itemStack.setAmount(count);
-                        player.getInventory().removeItem(itemStack);
+                        price += sql.getPrice(slot) * count;
+                        player.getInventory().removeItem(ItemStack.of(itemMaterial, count));
                         Understating.takePrice(slot, count);
                     }
                 }
@@ -257,21 +249,21 @@ public class SellerListener implements Listener {
                 continue;
             }
 
+            Material itemMaterial = item.getType();
             for (Map.Entry<Integer, SellItem> d : MapBase.database.entrySet()) {
                 if (d.getValue().isLimited()) {
-                    ItemStack itemStack = d.getValue().getItem().clone();
-
-                    if (item.isSimilar(itemStack)) {
-                        int slot = d.getKey();
-                        int count = Util.calc(player, itemStack);
+                    if (itemMaterial.equals(d.getValue().getMaterial())) {
+                        int count = Util.calc(player, itemMaterial);
                         if (count <= 0) {
                             continue;
                         }
+                        int slot = d.getKey();
+                        SellItem sellItem = sql.getSlot(slot);
 
-                        int selledItems = Util.playerSellItems.get(player.getUniqueId());
-                        int itemLimit = sql.getSlot(slot).clone().getPlayerItemLimit(player);
-                        int totalLimit = Items.getConfig().getInt("limited.limit");
-                        int itemLimitPerItems = Items.getConfig().getInt("limited.limit-per-items");
+                        int selledItems = UnlimSoldItems.get(player.getUniqueId());
+                        int itemLimit = sellItem.getPlayerItemLimit(player);
+                        int totalLimit = ItemsConfig.getConfig().getInt("limited.limit");
+                        int itemLimitPerItems = ItemsConfig.getConfig().getInt("limited.limit-per-items");
 
                         int availableToSell = Math.min(totalLimit - selledItems, itemLimitPerItems - itemLimit);
 
@@ -283,13 +275,12 @@ public class SellerListener implements Listener {
                             continue;
                         }
 
-                        Util.playerSellItems.put(player.getUniqueId(), selledItems + count);
-                        sql.getSlot(slot).addItemLimit(player, count);
+                        UnlimSoldItems.put(player.getUniqueId(), selledItems + count);
+                        sellItem.addItemLimit(player, count);
 
                         amount += count;
-                        price += Double.parseDouble(format.format(sql.getPrice(slot) * count).replace(",", "."));
-                        itemStack.setAmount(count);
-                        player.getInventory().removeItem(itemStack);
+                        price += sql.getPrice(slot) * count;
+                        player.getInventory().removeItem(ItemStack.of(itemMaterial, count));
                         Understating.takePrice(slot, count);
                     }
                 }

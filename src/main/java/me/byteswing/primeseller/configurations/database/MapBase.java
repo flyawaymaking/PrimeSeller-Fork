@@ -4,7 +4,7 @@
 
 package me.byteswing.primeseller.configurations.database;
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
 
 import java.util.LinkedHashMap;
 
@@ -12,8 +12,8 @@ public class MapBase {
 
     public static final LinkedHashMap<Integer, SellItem> database = new LinkedHashMap<>();
 
-    public static void saveMaterial(ItemStack item, int slot, double p, int limit, boolean limited) {
-        database.put(slot, new SellItem(item, slot, p, limit, limited));
+    public static void saveMaterial(Material material, int slot, double p, boolean limited) {
+        database.put(slot, new SellItem(material, slot, p, limited));
     }
 
     public SellItem getSlot(int slot) {

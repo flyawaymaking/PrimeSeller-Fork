@@ -3,7 +3,7 @@ seller-menu:
   size: 54
 
   # Обязательные поля
-  lim-items:
+  lim-item:
     lore:
       - ""
       - "<#dddddd>Цена за <#a9e3ff>х1: <#53fb31>%price-x1% <#b9b9b9>(ЛКМ)"
@@ -16,7 +16,7 @@ seller-menu:
       - "<#dddddd>Продано таких предметов: <#7348dd>%sell-items% <dark_gray>из <#7348dd>%max-items%"
     slots: [ 9, 18, 27, 36 ]
 
-  unlim-items:
+  unlim-item:
     lore:
       - ""
       - "<#dddddd>Цена за <#a9e3ff>х1: <#53fb31>%price-x1% <gray>(ЛКМ)"
@@ -35,7 +35,8 @@ seller-menu:
     lore: [ ]
 
   # Настраиваемые поля (Можно добавлять свои предметы).
-  # Доступные actions: [close, sell-all, autoseller, update, cmd]
+  # Заполнители: %lim-time%, %unlim-time%, %lim-time-format%, %unlim-time-format%, %autosell-slots%, %autosell-max-slots%
+  # Доступные actions: [close, cmd, sell-all, autoseller, update]
   sell-inventory:
     material: "CHEST"
     model-data: [ ]
@@ -102,7 +103,7 @@ autoseller-menu:
   size: 54
 
   # Обязательные поля
-  autosell-items:
+  autosell-item:
     lore:
       - ""
       - "<gray>Нажмите чтобы удалить из автопродажи"
@@ -130,6 +131,8 @@ autoseller-menu:
         - ""
         - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
         - "<gray>Статус: <green>ВКЛЮЧЕНО"
+      actions:
+        - "[toggle]"
     disabled:
       material: "RED_DYE"
       model-data: [ ]
@@ -140,10 +143,43 @@ autoseller-menu:
         - ""
         - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
         - "<gray>Статус: <red>ВЫКЛЮЧЕНО"
+      actions:
+        - "[toggle]"
     slots: [ 48 ]
 
+  navigation:
+    previous-page:
+      material: "PLAYER_HEAD"
+      texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWExZWYzOThhMTdmMWFmNzQ3NzAxNDUxN2Y3ZjE0MWQ4ODZkZjQxYTMyYzczOGNjOGE4M2ZiNTAyOTdiZDkyMSJ9fX0="
+      name: "<yellow>Предыдущая страница"
+      lore:
+        - ""
+        - "<gray>Нажмите чтобы перейти"
+        - "<gray>на предыдущую страницу"
+        - ""
+        - "<gray>Текущая страница: <white>%current-page%</white>"
+        - "<gray>Всего страниц: <white>%total-pages%</white>"
+      slots: [ 45 ]
+      actions:
+        - "[back]"
+
+    next-page:
+      material: "PLAYER_HEAD"
+      texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWM5YzY3YTlmMTY4NWNkMWRhNDNlODQxZmU3ZWJiMTdmNmFmNmVhMTJhN2UxZjI3MjJmNWU3ZjA4OThkYjlmMyJ9fX0="
+      name: "<yellow>Следующая страница"
+      lore:
+        - "<gray>Нажмите чтобы перейти"
+        - "<gray>на следующую страницу"
+        - ""
+        - "<gray>Текущая страница: <white>%current-page%</white>"
+        - "<gray>Всего страниц: <white>%total-pages%</white>"
+      slots: [ 53 ]
+      actions:
+        - "[next]"
+
   # Настраиваемые поля (Можно добавлять свои предметы).
-  # Доступные actions: [close, back, next, cmd]
+  # Заполнители: %slots%, %max-slots%, %current-page%, %total-pages%
+  # Доступные actions: [close, cmd, toggle, back, next]
   info:
     material: "BOOK"
     model-data: [ ]
@@ -170,33 +206,5 @@ autoseller-menu:
       - "<gray>Вернуться в меню скупщика"
     slots: [ 49 ]
     actions:
+      - "[close]"
       - "[cmd] seller"
-
-  previous-page:
-    material: "PLAYER_HEAD"
-    texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWExZWYzOThhMTdmMWFmNzQ3NzAxNDUxN2Y3ZjE0MWQ4ODZkZjQxYTMyYzczOGNjOGE4M2ZiNTAyOTdiZDkyMSJ9fX0="
-    name: "<yellow>Предыдущая страница"
-    lore:
-      - ""
-      - "<gray>Нажмите чтобы перейти"
-      - "<gray>на предыдущую страницу"
-      - ""
-      - "<gray>Текущая страница: <white>%current-page%</white>"
-      - "<gray>Всего страниц: <white>%total-pages%</white>"
-    previous-slot: 45
-    actions:
-      - "[back]"
-
-  next-page:
-    material: "PLAYER_HEAD"
-    texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWM5YzY3YTlmMTY4NWNkMWRhNDNlODQxZmU3ZWJiMTdmNmFmNmVhMTJhN2UxZjI3MjJmNWU3ZjA4OThkYjlmMyJ9fX0="
-    name: "<yellow>Следующая страница"
-    lore:
-      - "<gray>Нажмите чтобы перейти"
-      - "<gray>на следующую страницу"
-      - ""
-      - "<gray>Текущая страница: <white>%current-page%</white>"
-      - "<gray>Всего страниц: <white>%total-pages%</white>"
-    next-slot: 53
-    actions:
-      - "[next]"

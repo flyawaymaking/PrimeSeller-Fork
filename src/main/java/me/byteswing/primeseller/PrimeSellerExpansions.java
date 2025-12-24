@@ -19,6 +19,7 @@
 
 package me.byteswing.primeseller;
 
+import me.byteswing.primeseller.configurations.database.UnlimSoldItems;
 import me.byteswing.primeseller.managers.AutoSellerManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
@@ -64,7 +65,7 @@ public class PrimeSellerExpansions extends PlaceholderExpansion {
             return Updater.getLimitedTime();
         }
         if (params.equalsIgnoreCase("psell_sold_items_number")) {
-            return Util.playerSellItems.get(player.getUniqueId()).toString();
+            return String.valueOf(UnlimSoldItems.get(player.getUniqueId()));
         }
         if (params.equalsIgnoreCase("psell_autoseller_status")) {
             Player onlinePlayer = player.getPlayer();

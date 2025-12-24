@@ -24,7 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import me.byteswing.primeseller.PrimeSeller;
-import me.byteswing.primeseller.menu.GuiMenu;
+import me.byteswing.primeseller.menu.SellerMenu;
 
 import java.util.UUID;
 
@@ -37,6 +37,6 @@ public class PlayerCloseListener implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         UUID playerId = e.getPlayer().getUniqueId();
-        GuiMenu.deleteTask(playerId);
+        SellerMenu.deleteTask(playerId);
     }
 }

@@ -18,12 +18,10 @@ economy:
     enable: false  # Если отключено, будет использоваться Vault.
     currency: "money"
 
-# Включить снижение цены при продаже
-# (percent = Процент, на который будет снижена цена при продаже)
 understating-price:
-  enable: true
+  enable: true  # Включить снижение цены при продаже
   items: 512  # Сколько предметов надо продать для уменьшения цены
-  percent: '0,1'  # Меньше 0,01 устанавливать не стоит, не будет работать (вместо этого увеличивайте items)
+  percent: 0.1  # Процент, на который будет снижена цена при продаже)
   min-percent: 30  # Минимальный процент от суммы, ниже которого цена не опустится
 
 # Автопродажа
@@ -34,5 +32,5 @@ autosell:
 prefix: "<gradient:#5637bc:#9258ff>[Скупщик]</gradient> <#b9b9b9>|"
 
 placeholders:
-  autosell-enabled: "&eВключена"
-  autosell-disabled: "&cВыключена"
+  autosell-enabled: "&aВключен"
+  autosell-disabled: "&cВыключен"

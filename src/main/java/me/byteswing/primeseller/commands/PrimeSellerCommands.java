@@ -19,6 +19,7 @@
 
 package me.byteswing.primeseller.commands;
 
+import me.byteswing.primeseller.configurations.MessagesConfig;
 import me.byteswing.primeseller.managers.EconomyManager;
 import me.byteswing.primeseller.managers.LanguageManager;
 import org.bukkit.Material;
@@ -28,8 +29,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import me.byteswing.primeseller.PrimeSeller;
-import me.byteswing.primeseller.configurations.Config;
-import me.byteswing.primeseller.configurations.Items;
+import me.byteswing.primeseller.configurations.ItemsConfig;
 import me.byteswing.primeseller.managers.ConfigManager;
 import me.byteswing.primeseller.util.Chat;
 import me.byteswing.primeseller.util.Updater;
@@ -45,12 +45,12 @@ public class PrimeSellerCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("primeseller.admin")) {
-            Chat.sendMessage(sender, Config.getMessage("commands.permission"));
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.permission"));
             return true;
         }
 
         if (args.length == 0) {
-            Chat.sendMessage(sender, Config.getMessage("commands.update-use"));
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.update-use"));
             return true;
         }
 
@@ -62,29 +62,29 @@ public class PrimeSellerCommands implements CommandExecutor {
                     switch (args[1].toLowerCase()) {
                         case "limited":
                             Updater.clearAndCreateLimited(plugin, true);
-                            Chat.sendMessage(sender, Config.getMessage("commands.update-lim"));
+                            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.update-lim"));
                             return true;
                         case "unlimited":
                             Updater.clearAndCreateUnLimited(plugin, true);
-                            Chat.sendMessage(sender, Config.getMessage("commands.update-unlim"));
+                            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.update-unlim"));
                             return true;
                         default:
-                            Chat.sendMessage(sender, Config.getMessage("commands.update-usage"));
+                            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.update-usage"));
                             return true;
                     }
                 } else {
                     Updater.update(plugin);
-                    Chat.sendMessage(sender, Config.getMessage("commands.update"));
+                    Chat.sendMessage(sender, MessagesConfig.getMessage("commands.update"));
                     return true;
                 }
             case "reload":
                 reloadConfig();
-                Chat.sendMessage(sender, Config.getMessage("commands.reload"));
+                Chat.sendMessage(sender, MessagesConfig.getMessage("commands.reload"));
                 return true;
         }
 
         if (!(sender instanceof Player player)) {
-            Chat.sendMessage(sender, Config.getMessage("commands.player-only"));
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.player-only"));
             return true;
         }
 
@@ -102,19 +102,19 @@ public class PrimeSellerCommands implements CommandExecutor {
             String errorPath = subCommand.equals("addlimited")
                     ? "commands.addlimited-error"
                     : "commands.addunlimited-error";
-            Chat.sendMessage(player, Config.getMessage(errorPath));
+            Chat.sendMessage(player, MessagesConfig.getMessage(errorPath));
             return true;
         }
 
         Double minPrice = parsePrice(args[1]);
         Double maxPrice = parsePrice(args[2]);
         if (minPrice == null || maxPrice == null) {
-            Chat.sendMessage(player, Config.getMessage("commands.not-number"));
+            Chat.sendMessage(player, MessagesConfig.getMessage("commands.not-number"));
             return true;
         }
 
         boolean isLimited = subCommand.equals("addlimited");
-        Items.addItem(handItem, minPrice, maxPrice, isLimited);
+        ItemsConfig.addItem(handItem, minPrice, maxPrice, isLimited);
 
         sendAddedMessage(player, LanguageManager.translate(handItem.getType()), minPrice, maxPrice);
         return true;
@@ -136,12 +136,12 @@ public class PrimeSellerCommands implements CommandExecutor {
     }
 
     private void sendUsageMessages(Player player) {
-        Chat.sendMessage(player, Config.getMessage("commands.addlimited-use"));
-        Chat.sendMessage(player, Config.getMessage("commands.addunlimited-use"));
+        Chat.sendMessage(player, MessagesConfig.getMessage("commands.addlimited-use"));
+        Chat.sendMessage(player, MessagesConfig.getMessage("commands.addunlimited-use"));
     }
 
     private void sendAddedMessage(Player player, String itemName, double minPrice, double maxPrice) {
-        String message = Config.getMessage("commands.added")
+        String message = MessagesConfig.getMessage("commands.added")
                 .replace("%item%", itemName)
                 .replace("%min-price%", EconomyManager.format(minPrice))
                 .replace("%max-price%", EconomyManager.format(maxPrice));

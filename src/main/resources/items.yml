@@ -1,6 +1,6 @@
 unlimited:
-  update: 14400
   enable: true
+  update: 14400
   items:
     ARROW:
       min-price: 4
@@ -99,8 +99,8 @@ unlimited:
       min-price: 10
       max-price: 12
     STONE:
-      min-price: 10
-      max-price: 12
+      min-price: 12
+      max-price: 14
     DIORITE:
       min-price: 10
       max-price: 12
@@ -268,9 +268,9 @@ unlimited:
       max-price: 35
 
 limited:
+  enable: true
   limit: 20
   update: 21600
-  enable: true
   limit-per-items: 32
   items:
     TOTEM_OF_UNDYING:

@@ -18,9 +18,11 @@ package me.byteswing.primeseller.managers;
 
 import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.configurations.Config;
-import me.byteswing.primeseller.configurations.Items;
+import me.byteswing.primeseller.configurations.ItemsConfig;
+import me.byteswing.primeseller.configurations.MessagesConfig;
 import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.configurations.database.SellItem;
+import me.byteswing.primeseller.configurations.database.UnlimSoldItems;
 import me.byteswing.primeseller.tasks.AutoSellTask;
 import me.byteswing.primeseller.util.Chat;
 import me.byteswing.primeseller.util.Understating;
@@ -31,25 +33,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.*;
 
-public class AutoSellManager {
+public class AutoSellerManager {
     private static PrimeSeller plugin;
     private static final Map<UUID, Boolean> autoSellEnabled = new HashMap<>();
     private static final Map<UUID, Set<Material>> autoSellMaterials = new HashMap<>();
     private static final Map<UUID, Map<Material, ItemStats>> itemStats = new HashMap<>();
-    private static final DecimalFormat format = new DecimalFormat("##.##");
     private static BukkitTask autoSellTask;
 
     private static File dataFile;
     private static YamlConfiguration dataConfig;
 
     public static void init(PrimeSeller plugin) {
-        AutoSellManager.plugin = plugin;
+        AutoSellerManager.plugin = plugin;
         setupDataFile();
         startAutoSellTask(plugin);
     }
@@ -92,7 +93,7 @@ public class AutoSellManager {
         }
     }
 
-    public static boolean isAutoSellEnabled(Player player) {
+    public static boolean isAutoSellEnabled(@NotNull Player player) {
         return player.hasPermission("primeseller.autoseller")
                 && autoSellEnabled.getOrDefault(player.getUniqueId(), false);
     }
@@ -216,12 +217,12 @@ public class AutoSellManager {
         MapBase sql = new MapBase();
         for (Map.Entry<Integer, SellItem> entry : MapBase.database.entrySet()) {
             SellItem sellItem = entry.getValue();
-            ItemStack sellItemStack = sellItem.getItem();
+            Material sellMaterial = sellItem.getMaterial();
 
-            if (sellItemStack.getType() == material) {
+            if (sellMaterial == material) {
                 int slot = entry.getKey();
 
-                int totalCount = Util.calc(player, sellItemStack);
+                int totalCount = Util.calc(player, sellMaterial);
 
                 if (totalCount <= 0) {
                     return;
@@ -230,10 +231,10 @@ public class AutoSellManager {
                 int count = totalCount;
 
                 if (sql.isLimited(slot)) {
-                    int selledItems = Util.playerSellItems.getOrDefault(player.getUniqueId(), 0);
+                    int selledItems = UnlimSoldItems.get(player.getUniqueId());
                     int itemLimit = sellItem.getPlayerItemLimit(player);
-                    int totalLimit = Items.getConfig().getInt("limited.limit");
-                    int itemLimitPerItems = Items.getConfig().getInt("limited.limit-per-items");
+                    int totalLimit = ItemsConfig.getConfig().getInt("limited.limit");
+                    int itemLimitPerItems = ItemsConfig.getConfig().getInt("limited.limit-per-items");
 
                     int availableToSell = Math.min(totalLimit - selledItems, itemLimitPerItems - itemLimit);
 
@@ -245,24 +246,23 @@ public class AutoSellManager {
                         return;
                     }
 
-                    Util.playerSellItems.put(player.getUniqueId(), selledItems + count);
+                    UnlimSoldItems.put(player.getUniqueId(), selledItems + count);
                     sellItem.addItemLimit(player, count);
                 }
 
-                double price = Double.parseDouble(format.format(sql.getPrice(slot) * count).replace(",", "."));
+                double price = sql.getPrice(slot) * count;
                 Understating.takePrice(slot, count);
 
                 getItemStats(player, material).addSale(count, price);
 
-                ItemStack itemToRemove = sellItemStack.clone();
-                itemToRemove.setAmount(count);
+                ItemStack itemToRemove = ItemStack.of(material, count);
                 player.getInventory().removeItem(itemToRemove);
 
                 EconomyManager.addBalance(player, price);
 
                 if (Config.getConfig().getBoolean("autosell.enable-autosell-messages", false)) {
                     String itemName = LanguageManager.translate(material);
-                    Chat.sendMessage(player, Config.getMessage("autosell.sell")
+                    Chat.sendMessage(player, MessagesConfig.getMessage("autosell.sell")
                             .replace("%item%", itemName)
                             .replace("%price%", EconomyManager.format(price))
                             .replace("%amount%", "x" + count));
@@ -298,7 +298,7 @@ public class AutoSellManager {
                     SellItem sellItem = dbEntry.getValue();
                     int slot = dbEntry.getKey();
 
-                    if (sellItem.getItem().getType() == material && mapBase.isLimited(slot)) {
+                    if (sellItem.getMaterial() == material && mapBase.isLimited(slot)) {
                         entry.getValue().reset();
                         break;
                     }
@@ -318,7 +318,7 @@ public class AutoSellManager {
                     SellItem sellItem = dbEntry.getValue();
                     int slot = dbEntry.getKey();
 
-                    if (sellItem.getItem().getType() == material && !mapBase.isLimited(slot)) {
+                    if (sellItem.getMaterial() == material && !mapBase.isLimited(slot)) {
                         entry.getValue().reset();
                         break;
                     }

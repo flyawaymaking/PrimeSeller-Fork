@@ -18,13 +18,14 @@ package me.byteswing.primeseller.menu;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.jetbrains.annotations.NotNull;
 
-public class AutoSellInventoryHolder implements InventoryHolder {
+public class AutoSellerInventoryHolder implements InventoryHolder {
     private Inventory inventory;
     private int currentPage = 0;
 
     @Override
-    public Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return inventory;
     }
 
@@ -41,6 +42,6 @@ public class AutoSellInventoryHolder implements InventoryHolder {
     }
 
     public static boolean isAutoSellInventory(Inventory inventory) {
-        return inventory.getHolder() instanceof AutoSellInventoryHolder;
+        return inventory.getHolder() instanceof AutoSellerInventoryHolder;
     }
 }

@@ -21,8 +21,8 @@ package me.byteswing.primeseller;
 
 import me.byteswing.primeseller.managers.*;
 import me.byteswing.primeseller.configurations.database.MapBase;
-import me.byteswing.primeseller.menu.AutoSellMenu;
-import me.byteswing.primeseller.menu.GuiMenu;
+import me.byteswing.primeseller.menu.AutoSellerMenu;
+import me.byteswing.primeseller.menu.SellerMenu;
 import me.byteswing.primeseller.util.Chat;
 import me.byteswing.primeseller.util.Updater;
 import org.bukkit.Bukkit;
@@ -51,10 +51,11 @@ public final class PrimeSeller extends JavaPlugin {
         Chat.init(this);
         Updater.start(this);
         LanguageManager.reload(this);
-        AutoSellManager.init(this);
+        AutoSellerManager.init(this);
         loadManager(new ListenerManager(), this);
         loadManager(new CommandManager(), this);
-        AutoSellMenu.init(this);
+        SellerMenu.init(this);
+        AutoSellerMenu.init(this);
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PrimeSellerExpansions(this).register();
@@ -63,9 +64,9 @@ public final class PrimeSeller extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        AutoSellManager.disable();
         Updater.stop();
-        GuiMenu.disable();
+        AutoSellerManager.disable();
+        SellerMenu.disable();
         MapBase sql = new MapBase();
         sql.clear();
         msg("██████╗░██████╗░██╗███╗░░░███╗███████╗░██████╗███████╗██╗░░░░░██╗░░░░░███████╗██████╗░");

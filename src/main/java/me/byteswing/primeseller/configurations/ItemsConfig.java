@@ -19,20 +19,20 @@
 
 package me.byteswing.primeseller.configurations;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import me.byteswing.primeseller.util.Randomizer;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Items {
+public class ItemsConfig {
     private static Plugin plugin;
-    private static final DecimalFormat format = new DecimalFormat("##.##");
     private static File file;
     private static FileConfiguration config;
 
@@ -46,20 +46,10 @@ public class Items {
     }
 
     public static void addItem(ItemStack item, double min, double max, boolean limited) {
-        String mn = format.format(min);
-        String mx = format.format(max);
-        item.setAmount(1);
-        String random = Randomizer.randomString(9);
-        if (limited) {
-            config.set("limited.items." + random + ".min-price", mn);
-            config.set("limited.items." + random + ".max-price", mx);
-            config.set("limited.items." + random + ".item", item);
-        }
-        if (!limited) {
-            config.set("unlimited.items." + random + ".min-price", mn);
-            config.set("unlimited.items." + random + ".max-price", mx);
-            config.set("unlimited.items." + random + ".item", item);
-        }
+        String name = item.getType().name();
+        String path = limited ? "limited" : "unlimited";
+        config.set(path + ".items." + name + ".min-price", min);
+        config.set(path + ".items." + name + ".max-price", max);
         try {
             config.save(file);
         } catch (IOException e) {
@@ -76,7 +66,39 @@ public class Items {
 
     }
 
+    public static List<String> getUnlimItems() {
+        ConfigurationSection section = config.getConfigurationSection("unlimited.items");
+        if (section == null) {
+            section = config.createSection("unlimited.items");
+        };
+        return new ArrayList<>(section.getKeys(false));
+    }
+
+    public static List<String> getLimItems() {
+        ConfigurationSection section = config.getConfigurationSection("limited.items");
+        if (section == null) {
+            section = config.createSection("limited.items");
+        };
+        return new ArrayList<>(section.getKeys(false));
+    }
+
     public static FileConfiguration getConfig() {
         return config;
+    }
+
+    public static int getLimitedUpdateSeconds() {
+        return config.getInt("limited.update", 21600);
+    }
+
+    public static boolean isLimitedEnable() {
+        return config.getBoolean("limited.enable", true);
+    }
+
+    public static int getUnlimitedUpdateSeconds() {
+        return config.getInt("unlimited.update", 14400);
+    }
+
+    public static boolean isUnlimitedEnable() {
+        return config.getBoolean("unlimited.enable", true);
     }
 }

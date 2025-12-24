@@ -9,9 +9,9 @@ import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 
 public class SellerInventoryHolder implements InventoryHolder {
-    private final Inventory inventory;
+    private Inventory inventory;
 
-    public SellerInventoryHolder(Inventory inventory) {
+    public void setInventory(Inventory inventory) {
         this.inventory = inventory;
     }
 

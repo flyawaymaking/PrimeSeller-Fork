@@ -1,13 +1,30 @@
+/**
+ * Copyright 2025 flyawaymaking (https://github.com/flyawaymaking)
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.byteswing.primeseller.util;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import me.byteswing.primeseller.PrimeSeller;
+import me.byteswing.primeseller.configurations.MenuConfig;
+import me.byteswing.primeseller.managers.LanguageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemFlag;
@@ -23,39 +40,66 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class MenuHelper {
-    private FileConfiguration menuConfig;
+    private final String menuPath;
     private final NamespacedKey actionsKey;
+    private final Set<String> excludedKeys;
 
-    public MenuHelper(PrimeSeller plugin, FileConfiguration menuConfig) {
+    public MenuHelper(PrimeSeller plugin, String menuPath, String... excludedKeys) {
         this.actionsKey = new NamespacedKey(plugin, "actions");
-        this.menuConfig = menuConfig;
+        this.menuPath = menuPath;
+        this.excludedKeys = new HashSet<>(Arrays.asList(excludedKeys));
     }
 
-    public void addItemsFromConfig(Inventory inventory, String path, Material material, int slot, String... placeholders) {
+    private ConfigurationSection getConfigSection() {
+        return MenuConfig.getConfigurationSection(menuPath);
+    }
+
+    public Component getTitle(String... placeholders) {
+        String title = getConfigSection().getString("title", "<red>Title");
+        return Chat.toComponent(replacePlaceholders(title, placeholders));
+    }
+
+    public int getSize() {
+        return getConfigSection().getInt("size", 54);
+    }
+
+    public List<Integer> getSlots(String path) {
+        return getConfigSection().getIntegerList(path);
+    }
+
+    public boolean isEnabled(String path) {
+        return getConfigSection().getBoolean(path, true);
+    }
+
+    public void setItemToSlots(Inventory inv, String path, ItemStack item) {
+        List<Integer> slots = getConfigSection().getIntegerList(path + ".slots");
+        for (int slot : slots) {
+            if (slot >= 0 && slot < inv.getSize()) {
+                inv.setItem(slot, item.clone());
+            }
+        }
+    }
+
+    public void addItemByMaterial(Inventory inventory, String path, Material material, int slot, String... placeholders) {
         if (slot < 0 || slot >= inventory.getSize()) {
             return;
         }
 
-        if (!menuConfig.isConfigurationSection(path)) return;
+        if (!getConfigSection().isConfigurationSection(path)) return;
 
+        String name = "<yellow>" + LanguageManager.translate(material);
         List<Component> lore = getLore(path, placeholders);
 
         ItemStack item = new ItemStack(material);
 
-        applyMetaToItem(item, null, lore, null, null);
+        applyMetaToItem(item, name, lore, null, List.of("main-item"));
 
         inventory.setItem(slot, item);
     }
 
-    public void addCustomItems(Inventory inventory, String menuPath, String... placeholders) {
-        ConfigurationSection menuSection = menuConfig.getConfigurationSection(menuPath);
-        if (menuSection == null) return;
-
-        for (String key : menuSection.getKeys(false)) {
-            if (key.equals("title") || key.equals("size") ||
-                    key.equals("lim-items") || key.equals("unlim-items") ||
-                    key.equals("autosell-items") || key.equals("divider") ||
-                    key.equals("toggle-button")) {
+    public void addCustomItems(Inventory inventory,String... placeholders) {
+        for (String key : getConfigSection().getKeys(false)) {
+            if (excludedKeys.contains(key)) {
                 continue;
             }
 
@@ -63,17 +107,12 @@ public class MenuHelper {
 
             ItemStack item = createCustomItem(itemPath, placeholders);
 
-            List<Integer> slots = menuSection.getIntegerList(itemPath + ".slots");
-            for (int slot : slots) {
-                if (slot >= 0 && slot < inventory.getSize()) {
-                    inventory.setItem(slot, item.clone());
-                }
-            }
+            setItemToSlots(inventory, itemPath, item);
         }
     }
 
     public ItemStack createCustomItem(String path, String... placeholders) {
-        String materialName = menuConfig.getString(path + ".material");
+        String materialName = getConfigSection().getString(path + ".material");
         Material material = null;
 
         if (materialName != null) {
@@ -86,17 +125,17 @@ public class MenuHelper {
 
         ItemStack item;
 
-        String texture = menuConfig.getString(path + ".texture");
+        String texture = getConfigSection().getString(path + ".texture");
         if (material == Material.PLAYER_HEAD && texture != null) {
             item = getSkull(texture);
         } else {
             item = new ItemStack(material);
         }
 
-        String name = menuConfig.getString(path + ".name", " ");
+        String name = getConfigSection().getString(path + ".name", " ");
         List<Component> lore = getLore(path, placeholders);
-        List<Double> modelDataList = menuConfig.getDoubleList(path + ".model-data");
-        List<String> actions = menuConfig.getStringList(path + ".actions");
+        List<Double> modelDataList = getConfigSection().getDoubleList(path + ".model-data");
+        List<String> actions = getConfigSection().getStringList(path + ".actions");
         applyMetaToItem(item, name, lore, modelDataList, actions);
         return item;
     }
@@ -122,7 +161,7 @@ public class MenuHelper {
     }
 
     private List<Component> getLore(String path, String... placeholders) {
-        List<String> loreStrings = menuConfig.getStringList(path + ".lore");
+        List<String> loreStrings = getConfigSection().getStringList(path + ".lore");
         List<Component> lore = new ArrayList<>();
         for (String loreLine : loreStrings) {
             loreLine = replacePlaceholders(loreLine, placeholders);

@@ -19,7 +19,6 @@
 
 package me.byteswing.primeseller.configurations;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -43,15 +42,23 @@ public class Config {
         return config;
     }
 
-    public static ConfigurationSection getMenuConfig() {
-        return config.getConfigurationSection("menu");
+    public static String getTimeFormat() {
+        return config.getString("time-format", "hhh. mmm. sss.");
     }
 
-    public static ConfigurationSection getAutoSellConfig() {
-        return config.getConfigurationSection("autosell-gui");
+    public static boolean isUnderstandingEnabled() {
+        return config.getBoolean("understating-price.enable", true);
     }
 
-    public static String getMessage(String key) {
-        return config.getString("messages." + key, "<red>message-" + key + ": not found");
+    public static int getUnderstandingPriceItems() {
+        return config.getInt("understating-price.items", 512);
+    }
+
+    public static double getUnderstandingPricePercent() {
+        return config.getDouble("understating-price.percent", 0.1);
+    }
+
+    public static int getUnderstandingPriceMinPercent() {
+        return config.getInt("understating-price.min-percent", 30);
     }
 }
