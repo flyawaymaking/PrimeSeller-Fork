@@ -21,6 +21,7 @@ import me.byteswing.primeseller.economy.EconomyProvider;
 import me.byteswing.primeseller.economy.VaultEconomy;
 import me.byteswing.primeseller.PrimeSeller;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class EconomyManager {
     private static PrimeSeller plugin;
@@ -41,7 +42,7 @@ public class EconomyManager {
         }
     }
 
-    public static void addBalance(Player player, double amount) {
+    public static void addBalance(@NotNull Player player, double amount) {
         if (currentEconomy != null && currentEconomy.isAvailable()) {
             currentEconomy.addBalance(player, amount);
         } else {
@@ -49,7 +50,7 @@ public class EconomyManager {
         }
     }
 
-    public static String format(double amount) {
+    public static @NotNull String format(double amount) {
         if (currentEconomy != null && currentEconomy.isAvailable()) {
             return currentEconomy.format(amount);
         }

@@ -19,12 +19,13 @@ package me.byteswing.primeseller.tasks;
 import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.util.Updater;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public class UpdaterTask extends BukkitRunnable {
     private final PrimeSeller plugin;
     private final boolean isLimited;
 
-    public UpdaterTask(PrimeSeller plugin, boolean isLimited) {
+    public UpdaterTask(@NotNull PrimeSeller plugin, boolean isLimited) {
         this.plugin = plugin;
         this.isLimited = isLimited;
     }

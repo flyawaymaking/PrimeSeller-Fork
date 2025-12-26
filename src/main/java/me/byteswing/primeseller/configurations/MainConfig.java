@@ -19,12 +19,12 @@
 
 package me.byteswing.primeseller.configurations;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 
-public class Config {
+public class MainConfig {
     private static Plugin plugin;
     private static FileConfiguration config;
 
@@ -34,24 +34,36 @@ public class Config {
         config = plugin.getConfig();
     }
 
-    public static void reloadConfig() {
+    public void reloadConfig() {
         plugin.reloadConfig();
         config = plugin.getConfig();
     }
 
-    public static FileConfiguration getConfig() {
+    public static @NotNull FileConfiguration getConfig() {
         return config;
     }
 
-    public static ConfigurationSection getMenuConfig() {
-        return config.getConfigurationSection("menu");
+    public static @NotNull String getTimeFormat() {
+        return config.getString("time-format", "hhh. mmm. sss.");
     }
 
-    public static ConfigurationSection getAutoSellConfig() {
-        return config.getConfigurationSection("autosell-gui");
+    public static boolean isUnderstandingEnabled() {
+        return config.getBoolean("understating-price.enable", true);
     }
 
-    public static String getMessage(String key) {
-        return config.getString("messages." + key, "<red>message-" + key + ": not found");
+    public static int getUnderstandingPriceItems() {
+        return config.getInt("understating-price.items", 512);
+    }
+
+    public static double getUnderstandingPricePercent() {
+        return config.getDouble("understating-price.percent", 0.1);
+    }
+
+    public static int getUnderstandingPriceMinPercent() {
+        return config.getInt("understating-price.min-percent", 30);
+    }
+
+    public static @NotNull String getSellPriority() {
+        return config.getString("inv-sell-priority", "LIMITED");
     }
 }

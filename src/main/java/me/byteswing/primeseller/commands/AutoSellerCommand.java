@@ -16,55 +16,54 @@
 
 package me.byteswing.primeseller.commands;
 
-import me.byteswing.primeseller.managers.AutoSellManager;
-import me.byteswing.primeseller.menu.AutoSellMenu;
+import me.byteswing.primeseller.configurations.MessagesConfig;
+import me.byteswing.primeseller.managers.AutoSellerManager;
+import me.byteswing.primeseller.menu.AutoSellerMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import me.byteswing.primeseller.PrimeSeller;
-import me.byteswing.primeseller.configurations.Config;
 import me.byteswing.primeseller.util.Chat;
+import org.jetbrains.annotations.NotNull;
 
 public class AutoSellerCommand implements CommandExecutor {
-    private final PrimeSeller plugin;
 
-    public AutoSellerCommand(PrimeSeller main) {
-        this.plugin = main;
-        main.getCommand("autoseller").setExecutor(this);
+    public AutoSellerCommand(@NotNull PrimeSeller plugin) {
+        plugin.getCommand("autoseller").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            Chat.sendMessage(sender, Config.getMessage("commands.player-only"));
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.player-only"));
             return true;
         }
 
         if (!player.hasPermission("primeseller.autoseller")) {
-            Chat.sendMessage(sender, Config.getMessage("commands.permission"));
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.no-permission"));
             return true;
         }
 
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("on")) {
-                AutoSellManager.setAutoSellEnabled(player, true);
-                Chat.sendMessage(player, Config.getMessage("autosell.enabled"));
+                AutoSellerManager.setAutoSellEnabled(player, true);
+                Chat.sendMessage(player, MessagesConfig.getMessage("autosell.enabled"));
                 return true;
             } else if (args[0].equalsIgnoreCase("off")) {
-                AutoSellManager.setAutoSellEnabled(player, false);
-                Chat.sendMessage(player, Config.getMessage("autosell.disabled"));
+                AutoSellerManager.setAutoSellEnabled(player, false);
+                Chat.sendMessage(player, MessagesConfig.getMessage("autosell.disabled"));
                 return true;
             } else if (args[0].equalsIgnoreCase("toggle")) {
-                AutoSellManager.toggleAutoSell(player);
-                boolean enabled = AutoSellManager.isAutoSellEnabled(player);
+                AutoSellerManager.toggleAutoSell(player);
+                boolean enabled = AutoSellerManager.isAutoSellEnabled(player);
                 Chat.sendMessage(player, enabled ?
-                        Config.getMessage("autosell.enabled") :
-                        Config.getMessage("autosell.disabled"));
+                        MessagesConfig.getMessage("autosell.enabled") :
+                        MessagesConfig.getMessage("autosell.disabled"));
                 return true;
             }
         }
-        AutoSellMenu.openAutoSellMenu(player, plugin);
+        AutoSellerMenu.openAutoSellMenu(player);
         return true;
     }
 }

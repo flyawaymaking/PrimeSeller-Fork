@@ -20,6 +20,7 @@ import me.byteswing.primeseller.PrimeSeller;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 
@@ -28,7 +29,7 @@ public class VaultEconomy implements EconomyProvider {
     private final Economy economy;
     private final DecimalFormat format = new DecimalFormat("##.##");
 
-    public VaultEconomy(PrimeSeller plugin) {
+    public VaultEconomy(@NotNull PrimeSeller plugin) {
         this.plugin = plugin;
         if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
             plugin.getLogger().warning("Vault plugin not found!");
@@ -47,7 +48,7 @@ public class VaultEconomy implements EconomyProvider {
         plugin.getLogger().info("Vault economy provider: " + economy.getName());
     }
 
-    public void addBalance(Player player, double amount) {
+    public void addBalance(@NotNull Player player, double amount) {
         if (economy == null) {
             return;
         }
@@ -59,7 +60,7 @@ public class VaultEconomy implements EconomyProvider {
         }
     }
 
-    public String format(double amount) {
+    public @NotNull String format(double amount) {
         if (economy == null) {
             return format.format(amount);
         }

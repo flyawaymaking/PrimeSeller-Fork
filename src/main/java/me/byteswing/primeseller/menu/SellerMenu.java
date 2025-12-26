@@ -19,74 +19,111 @@
 
 package me.byteswing.primeseller.menu;
 
-import me.byteswing.primeseller.configurations.Config;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import me.byteswing.primeseller.configurations.Items;
+import me.byteswing.primeseller.configurations.ItemsConfig;
 import me.byteswing.primeseller.configurations.database.MapBase;
+import me.byteswing.primeseller.configurations.database.SellItem;
+import me.byteswing.primeseller.configurations.database.UnlimSoldItems;
+import me.byteswing.primeseller.managers.AutoSellerManager;
+import me.byteswing.primeseller.managers.EconomyManager;
+import me.byteswing.primeseller.tasks.PlayerGUITask;
+import me.byteswing.primeseller.util.MenuHelper;
+import me.byteswing.primeseller.util.Updater;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import me.byteswing.primeseller.PrimeSeller;
+import me.byteswing.primeseller.util.Util;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class SellerMenu {
+    private static final HashMap<UUID, BukkitTask> tasks = new HashMap<>();
+    private static MenuHelper menuHelper;
 
-    public static double generate(double min, double max) {
-        return ThreadLocalRandom.current().nextDouble(min, max + 0.000000001);
+    public static void init(PrimeSeller plugin) {
+        menuHelper = plugin.getSellerMenuHelper();
     }
 
-    public static void createUnLimItems() {
-        if (!Items.getConfig().contains("unlimited.items")) return;
-        List<String> randomItems = new ArrayList<>(Items.getConfig().getConfigurationSection("unlimited.items").getKeys(false));
-        List<Integer> unlimSlots = new ArrayList<>(Config.getMenuConfig().getIntegerList("unlim-items.slots"));
+    public static void open(@NotNull Player player, @NotNull PrimeSeller plugin) {
+        UUID playerId = player.getUniqueId();
+        SellerInventoryHolder holder = new SellerInventoryHolder();
+        Inventory inv = Bukkit.createInventory(holder, menuHelper.getSize(), menuHelper.getTitle());
+        holder.setInventory(inv);
 
-        for (Integer unlimSlot : unlimSlots) {
-            if (randomItems.isEmpty()) {
-                break;
-            }
-            int random = (int) (Math.random() * randomItems.size());
-            String item = randomItems.get(random);
-            double min = Double.parseDouble(Items.getConfig().getString("unlimited.items." + item + ".min-price").replace(",", "."));
-            double max = Double.parseDouble(Items.getConfig().getString("unlimited.items." + item + ".max-price").replace(",", "."));
-            int lim = Items.getConfig().getInt("limited.limit-per-items");
-            double price = generate(min, max);
-            try {
-                MapBase.saveMaterial(new ItemStack(Material.valueOf(item.toUpperCase(Locale.ENGLISH))), unlimSlot, price, lim, false);
-            } catch (IllegalArgumentException e) {
-                ItemStack itemStack = Items.getConfig().getItemStack("unlimited.items." + item + ".item");
-                MapBase.saveMaterial(itemStack, unlimSlot, price, lim, false);
-            }
-            randomItems.remove(random);
+        updateSellMenu(inv, player);
+
+        if (!tasks.containsKey(playerId)) {
+            tasks.put(playerId, new PlayerGUITask(inv, player).runTaskTimer(plugin, 0, 20));
+        }
+        player.openInventory(inv);
+    }
+
+    public static void update(@NotNull Player player, @NotNull Inventory inv) {
+        updateSellMenu(inv, player);
+        player.updateInventory();
+    }
+
+    public static void deleteTask(@NotNull UUID playerId) {
+        BukkitTask task = tasks.remove(playerId);
+        if (task != null) {
+            task.cancel();
         }
     }
 
-    public static void createLimItems() {
-        if (!Items.getConfig().contains("limited.items")) return;
-        List<String> randomItems = new ArrayList<>(Items.getConfig().getConfigurationSection("limited.items").getKeys(false));
-        List<Integer> limSlots = new ArrayList<>(Config.getMenuConfig().getIntegerList("lim-items.slots"));
+    public static void disable() {
+        List<UUID> playerIds = new ArrayList<>(tasks.keySet());
+        for (UUID playerId : playerIds) {
+            deleteTask(playerId);
+        }
+    }
 
-        for (int i = 0; i < limSlots.size(); i++) {
-            if (randomItems.isEmpty()) {
-                break;
+    public static void updateSellMenu(@NotNull Inventory inv, @NotNull Player player) {
+        UUID playerId = player.getUniqueId();
+        for (SellItem sellItem : MapBase.database.values()) {
+            Material material = sellItem.getMaterial();
+            double price = sellItem.getPrice();
+            String[] placeholders = {
+                    "%price-x1%", EconomyManager.format(price),
+                    "%price-x64%", EconomyManager.format(price * 64),
+                    "%price-all%", EconomyManager.format(Util.getMaterialAmount(player, material) * price)
+            };
+            boolean isLimited = sellItem.isLimited();
+            String path = isLimited ? "lim-item" : "unlim-item";
+            if (isLimited) {
+                String[] additional = {
+                        "%sell%", String.valueOf(UnlimSoldItems.get(playerId)),
+                        "%max%", String.valueOf(ItemsConfig.getConfig().getInt("limited.limit")),
+                        "%sell-items%", String.valueOf(sellItem.getPlayerItemLimit(player.getUniqueId())),
+                        "%max-items%", String.valueOf(ItemsConfig.getConfig().getInt("limited.limit-per-items"))
+                };
+                placeholders = Stream.concat(
+                        Arrays.stream(placeholders),
+                        Arrays.stream(additional)
+                ).toArray(String[]::new);
             }
-            int random = (int) (Math.random() * randomItems.size());
-            String item = randomItems.get(random);
-            double min = Double.parseDouble(Items.getConfig().getString("limited.items." + item + ".min-price").replace(",", "."));
-            double max = Double.parseDouble(Items.getConfig().getString("limited.items." + item + ".max-price").replace(",", "."));
-            int lim = Items.getConfig().getInt("limited.limit-per-items");
-            double price = generate(min, max);
-            try {
-                MapBase.saveMaterial(new ItemStack(Material.valueOf(item)), limSlots.get(i), price, lim, true);
-            } catch (IllegalArgumentException e) {
-                ItemStack itemStack = Items.getConfig().getItemStack("limited.items." + item + ".item");
-                MapBase.saveMaterial(itemStack, limSlots.get(i), price, lim, true);
-            }
-            randomItems.remove(random);
-            if (i == limSlots.size()) {
-                limSlots.clear();
-                randomItems.clear();
-            }
+            menuHelper.addItemByMaterial(inv, path, material, sellItem.getSlot(), placeholders);
+        }
+
+        String[] placeholders = {
+                "%lim-time%", Updater.getLimitedTime(),
+                "%unlim-time%", Updater.getUnLimitedTime(),
+                "%lim-time-format%", Util.limitedFormat,
+                "%unlim-time-format%", Util.unlimitedFormat,
+                "%autosell-slots%", String.valueOf(AutoSellerManager.getAutoSellMaterials(player).size()),
+                "%autosell-max-slots%", String.valueOf(AutoSellerManager.getMaxAutoSellSlots(player))
+        };
+        menuHelper.addCustomItems(inv, placeholders);
+        if (!menuHelper.isEnabled("divider")) return;
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (inv.getItem(i) != null) continue;
+
+            ItemStack item = menuHelper.createCustomItem("divider");
+            inv.setItem(i, item);
         }
     }
 }

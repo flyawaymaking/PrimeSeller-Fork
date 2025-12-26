@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,10 +19,10 @@
 
 package me.byteswing.primeseller.util;
 
-import me.byteswing.primeseller.configurations.Config;
+import me.byteswing.primeseller.configurations.MainConfig;
 import me.byteswing.primeseller.configurations.database.MapBase;
+import me.byteswing.primeseller.configurations.database.SellItem;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,60 +31,45 @@ public class Understating {
     public static final HashMap<Integer, Double> standardPrice = new HashMap<>();
     private static final Map<Integer, Integer> soldItemsCount = new HashMap<>();
 
-    private static final DecimalFormat format = new DecimalFormat("#.##");
-
-    public static void takePrice(int item, int count) {
-        if (!Config.getConfig().getBoolean("understating-price.enable")) {
+    public static void takePrice(int itemSlot, int count) {
+        if (!MainConfig.isUnderstandingEnabled()) {
             return;
         }
 
-        int itemsThreshold = Config.getConfig().getInt("understating-price.items", 1);
+        int itemsThreshold = MainConfig.getUnderstandingPriceItems();
 
-        // Увеличиваем счетчик проданных предметов
-        soldItemsCount.put(item, soldItemsCount.getOrDefault(item, 0) + count);
+        soldItemsCount.put(itemSlot, soldItemsCount.getOrDefault(itemSlot, 0) + count);
 
-        // Проверяем, достигли ли порога для снижения цены
-        if (soldItemsCount.get(item) < itemsThreshold) {
+        if (soldItemsCount.get(itemSlot) < itemsThreshold) {
             return;
         }
 
-        // Сбрасываем счетчик и снижаем цену
-        int batches = soldItemsCount.get(item) / itemsThreshold;
-        soldItemsCount.put(item, soldItemsCount.get(item) % itemsThreshold);
+        int batches = soldItemsCount.get(itemSlot) / itemsThreshold;
+        soldItemsCount.put(itemSlot, soldItemsCount.get(itemSlot) % itemsThreshold);
 
-        MapBase h2 = new MapBase();
-        if (!standardPrice.containsKey(item)) {
-            standardPrice.put(item, h2.getPrice(item));
+        SellItem sellItem = MapBase.get(itemSlot);
+        if (!standardPrice.containsKey(itemSlot)) {
+            standardPrice.put(itemSlot, sellItem.getPrice());
         }
 
-        double currentPrice = h2.getPrice(item);
-        double originalPrice = standardPrice.get(item);
+        double currentPrice = sellItem.getPrice();
+        double originalPrice = standardPrice.get(itemSlot);
 
-        // Рассчитываем процент снижения
-        double percent = Double.parseDouble(Config.getConfig().getString("understating-price.percent", "0.01").replace(",", "."));
-        int minPercent = Config.getConfig().getInt("understating-price.min-percent", 10);
+        double percent = MainConfig.getUnderstandingPricePercent();
+        int minPercent = MainConfig.getUnderstandingPriceMinPercent();
 
-        // Рассчитываем минимальную допустимую цену
         double minPrice = originalPrice * minPercent / 100.0;
 
-        // Проверяем, не достигли ли мы уже минимальной цены
         if (currentPrice <= minPrice) {
             return;
         }
 
-        // Рассчитываем общее снижение с учетом минимальной цены
         double totalReduction = 0;
-        double tempPrice = currentPrice; // Временная переменная для расчетов
+        double tempPrice = currentPrice;
 
         for (int i = 0; i < batches; i++) {
             double reduction = tempPrice * percent / 100.0;
 
-            // Гарантируем минимальное снижение хотя бы на 0.01
-            if (reduction < 0.01) {
-                reduction = 0.01;
-            }
-
-            // Проверяем, не упадет ли цена ниже минимума
             if (tempPrice - reduction < minPrice) {
                 totalReduction += (tempPrice - minPrice);
                 break;
@@ -97,7 +82,7 @@ public class Understating {
         if (totalReduction > 0) {
             double newPrice = currentPrice - totalReduction;
             newPrice = Math.max(minPrice, newPrice);
-            h2.setPrice(item, Double.parseDouble(format.format(newPrice).replace(",", ".")));
+            sellItem.setPrice(newPrice);
         }
     }
 

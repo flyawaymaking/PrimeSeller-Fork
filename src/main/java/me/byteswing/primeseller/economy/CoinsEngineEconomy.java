@@ -18,6 +18,7 @@ package me.byteswing.primeseller.economy;
 
 import me.byteswing.primeseller.PrimeSeller;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
 
@@ -28,7 +29,7 @@ public class CoinsEngineEconomy implements EconomyProvider {
     private Currency currency;
     private final DecimalFormat format = new DecimalFormat("##.##");
 
-    public CoinsEngineEconomy(PrimeSeller plugin) {
+    public CoinsEngineEconomy(@NotNull PrimeSeller plugin) {
         this.plugin = plugin;
         String currencyName = plugin.getConfig().getString("economy.coins-engine.currency", "money");
         if (plugin.getServer().getPluginManager().getPlugin("CoinsEngine") != null) {
@@ -41,7 +42,7 @@ public class CoinsEngineEconomy implements EconomyProvider {
         }
     }
 
-    public void addBalance(Player player, double amount) {
+    public void addBalance(@NotNull Player player, double amount) {
         if (currency == null) {
             return;
         }
@@ -53,7 +54,7 @@ public class CoinsEngineEconomy implements EconomyProvider {
         }
     }
 
-    public String format(double amount) {
+    public @NotNull String format(double amount) {
         if (currency == null) {
             return format.format(amount);
         }

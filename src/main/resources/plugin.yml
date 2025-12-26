@@ -1,8 +1,8 @@
 name: ${name}
 version: ${version}
 main: ${group}.PrimeSeller
-author: destroydevs
 authors:
+  - destroydevs
   - golovin12
 api-version: 1.21
 description: Скупщик предметов

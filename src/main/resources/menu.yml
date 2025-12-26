@@ -1,0 +1,210 @@
+# Поддержка MiniMessage формата: https://docs.advntr.dev/minimessage/format.html
+seller-menu:
+  title: "<gradient:#5637bc:#9258ff><italic>Скупщик предметов</italic></gradient>"
+  size: 54
+
+  # Обязательные поля
+  lim-item:
+    lore:
+      - ""
+      - "<#dddddd>Цена за <#a9e3ff>х1: <#53fb31>%price-x1% <#b9b9b9>(ЛКМ)"
+      - "<#dddddd>Цена за <#a9e3ff>х64: <#53fb31>%price-x64% <#b9b9b9>(ПКМ)"
+      - ""
+      - "<#dddddd>Цена за <#a9e3ff>всё: <#53fb31>%price-all% <#b9b9b9>(ЛКМ+SHIFT)"
+      - ""
+      - "<#dddddd>Предметы в этой строке <#ff4141>ограничены</#ff4141>!"
+      - "<#dddddd>Продано из общ. кол-ва: <#7348dd>%sell% <dark_gray>из <#7348dd>%max%"
+      - "<#dddddd>Продано таких предметов: <#7348dd>%sell-items% <dark_gray>из <#7348dd>%max-items%"
+    slots: [ 9, 18, 27, 36 ]
+
+  unlim-item:
+    lore:
+      - ""
+      - "<#dddddd>Цена за <#a9e3ff>х1: <#53fb31>%price-x1% <gray>(ЛКМ)"
+      - "<#dddddd>Цена за <#a9e3ff>х64: <#53fb31>%price-x64% <gray>(ПКМ)"
+      - ""
+      - "<#dddddd>Цена за <#a9e3ff>всё: <#53fb31>%price-all% <gray>(ЛКМ+SHIFT)"
+      - ""
+      - "<#dddddd>Предметы <green>не ограничены</green>!"
+    slots: [ 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 29, 30, 31, 32, 33, 34, 35, 38, 39, 40, 41, 42, 43, 44 ]
+
+  divider:
+    enabled: true  # Можно отключить заполнители
+    material: "BLACK_STAINED_GLASS_PANE"
+    model-data: [ ]
+    name: " "
+    lore: [ ]
+
+  # Настраиваемые поля (Можно добавлять свои предметы).
+  # Заполнители: %lim-time%, %unlim-time%, %lim-time-format%, %unlim-time-format%, %autosell-slots%, %autosell-max-slots%
+  # Доступные actions: [close, cmd, sell-all, update]
+  sell-inventory:
+    material: "CHEST"
+    model-data: [ ]
+    name: "<green>Продать инвентарь"
+    lore: [ ]
+    slots: [ 49 ]
+    actions:
+      - "[sell-all]"
+
+  autosell-button:
+    material: "HOPPER"
+    model-data: [ ]
+    name: "<gold>Автопродажа"
+    lore:
+      - "<gray>Нажмите чтобы открыть настройки автопродажи"
+      - "<gray>Добавленные предметы: <yellow>%autosell-slots%/%autosell-max-slots%"
+    slots: [ 50 ]
+    actions:
+      - "[cmd] autoseller"
+
+  exit:
+    material: "RED_STAINED_GLASS_PANE"
+    model-data: [ ]
+    name: "<#ff4141>Закрыть"
+    slots: [ 45, 53 ]
+    actions:
+      - "[close]"
+
+  countdown:
+    material: "PLAYER_HEAD"
+    texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg2YjlkNThiY2QxYTU1NWY5M2U3ZDg2NTkxNTljZmQyNWI4ZGQ2ZTliY2UxZTk3MzgyMjgyNDI5MTg2MiJ9fX0="
+    name: "<#dddddd>До след обновления:"
+    lore:
+      - ""
+      - "<#dddddd>Обновление лимитированного скупщика через:"
+      - "<#eaff43> <#7348dd>%lim-time% <gray>| <dark_gray>%lim-time-format%"
+      - ""
+      - "<#dddddd>Обновление скупщика без лимита через:"
+      - "<#eaff43> <#7348dd>%unlim-time% <gray>| <dark_gray>%unlim-time-format%"
+      - ""
+    slots: [ 4 ]
+    actions:
+      - "[update]"
+
+    # Пример предмета для перехода в основное меню
+#  main-menu:
+#    material: "STONE"
+#    model-data:
+#      - 100.0
+#      - 100.05
+#      - 100.1
+#      - 101
+#    name: "Основное меню"
+#    lore:
+#      - ""
+#      - "<yellow>Нажмите для перехода в основное меню"
+#    slots: [ 52 ]
+#    actions:
+#      - "[close]"
+#      - "[cmd] menu"
+
+autoseller-menu:
+  title: "<gradient:#5637bc:#9258ff><italic>Автопродажа %page%</italic></gradient>"
+  size: 54
+
+  # Обязательные поля
+  autosell-item:
+    lore:
+      - ""
+      - "<gray>Нажмите чтобы удалить из автопродажи"
+      - ""
+      - "<yellow>Статистика автопродаж:"
+      - "<green>Продано: %items-sold% шт."
+      - "<green>Заработано: %money-earned%"
+    slots: [ 1,2,3,4,5,6,7,10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34,37,38,39,40,41,42,43 ]
+
+  divider:
+    enabled: true  # Можно отключить заполнители
+    material: "BLACK_STAINED_GLASS_PANE"
+    model-data: [ ]
+    name: " "
+    lore: [ ]
+
+  toggle-button:
+    enabled:
+      material: "LIME_DYE"
+      model-data: [ ]
+      name: "<green>Автопродажа включена"
+      lore:
+        - ""
+        - "<gray>Нажмите чтобы <red>выключить</red> автопродажу"
+        - ""
+        - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
+        - "<gray>Статус: <green>ВКЛЮЧЕНО"
+      actions:
+        - "[toggle]"
+    disabled:
+      material: "RED_DYE"
+      model-data: [ ]
+      name: "<red>Автопродажа выключена"
+      lore:
+        - ""
+        - "<gray>Нажмите чтобы <green>включить</green> автопродажу"
+        - ""
+        - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
+        - "<gray>Статус: <red>ВЫКЛЮЧЕНО"
+      actions:
+        - "[toggle]"
+    slots: [ 48 ]
+
+  navigation:
+    previous-page:
+      material: "PLAYER_HEAD"
+      texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWExZWYzOThhMTdmMWFmNzQ3NzAxNDUxN2Y3ZjE0MWQ4ODZkZjQxYTMyYzczOGNjOGE4M2ZiNTAyOTdiZDkyMSJ9fX0="
+      name: "<yellow>Предыдущая страница"
+      lore:
+        - ""
+        - "<gray>Нажмите чтобы перейти"
+        - "<gray>на предыдущую страницу"
+        - ""
+        - "<gray>Текущая страница: <white>%current-page%</white>"
+        - "<gray>Всего страниц: <white>%total-pages%</white>"
+      slots: [ 45 ]
+      actions:
+        - "[back]"
+
+    next-page:
+      material: "PLAYER_HEAD"
+      texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWM5YzY3YTlmMTY4NWNkMWRhNDNlODQxZmU3ZWJiMTdmNmFmNmVhMTJhN2UxZjI3MjJmNWU3ZjA4OThkYjlmMyJ9fX0="
+      name: "<yellow>Следующая страница"
+      lore:
+        - "<gray>Нажмите чтобы перейти"
+        - "<gray>на следующую страницу"
+        - ""
+        - "<gray>Текущая страница: <white>%current-page%</white>"
+        - "<gray>Всего страниц: <white>%total-pages%</white>"
+      slots: [ 53 ]
+      actions:
+        - "[next]"
+
+  # Настраиваемые поля (Можно добавлять свои предметы).
+  # Заполнители: %slots%, %max-slots%, %current-page%, %total-pages%
+  # Доступные actions: [close, cmd, back, next]
+  info:
+    material: "BOOK"
+    model-data: [ ]
+    name: "<yellow>Информация"
+    lore:
+      - ""
+      - "<gray>Как пользоваться автопродажей:"
+      - "<gray>1. Включите автопродажу."
+      - "<gray>2. Добавьте предметы кликом по ним."
+      - "<gray>3. Получайте автоматическую продажу!"
+      - ""
+      - "<gray> - Вам доступно %max-slots% слотов в автопродаже!"
+      - ""
+      - "<yellow>ЛКМ по предмету в инвентаре - <green>добавить"
+      - "<yellow>ЛКМ по предмету в GUI - <red>удалить"
+    slots: [ 50 ]
+
+  seller:
+    material: "RED_STAINED_GLASS_PANE"
+    model-data: [ ]
+    name: "<red>Назад к скупщику"
+    lore:
+      - ""
+      - "<gray>Вернуться в меню скупщика"
+    slots: [ 49 ]
+    actions:
+      - "[cmd] seller"

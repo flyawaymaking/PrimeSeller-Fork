@@ -20,18 +20,18 @@
 package me.byteswing.primeseller.util;
 
 import me.byteswing.primeseller.PrimeSeller;
-import me.byteswing.primeseller.configurations.Config;
-import me.byteswing.primeseller.configurations.Items;
+import me.byteswing.primeseller.configurations.MainConfig;
+import me.byteswing.primeseller.configurations.ItemsConfig;
+import me.byteswing.primeseller.configurations.MessagesConfig;
 import me.byteswing.primeseller.configurations.database.MapBase;
-import me.byteswing.primeseller.managers.AutoSellManager;
-import me.byteswing.primeseller.menu.SellerMenu;
+import me.byteswing.primeseller.configurations.database.UnlimSoldItems;
+import me.byteswing.primeseller.managers.AutoSellerManager;
+import me.byteswing.primeseller.managers.SellerManager;
 import me.byteswing.primeseller.tasks.UpdaterTask;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -45,8 +45,8 @@ public class Updater {
 
     private static void startCountdown() {
         if (counter.get("limited") == null || counter.get("unlimited") == null) {
-            counter.put("unlimited", Items.getConfig().getInt("unlimited.update"));
-            counter.put("limited", Items.getConfig().getInt("limited.update"));
+            counter.put("unlimited", ItemsConfig.getUnlimitedUpdateSeconds());
+            counter.put("limited", ItemsConfig.getLimitedUpdateSeconds());
         }
         timer.scheduleAtFixedRate(() -> {
             int lim = counter.get("limited");
@@ -60,60 +60,57 @@ public class Updater {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
-    public static String getLimitedTime() {
+    public static @NotNull String getLimitedTime() {
         int seconds = counter.get("limited");
         int hours = seconds / 3600;
         int minutes = (seconds % 3600) / 60;
         int remainingSeconds = seconds % 60;
 
-        return Objects.requireNonNull(Config.getConfig().getString("time-format"))
+        return MainConfig.getTimeFormat()
                 .replace("hh", String.valueOf(hours))
                 .replace("mm", String.valueOf(minutes))
                 .replace("ss", String.valueOf(remainingSeconds));
     }
 
-    public static String getUnLimitedTime() {
+    public static @NotNull String getUnLimitedTime() {
         int seconds = counter.get("unlimited");
         int hours = seconds / 3600;
         int minutes = (seconds % 3600) / 60;
         int remainingSeconds = seconds % 60;
 
-        return Objects.requireNonNull(Config.getConfig().getString("time-format"))
+        return MainConfig.getTimeFormat()
                 .replace("hh", String.valueOf(hours))
                 .replace("mm", String.valueOf(minutes))
                 .replace("ss", String.valueOf(remainingSeconds));
     }
 
-    public static void update(PrimeSeller plugin) {
+    public static void update(@NotNull PrimeSeller plugin) {
         clearAndCreateUnLimited(plugin, true);
         clearAndCreateLimited(plugin, true);
     }
 
-    public static void clearAndCreateLimited(PrimeSeller plugin, boolean needTaskRestart) {
+    public static void clearAndCreateLimited(@NotNull PrimeSeller plugin, boolean needTaskRestart) {
         try {
             if (needTaskRestart && limTask != null) {
                 limTask.cancel();
             }
-            counter.put("limited", Items.getConfig().getInt("limited.update"));
+            int limitedUpdateSeconds = ItemsConfig.getLimitedUpdateSeconds();
+            counter.put("limited", limitedUpdateSeconds);
             Util.update = true;
 
-            Util.playerSellItems.clear();
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                Util.playerSellItems.put(p.getUniqueId(), 0);
-            }
+            UnlimSoldItems.clear();
 
-            AutoSellManager.resetAllLimitedStats();
-            MapBase sql = new MapBase();
-            sql.clearLimited();
+            AutoSellerManager.resetAllLimitedStats();
+            MapBase.clearLimited();
 
-            Util.limitedFormat = Util.formattedTime(Items.getConfig().getInt("limited.update"));
+            Util.limitedFormat = Util.formattedTime(limitedUpdateSeconds);
 
-            if (!Items.getConfig().getBoolean("limited.enable", true)) return;
-            SellerMenu.createLimItems();
-            Chat.broadcast(Config.getConfig().getStringList("messages.limited-update-cast"));
+            if (!ItemsConfig.isLimitedEnable()) return;
+            SellerManager.createLimItems(plugin);
+            Chat.broadcast(MessagesConfig.getMessageList("limited-update-cast"));
 
             if (needTaskRestart) {
-                long updateInterval = Items.getConfig().getInt("limited.update") * 20L;
+                long updateInterval = limitedUpdateSeconds * 20L;
                 UpdaterTask task = new UpdaterTask(plugin, true);
                 limTask = task.runTaskTimer(plugin, updateInterval, updateInterval);
             }
@@ -122,29 +119,28 @@ public class Updater {
         }
     }
 
-    public static void clearAndCreateUnLimited(PrimeSeller plugin, boolean needTaskRestart) {
+    public static void clearAndCreateUnLimited(@NotNull PrimeSeller plugin, boolean needTaskRestart) {
         try {
             if (needTaskRestart && unlimTask != null) {
                 unlimTask.cancel();
             }
-
-            counter.put("unlimited", Items.getConfig().getInt("unlimited.update"));
+            int unlimitedUpdateSeconds = ItemsConfig.getUnlimitedUpdateSeconds();
+            counter.put("unlimited", unlimitedUpdateSeconds);
             Util.update = true;
 
-            AutoSellManager.resetAllUnlimitedStats();
-            MapBase sql = new MapBase();
-            sql.clearUnLimited();
+            AutoSellerManager.resetAllUnlimitedStats();
+            MapBase.clearUnLimited();
 
             Understating.resetCounters();
 
-            Util.unlimitedFormat = Util.formattedTime(Items.getConfig().getInt("unlimited.update"));
+            Util.unlimitedFormat = Util.formattedTime(unlimitedUpdateSeconds);
 
-            if (!Items.getConfig().getBoolean("unlimited.enable", true)) return;
-            SellerMenu.createUnLimItems();
-            Chat.broadcast(Config.getConfig().getStringList("messages.unlimited-update-cast"));
+            if (!ItemsConfig.isUnlimitedEnable()) return;
+            SellerManager.createUnLimItems(plugin);
+            Chat.broadcast(MessagesConfig.getMessageList("unlimited-update-cast"));
 
             if (needTaskRestart) {
-                long updateInterval = Items.getConfig().getInt("unlimited.update") * 20L;
+                long updateInterval = unlimitedUpdateSeconds * 20L;
                 UpdaterTask task = new UpdaterTask(plugin, false);
                 unlimTask = task.runTaskTimer(plugin, updateInterval, updateInterval);
             }
@@ -153,7 +149,7 @@ public class Updater {
         }
     }
 
-    public static void start(PrimeSeller plugin) {
+    public static void start(@NotNull PrimeSeller plugin) {
         startCountdown();
         clearAndCreateUnLimited(plugin, true);
         clearAndCreateLimited(plugin, true);

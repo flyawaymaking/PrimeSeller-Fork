@@ -1,10 +1,11 @@
+# В предметах поддерживаются числа с дробной частью через "." - пример: 10.05
 unlimited:
-  update: 14400
   enable: true
+  update: 14400
   items:
     ARROW:
-      min-price: 4
-      max-price: 5
+      min-price: 4.3
+      max-price: 5.7
     SHULKER_SHELL:
       min-price: 65
       max-price: 70
@@ -35,15 +36,12 @@ unlimited:
     EMERALD:
       min-price: 150
       max-price: 170
-    NETHERITE_INGOT:
-      min-price: 500
-      max-price: 600
     PUFFERFISH:
       min-price: 25
       max-price: 35
     SPIDER_EYE:
-      min-price: 3
-      max-price: 5
+      min-price: 3.1
+      max-price: 5.6
     ROTTEN_FLESH:
       min-price: 20
       max-price: 25
@@ -99,8 +97,8 @@ unlimited:
       min-price: 10
       max-price: 12
     STONE:
-      min-price: 10
-      max-price: 12
+      min-price: 12
+      max-price: 14
     DIORITE:
       min-price: 10
       max-price: 12
@@ -268,75 +266,62 @@ unlimited:
       max-price: 35
 
 limited:
-  limit: 20
-  update: 21600
   enable: true
-  limit-per-items: 32
+  update: 21600
+  limit: 16
+  limit-per-items: 128
   items:
     TOTEM_OF_UNDYING:
       min-price: 1140
       max-price: 1200
-
     TRIDENT:
       min-price: 1520
       max-price: 1600
-
     HEAVY_CORE:
       min-price: 3800
       max-price: 4000
-
     LEATHER_HORSE_ARMOR:
       min-price: 188
       max-price: 200
-
     IRON_HORSE_ARMOR:
       min-price: 380
       max-price: 400
-
     GOLDEN_HORSE_ARMOR:
       min-price: 568
       max-price: 600
-
     DIAMOND_HORSE_ARMOR:
       min-price: 1140
       max-price: 1200
-
     ELYTRA:
       min-price: 3800
       max-price: 4000
-
     SKELETON_SKULL:
       min-price: 760
       max-price: 800
-
     CREEPER_HEAD:
       min-price: 1520
       max-price: 1600
-
     ZOMBIE_HEAD:
       min-price: 1000
       max-price: 1200
-
     PIGLIN_HEAD:
       min-price: 1000
       max-price: 1200
-
     WITHER_SKELETON_SKULL:
       min-price: 1100
       max-price: 1300
-
     DRAGON_HEAD:
       min-price: 1500
       max-price: 2000
-
     HEART_OF_THE_SEA:
       min-price: 1400
       max-price: 1500
-
     NETHER_STAR:
       min-price: 2000
       max-price: 3000
-
     NAUTILUS_SHELL:
       min-price: 380
       max-price: 400
+    NETHERITE_INGOT:
+      min-price: 500
+      max-price: 600

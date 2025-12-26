@@ -23,14 +23,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import me.byteswing.primeseller.PrimeSeller;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Completer implements TabCompleter {
+public class PrimeSellerCompleter implements TabCompleter {
 
-    public Completer(PrimeSeller main) {
-        main.getCommand("primeseller").setTabCompleter(this);
+    public PrimeSellerCompleter(@NotNull PrimeSeller plugin) {
+        plugin.getCommand("primeseller").setTabCompleter(this);
     }
 
     @Override

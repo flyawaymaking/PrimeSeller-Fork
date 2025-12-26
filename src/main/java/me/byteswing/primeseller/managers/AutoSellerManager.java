@@ -17,44 +17,41 @@
 package me.byteswing.primeseller.managers;
 
 import me.byteswing.primeseller.PrimeSeller;
-import me.byteswing.primeseller.configurations.Config;
-import me.byteswing.primeseller.configurations.Items;
+import me.byteswing.primeseller.configurations.MainConfig;
+import me.byteswing.primeseller.configurations.MessagesConfig;
 import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.configurations.database.SellItem;
 import me.byteswing.primeseller.tasks.AutoSellTask;
 import me.byteswing.primeseller.util.Chat;
-import me.byteswing.primeseller.util.Understating;
 import me.byteswing.primeseller.util.Util;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.*;
 
-public class AutoSellManager {
+public class AutoSellerManager {
     private static PrimeSeller plugin;
     private static final Map<UUID, Boolean> autoSellEnabled = new HashMap<>();
     private static final Map<UUID, Set<Material>> autoSellMaterials = new HashMap<>();
     private static final Map<UUID, Map<Material, ItemStats>> itemStats = new HashMap<>();
-    private static final DecimalFormat format = new DecimalFormat("##.##");
     private static BukkitTask autoSellTask;
 
     private static File dataFile;
     private static YamlConfiguration dataConfig;
 
-    public static void init(PrimeSeller plugin) {
-        AutoSellManager.plugin = plugin;
+    public static void init(@NotNull PrimeSeller plugin) {
+        AutoSellerManager.plugin = plugin;
         setupDataFile();
         startAutoSellTask(plugin);
     }
 
-    private static void startAutoSellTask(PrimeSeller plugin) {
+    private static void startAutoSellTask(@NotNull PrimeSeller plugin) {
         if (autoSellTask != null) {
             autoSellTask.cancel();
         }
@@ -92,25 +89,25 @@ public class AutoSellManager {
         }
     }
 
-    public static boolean isAutoSellEnabled(Player player) {
+    public static boolean isAutoSellEnabled(@NotNull Player player) {
         return player.hasPermission("primeseller.autoseller")
                 && autoSellEnabled.getOrDefault(player.getUniqueId(), false);
     }
 
-    public static void setAutoSellEnabled(Player player, boolean enabled) {
+    public static void setAutoSellEnabled(@NotNull Player player, boolean enabled) {
         autoSellEnabled.put(player.getUniqueId(), enabled);
     }
 
-    public static void toggleAutoSell(Player player) {
+    public static void toggleAutoSell(@NotNull Player player) {
         boolean current = isAutoSellEnabled(player);
         setAutoSellEnabled(player, !current);
     }
 
-    public static Set<Material> getAutoSellMaterials(Player player) {
+    public static @NotNull Set<Material> getAutoSellMaterials(@NotNull Player player) {
         return autoSellMaterials.computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
     }
 
-    public static boolean addAutoSellMaterial(Player player, Material material) {
+    public static boolean addAutoSellMaterial(@NotNull Player player, @NotNull Material material) {
         Set<Material> materials = getAutoSellMaterials(player);
 
         if (!hasBypassPermission(player) && materials.size() >= getMaxAutoSellSlots(player)) {
@@ -120,12 +117,12 @@ public class AutoSellManager {
         return materials.add(material);
     }
 
-    public static boolean removeAutoSellMaterial(Player player, Material material) {
+    public static boolean removeAutoSellMaterial(@NotNull Player player, @NotNull Material material) {
         Set<Material> materials = getAutoSellMaterials(player);
         return materials.remove(material);
     }
 
-    public static int getMaxAutoSellSlots(Player player) {
+    public static int getMaxAutoSellSlots(@NotNull Player player) {
         if (hasBypassPermission(player)) {
             return Integer.MAX_VALUE;
         }
@@ -150,11 +147,11 @@ public class AutoSellManager {
         return maxSlots;
     }
 
-    public static boolean hasBypassPermission(Player player) {
+    public static boolean hasBypassPermission(@NotNull Player player) {
         return player.hasPermission("primeseller.autosell.bypass");
     }
 
-    public static void savePlayerData(Player player) {
+    public static void savePlayerData(@NotNull Player player) {
         UUID playerId = player.getUniqueId();
         String playerPath = "players." + playerId;
 
@@ -170,12 +167,12 @@ public class AutoSellManager {
         saveDataFile();
     }
 
-    public static void clearPlayerCache(Player player) {
+    public static void clearPlayerCache(@NotNull Player player) {
         autoSellEnabled.remove(player.getUniqueId());
         autoSellMaterials.remove(player.getUniqueId());
     }
 
-    public static void loadPlayerData(Player player) {
+    public static void loadPlayerData(@NotNull Player player) {
         UUID playerId = player.getUniqueId();
         String playerPath = "players." + playerId;
 
@@ -197,7 +194,7 @@ public class AutoSellManager {
         }
     }
 
-    public static void processPlayerAutoSell(Player player) {
+    public static void processPlayerAutoSell(@NotNull Player player) {
         if (!isAutoSellEnabled(player)) {
             return;
         }
@@ -207,98 +204,69 @@ public class AutoSellManager {
             return;
         }
 
-        for (Material material : materials) {
-            processMaterialAutoSell(player, material);
-        }
+        processAutoSellMaterials(player, materials);
     }
 
-    private static void processMaterialAutoSell(Player player, Material material) {
-        MapBase sql = new MapBase();
-        for (Map.Entry<Integer, SellItem> entry : MapBase.database.entrySet()) {
-            SellItem sellItem = entry.getValue();
-            ItemStack sellItemStack = sellItem.getItem();
+    private static void processAutoSellMaterials(@NotNull Player player, @NotNull Set<Material> materials) {
+        double price = 0;
+        int count = 0;
+        Map<Material, Integer> inventoryItems = Util.getMaterialsAmount(player);
 
-            if (sellItemStack.getType() == material) {
-                int slot = entry.getKey();
+        for (SellItem sellItem : MapBase.database.values()) {
+            Material sellMaterial = sellItem.getMaterial();
 
-                int totalCount = Util.calc(player, sellItemStack);
+            if (materials.contains(sellMaterial)) {
+                int totalCount = inventoryItems.getOrDefault(sellMaterial, 0);
 
                 if (totalCount <= 0) {
-                    return;
+                    continue;
                 }
 
-                int count = totalCount;
-
-                if (sql.isLimited(slot)) {
-                    int selledItems = Util.playerSellItems.getOrDefault(player.getUniqueId(), 0);
-                    int itemLimit = sellItem.getPlayerItemLimit(player);
-                    int totalLimit = Items.getConfig().getInt("limited.limit");
-                    int itemLimitPerItems = Items.getConfig().getInt("limited.limit-per-items");
-
-                    int availableToSell = Math.min(totalLimit - selledItems, itemLimitPerItems - itemLimit);
-
-                    if (count > availableToSell) {
-                        count = availableToSell;
+                SellerManager.SoldData soldData;
+                if (sellItem.isLimited()) {
+                    soldData = SellerManager.sellLimItem(player, sellItem, totalCount);
+                    if (soldData.amount == 0) {
+                        continue;
                     }
-
-                    if (count <= 0) {
-                        return;
-                    }
-
-                    Util.playerSellItems.put(player.getUniqueId(), selledItems + count);
-                    sellItem.addItemLimit(player, count);
+                } else {
+                    soldData = SellerManager.sellUnlimItem(player, sellItem, totalCount);
                 }
-
-                double price = Double.parseDouble(format.format(sql.getPrice(slot) * count).replace(",", "."));
-                Understating.takePrice(slot, count);
-
-                getItemStats(player, material).addSale(count, price);
-
-                ItemStack itemToRemove = sellItemStack.clone();
-                itemToRemove.setAmount(count);
-                player.getInventory().removeItem(itemToRemove);
-
-                EconomyManager.addBalance(player, price);
-
-                if (Config.getConfig().getBoolean("autosell.enable-autosell-messages", false)) {
-                    String itemName = LanguageManager.translate(material);
-                    Chat.sendMessage(player, Config.getMessage("autosell.sell")
-                            .replace("%item%", itemName)
-                            .replace("%price%", EconomyManager.format(price))
-                            .replace("%amount%", "x" + count));
-                }
-                break;
+                price += soldData.price;
+                count += soldData.amount;
+                getItemStats(player, sellMaterial).addSale(count, price);
             }
+        }
+        EconomyManager.addBalance(player, price);
+
+        if (MainConfig.getConfig().getBoolean("autosell.enable-autosell-messages", false)) {
+            Chat.sendMessage(player, MessagesConfig.getMessage("autosell.sell")
+                    .replace("%price%", EconomyManager.format(price))
+                    .replace("%amount%", "x" + count));
         }
     }
 
-    public static ItemStats getItemStats(Player player, Material material) {
+    public static @NotNull ItemStats getItemStats(@NotNull Player player, @NotNull Material material) {
         Map<Material, ItemStats> playerStats = itemStats.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>());
         return playerStats.computeIfAbsent(material, k -> new ItemStats());
     }
 
-    public static int getItemsSoldForMaterial(Player player, Material material) {
+    public static int getItemsSoldForMaterial(@NotNull Player player, @NotNull Material material) {
         ItemStats stats = getItemStats(player, material);
         return stats.getItemsSold();
     }
 
-    public static double getMoneyEarnedForMaterial(Player player, Material material) {
+    public static double getMoneyEarnedForMaterial(@NotNull Player player, @NotNull Material material) {
         ItemStats stats = getItemStats(player, material);
         return stats.getMoneyEarned();
     }
 
     public static void resetAllLimitedStats() {
-        MapBase mapBase = new MapBase();
-
         for (Map<Material, ItemStats> playerStats : itemStats.values()) {
             for (Map.Entry<Material, ItemStats> entry : playerStats.entrySet()) {
                 Material material = entry.getKey();
 
-                for (Map.Entry<Integer, SellItem> dbEntry : MapBase.database.entrySet()) {
-                    SellItem sellItem = dbEntry.getValue();
-                    int slot = dbEntry.getKey();
-
-                    if (sellItem.getItem().getType() == material && mapBase.isLimited(slot)) {
+                for (SellItem sellItem : MapBase.database.values()) {
+                    if (sellItem.getMaterial() == material && sellItem.isLimited()) {
                         entry.getValue().reset();
                         break;
                     }
@@ -308,17 +276,12 @@ public class AutoSellManager {
     }
 
     public static void resetAllUnlimitedStats() {
-        MapBase mapBase = new MapBase();
-
         for (Map<Material, ItemStats> playerStats : itemStats.values()) {
             for (Map.Entry<Material, ItemStats> entry : playerStats.entrySet()) {
                 Material material = entry.getKey();
 
-                for (Map.Entry<Integer, SellItem> dbEntry : MapBase.database.entrySet()) {
-                    SellItem sellItem = dbEntry.getValue();
-                    int slot = dbEntry.getKey();
-
-                    if (sellItem.getItem().getType() == material && !mapBase.isLimited(slot)) {
+                for (SellItem sellItem : MapBase.database.values()) {
+                    if (sellItem.getMaterial() == material && !sellItem.isLimited()) {
                         entry.getValue().reset();
                         break;
                     }

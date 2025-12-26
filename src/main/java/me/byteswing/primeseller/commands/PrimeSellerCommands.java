@@ -19,6 +19,7 @@
 
 package me.byteswing.primeseller.commands;
 
+import me.byteswing.primeseller.configurations.MessagesConfig;
 import me.byteswing.primeseller.managers.EconomyManager;
 import me.byteswing.primeseller.managers.LanguageManager;
 import org.bukkit.Material;
@@ -28,29 +29,30 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import me.byteswing.primeseller.PrimeSeller;
-import me.byteswing.primeseller.configurations.Config;
-import me.byteswing.primeseller.configurations.Items;
+import me.byteswing.primeseller.configurations.ItemsConfig;
 import me.byteswing.primeseller.managers.ConfigManager;
 import me.byteswing.primeseller.util.Chat;
 import me.byteswing.primeseller.util.Updater;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PrimeSellerCommands implements CommandExecutor {
     private final PrimeSeller plugin;
 
-    public PrimeSellerCommands(PrimeSeller main) {
-        this.plugin = main;
-        main.getCommand("primeseller").setExecutor(this);
+    public PrimeSellerCommands(@NotNull PrimeSeller plugin) {
+        this.plugin = plugin;
+        plugin.getCommand("primeseller").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("primeseller.admin")) {
-            Chat.sendMessage(sender, Config.getMessage("commands.permission"));
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.no-permission"));
             return true;
         }
 
         if (args.length == 0) {
-            Chat.sendMessage(sender, Config.getMessage("commands.update-use"));
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.update-use"));
             return true;
         }
 
@@ -62,59 +64,60 @@ public class PrimeSellerCommands implements CommandExecutor {
                     switch (args[1].toLowerCase()) {
                         case "limited":
                             Updater.clearAndCreateLimited(plugin, true);
-                            Chat.sendMessage(sender, Config.getMessage("commands.update-lim"));
+                            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.update-lim"));
                             return true;
                         case "unlimited":
                             Updater.clearAndCreateUnLimited(plugin, true);
-                            Chat.sendMessage(sender, Config.getMessage("commands.update-unlim"));
+                            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.update-unlim"));
                             return true;
                         default:
-                            Chat.sendMessage(sender, Config.getMessage("commands.update-usage"));
+                            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.update-usage"));
                             return true;
                     }
                 } else {
                     Updater.update(plugin);
-                    Chat.sendMessage(sender, Config.getMessage("commands.update"));
+                    Chat.sendMessage(sender, MessagesConfig.getMessage("commands.update"));
                     return true;
                 }
             case "reload":
                 reloadConfig();
-                Chat.sendMessage(sender, Config.getMessage("commands.reload"));
+                Chat.sendMessage(sender, MessagesConfig.getMessage("commands.reload"));
                 return true;
         }
 
         if (!(sender instanceof Player player)) {
-            Chat.sendMessage(sender, Config.getMessage("commands.player-only"));
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.player-only"));
             return true;
         }
 
         return handleItemCommands(player, subCommand, args);
     }
 
-    private boolean handleItemCommands(Player player, String subCommand, String[] args) {
+    private boolean handleItemCommands(@NotNull Player player, @NotNull String subCommand, @NotNull String[] args) {
         if (args.length < 3) {
-            sendUsageMessages(player);
+            String messagePath = subCommand.equals("addlimited")
+                    ? "commands.addlimited-use"
+                    : "commands.addunlimited-use";
+            Chat.sendMessage(player, MessagesConfig.getMessage(messagePath));
             return true;
         }
 
         ItemStack handItem = player.getInventory().getItemInMainHand();
-        if (handItem.getType() == Material.AIR) {
-            String errorPath = subCommand.equals("addlimited")
-                    ? "commands.addlimited-error"
-                    : "commands.addunlimited-error";
-            Chat.sendMessage(player, Config.getMessage(errorPath));
+        if (handItem.getType().isAir()) {
+            Chat.sendMessage(player, MessagesConfig.getMessage("commands.additem-error")
+                    .replace("%material%", LanguageManager.translate(handItem.getType())));
             return true;
         }
 
         Double minPrice = parsePrice(args[1]);
         Double maxPrice = parsePrice(args[2]);
         if (minPrice == null || maxPrice == null) {
-            Chat.sendMessage(player, Config.getMessage("commands.not-number"));
+            Chat.sendMessage(player, MessagesConfig.getMessage("commands.not-number"));
             return true;
         }
 
         boolean isLimited = subCommand.equals("addlimited");
-        Items.addItem(handItem, minPrice, maxPrice, isLimited);
+        ItemsConfig.addItem(handItem, minPrice, maxPrice, isLimited);
 
         sendAddedMessage(player, LanguageManager.translate(handItem.getType()), minPrice, maxPrice);
         return true;
@@ -127,7 +130,7 @@ public class PrimeSellerCommands implements CommandExecutor {
         Chat.init(plugin);
     }
 
-    private Double parsePrice(String priceStr) {
+    private @Nullable Double parsePrice(@NotNull String priceStr) {
         try {
             return Double.parseDouble(priceStr);
         } catch (NumberFormatException e) {
@@ -135,13 +138,8 @@ public class PrimeSellerCommands implements CommandExecutor {
         }
     }
 
-    private void sendUsageMessages(Player player) {
-        Chat.sendMessage(player, Config.getMessage("commands.addlimited-use"));
-        Chat.sendMessage(player, Config.getMessage("commands.addunlimited-use"));
-    }
-
-    private void sendAddedMessage(Player player, String itemName, double minPrice, double maxPrice) {
-        String message = Config.getMessage("commands.added")
+    private void sendAddedMessage(@NotNull Player player, @NotNull String itemName, double minPrice, double maxPrice) {
+        String message = MessagesConfig.getMessage("commands.added")
                 .replace("%item%", itemName)
                 .replace("%min-price%", EconomyManager.format(minPrice))
                 .replace("%max-price%", EconomyManager.format(maxPrice));

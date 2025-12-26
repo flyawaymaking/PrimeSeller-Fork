@@ -21,14 +21,18 @@ package me.byteswing.primeseller;
 
 import me.byteswing.primeseller.managers.*;
 import me.byteswing.primeseller.configurations.database.MapBase;
-import me.byteswing.primeseller.menu.AutoSellMenu;
-import me.byteswing.primeseller.menu.GuiMenu;
+import me.byteswing.primeseller.menu.AutoSellerMenu;
+import me.byteswing.primeseller.menu.SellerMenu;
 import me.byteswing.primeseller.util.Chat;
+import me.byteswing.primeseller.util.MenuHelper;
 import me.byteswing.primeseller.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public final class PrimeSeller extends JavaPlugin {
+    private MenuHelper sellerMenuHelper;
+    private MenuHelper autoSellerMenuHelper;
 
     @Override
     public void onEnable() {
@@ -41,33 +45,37 @@ public final class PrimeSeller extends JavaPlugin {
         msg("░░▀░░ ▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀▀▀▀ ▀░░▀ | Server version: (" + Bukkit.getServer().getVersion() + ")");
 
         ConfigManager.loadConfigurations(this);
-        saveDefaultConfig();
         EconomyManager.init(this);
         if (!EconomyManager.isEconomyAvailable()) {
             getLogger().severe("Plugin disabled - economy system not available");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+        sellerMenuHelper = new MenuHelper(this, "seller-menu",
+                "lim-item", "unlim-item", "divider");
+        autoSellerMenuHelper = new MenuHelper(this, "autoseller-menu",
+                "autosell-item", "divider", "toggle-button", "navigation");
+
         Chat.init(this);
         Updater.start(this);
         LanguageManager.reload(this);
-        AutoSellManager.init(this);
+        AutoSellerManager.init(this);
+        SellerMenu.init(this);
+        AutoSellerMenu.init(this);
         loadManager(new ListenerManager(), this);
         loadManager(new CommandManager(), this);
-        AutoSellMenu.init(this);
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new Expansions().register();
+            new PrimeSellerExpansions(this).register();
         }
     }
 
     @Override
     public void onDisable() {
-        AutoSellManager.disable();
         Updater.stop();
-        GuiMenu.disable();
-        MapBase sql = new MapBase();
-        sql.clear();
+        AutoSellerManager.disable();
+        SellerMenu.disable();
+        MapBase.clear();
         msg("██████╗░██████╗░██╗███╗░░░███╗███████╗░██████╗███████╗██╗░░░░░██╗░░░░░███████╗██████╗░");
         msg("██╔══██╗██╔══██╗██║████╗░████║██╔════╝██╔════╝██╔════╝██║░░░░░██║░░░░░██╔════╝██╔══██╗");
         msg("██████╔╝██████╔╝██║██╔████╔██║█████╗░░╚█████╗░█████╗░░██║░░░░░██║░░░░░█████╗░░██████╔╝");
@@ -77,11 +85,19 @@ public final class PrimeSeller extends JavaPlugin {
         msg("░░▀░░ ▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀▀▀▀ ▀░░▀ | Server version: (" + Bukkit.getServer().getVersion() + ")");
     }
 
-    private void msg(String msg) {
+    private void msg(@NotNull String msg) {
         getLogger().info(msg);
     }
 
-    private void loadManager(Manager manager, PrimeSeller plugin) {
+    private void loadManager(@NotNull Manager manager, @NotNull PrimeSeller plugin) {
         manager.init(plugin);
+    }
+
+    public MenuHelper getSellerMenuHelper() {
+        return sellerMenuHelper;
+    }
+
+    public MenuHelper getAutoSellerMenuHelper() {
+        return autoSellerMenuHelper;
     }
 }
