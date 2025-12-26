@@ -128,7 +128,7 @@ public class AutoSellerListener implements Listener {
     }
 
     private void addItemToAutoSell(@NotNull Player player, @NotNull ItemStack clickedItem, @NotNull Inventory topInventory) {
-        if (clickedItem.getType() != Material.AIR) {
+        if (!clickedItem.getType().isAir()) {
             Material material = clickedItem.getType();
 
             if (AutoSellerManager.addAutoSellMaterial(player, material)) {

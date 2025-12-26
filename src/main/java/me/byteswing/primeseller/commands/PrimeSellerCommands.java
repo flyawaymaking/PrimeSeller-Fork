@@ -103,7 +103,7 @@ public class PrimeSellerCommands implements CommandExecutor {
         }
 
         ItemStack handItem = player.getInventory().getItemInMainHand();
-        if (handItem.getType() == Material.AIR) {
+        if (handItem.getType().isAir()) {
             Chat.sendMessage(player, MessagesConfig.getMessage("commands.additem-error")
                     .replace("%material%", LanguageManager.translate(handItem.getType())));
             return true;

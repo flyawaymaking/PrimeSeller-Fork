@@ -35,9 +35,6 @@ unlimited:
     EMERALD:
       min-price: 150
       max-price: 170
-    NETHERITE_INGOT:
-      min-price: 500
-      max-price: 600
     PUFFERFISH:
       min-price: 25
       max-price: 35
@@ -324,3 +321,6 @@ limited:
     NAUTILUS_SHELL:
       min-price: 380
       max-price: 400
+    NETHERITE_INGOT:
+      min-price: 500
+      max-price: 600

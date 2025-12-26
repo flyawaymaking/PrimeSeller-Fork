@@ -54,8 +54,10 @@ public class SellerManager {
             double max = ItemsConfig.getConfig().getDouble("unlimited.items." + itemName + ".max-price");
             double price = generate(min, max);
             Material material = Material.getMaterial(itemName);
-            if (material != null) {
+            if (material != null && !material.isAir() && material.isItem()) {
                 MapBase.saveMaterial(material, unlimSlot, price, false);
+            } else {
+                plugin.getLogger().info("Material " + itemName + " wasn't added to unlimited items!");
             }
             unlimItems.remove(random);
         }
@@ -75,8 +77,10 @@ public class SellerManager {
             double max = ItemsConfig.getConfig().getDouble("limited.items." + itemName + ".max-price");
             double price = generate(min, max);
             Material material = Material.getMaterial(itemName);
-            if (material != null) {
+            if (material != null && !material.isAir() && material.isItem()) {
                 MapBase.saveMaterial(material, limSlot, price, true);
+            } else {
+                plugin.getLogger().info("Material " + itemName + " wasn't added to limited items!");
             }
             limItems.remove(random);
         }
