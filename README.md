@@ -26,11 +26,6 @@ in-game currency. Features both a manual seller interface and a fully automated 
   settings.
 * **Scheduled Updates:** Limited and Unlimited item stocks and prices refresh on customizable timers.
 
-## Screenshots
-
-![SellerMenu](assets/SellerMenu.png)
-![AutoSellerMenu](assets/AutoSellerMenu.png)
-
 ## Commands
 
 | Command                                 | Description                                                       | Permission               | Default |
@@ -76,6 +71,8 @@ Admins can add items directly in-game:
 
 The plugin will generate a random price between min and max for the item each time the stock refreshes.
 
+![SellerMenu](assets/SellerMenu.png)
+
 ## Auto-Seller Guide
 
 1. A player with the `primeseller.autoseller` permission uses `/autoseller`.
@@ -87,6 +84,8 @@ The plugin will generate a random price between min and max for the item each ti
 
 **Slot Limits:** Players start with 0 auto-sell slots. Grant slots using permissions: `primeseller.autoseller.5`,
 `primeseller.autoseller.20`, etc. The highest value permission applies.
+
+![AutoSellerMenu](assets/AutoSellerMenu.png)
 
 ## Installation
 
