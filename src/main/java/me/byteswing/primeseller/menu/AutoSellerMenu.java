@@ -92,14 +92,14 @@ public class AutoSellerMenu {
 
         for (int i = startIndex; i < endIndex; i++) {
             Material material = materialsList.get(i);
-            int slotIndex = i - startIndex;
+            int itemIndex = i - startIndex;
 
-            if (slotIndex >= itemSlots.size()) break;
+            if (itemIndex >= itemSlots.size()) break;
 
             int itemsSold = AutoSellerManager.getItemsSoldForMaterial(player, material);
             double moneyEarned = AutoSellerManager.getMoneyEarnedForMaterial(player, material);
 
-            menuHelper.addItemByMaterial(inv, "autosell-item", material, slotIndex,
+            menuHelper.addItemByMaterial(inv, "autosell-item", material, itemSlots.get(itemIndex),
                     "%items-sold%", String.valueOf(itemsSold),
                     "%money-earned%", EconomyManager.format(moneyEarned));
 

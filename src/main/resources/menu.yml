@@ -132,7 +132,7 @@ autoseller-menu:
         - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
         - "<gray>Статус: <green>ВКЛЮЧЕНО"
       actions:
-        - "[cmd] autoseller toggle"
+        - "[toggle]"
     disabled:
       material: "RED_DYE"
       model-data: [ ]
@@ -144,7 +144,7 @@ autoseller-menu:
         - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
         - "<gray>Статус: <red>ВЫКЛЮЧЕНО"
       actions:
-        - "[cmd] autoseller toggle"
+        - "[toggle]"
     slots: [ 48 ]
 
   navigation:

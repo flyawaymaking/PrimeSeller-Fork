@@ -100,6 +100,10 @@ public class AutoSellerListener implements Listener {
             player.closeInventory();
         } else if (action.startsWith("[cmd]")) {
             player.performCommand(subAction);
+        } else if (action.startsWith("[toggle]")) {
+            AutoSellerManager.toggleAutoSell(player);
+            AutoSellerManager.savePlayerData(player);
+            AutoSellerMenu.updateAutoSellMenu(player, clickedInv, AutoSellerMenu.getCurrentPage(clickedInv));
         } else if (action.startsWith("[back]")) {
             int currentPage = AutoSellerMenu.getCurrentPage(clickedInv);
             AutoSellerMenu.updateAutoSellMenu(player, clickedInv, currentPage > 0 ? currentPage - 1 : 0);
