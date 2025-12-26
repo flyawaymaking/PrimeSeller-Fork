@@ -7,7 +7,7 @@
 
 ## About
 
-A powerful and customizable Minecraft plugin for Paper servers (1.21+) that allows players to sell items to a buyer for
+A powerful and customizable Minecraft plugin for Paper servers (1.21.4+) that allows players to sell items to a buyer for
 in-game currency. Features both a manual seller interface and a fully automated auto-sell system.
 
 ## Features
@@ -89,7 +89,7 @@ The plugin will generate a random price between min and max for the item each ti
 
 ## Installation
 
-1. Ensure your server is running **Paper 1.21 or later**.
+1. Ensure your server is running **Paper 1.21.4 or later**.
 2. Install the required dependencies:
     * **[Vault](https://www.spigotmc.org/resources/vault.34315/)** (or
       ensure [CoinsEngine](https://github.com/nulli0n/CoinsEngine-spigot) is installed if using that economy).
