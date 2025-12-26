@@ -95,7 +95,10 @@ public class PrimeSellerCommands implements CommandExecutor {
 
     private boolean handleItemCommands(@NotNull Player player, @NotNull String subCommand, @NotNull String[] args) {
         if (args.length < 3) {
-            sendUsageMessages(player);
+            String messagePath = subCommand.equals("addlimited")
+                    ? "commands.addlimited-use"
+                    : "commands.addunlimited-use";
+            Chat.sendMessage(player, MessagesConfig.getMessage(messagePath));
             return true;
         }
 
@@ -135,11 +138,6 @@ public class PrimeSellerCommands implements CommandExecutor {
         } catch (NumberFormatException e) {
             return null;
         }
-    }
-
-    private void sendUsageMessages(@NotNull Player player) {
-        Chat.sendMessage(player, MessagesConfig.getMessage("commands.addlimited-use"));
-        Chat.sendMessage(player, MessagesConfig.getMessage("commands.addunlimited-use"));
     }
 
     private void sendAddedMessage(@NotNull Player player, @NotNull String itemName, double minPrice, double maxPrice) {

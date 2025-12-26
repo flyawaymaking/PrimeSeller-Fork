@@ -4,7 +4,7 @@ messages:
   sell: "<#dddddd>Вы успешно продали <yellow>%item% %amount% <#dddddd>за <#53fb31>%price%!"
   limit: "<#ff4141>Ваш лимит на продажу этого предмета исчерпан! Приходите в другой раз."
   amount: "<#ff4141>Недостаточно предметов."
-  items-loading: "<red>Предметы скупщика всё ещё загружаются... Подождите"
+  items-loading: "<red>Предметы скупщика всё ещё загружаются... Подождите!"
 
   # Сообщения об обновлении
   limited-update-cast:
@@ -23,10 +23,10 @@ messages:
     update-lim: "<#00d328>Список продаваемых предметов с лимитом успешно обновлен!"
     update-unlim: "<#00d328>Список продаваемых предметов без лимита успешно обновлен!"
     added: "<#dddddd>Предмет <#eaff43>%item% <#dddddd>успешно добавлен в список товаров. Его цена колеблется от <#53fb31>%min-price% <#dddddd>до <#53fb31>%max-price%<#dddddd> за штуку."
-    addlimited-use: "<red>Использование: /primeseller addlimited (мин. цена) (макс. цена) за шт. (Держите предмет в руке) - Добавить предмет в продажу."
-    addunlimited-use: "<red>Использование: /primeseller addunlimited (мин. цена) (макс. цена) за шт. (Держите предмет в руке) - Добавить предмет в продажу."
-    update-use: "<red>Использование: /primeseller update - Обновить список торгов"
-    update-use-lim: "<red>Использование: /primeseller update [limited|unlimited]"
+    addlimited-use: "<red>Использование: <yellow>/primeseller addlimited <мин. цена> <макс. цена></yellow> за шт. (Держите предмет в руке) - Добавить предмет в продажу."
+    addunlimited-use: "<red>Использование: <yellow>/primeseller addunlimited <мин. цена> <макс. цена></yellow> за шт. (Держите предмет в руке) - Добавить предмет в продажу."
+    update-use: "<red>Использование: <yellow>/primeseller update</yellow> - Обновить список торгов"
+    update-use-lim: "<red>Использование:  <yellow>/primeseller update [limited|unlimited]"
     player-only: "<red>Только для игроков!"
     addlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."
     addunlimited-error: "<white>Нельзя <red>ничего<white> добавить в список скупаемых предметов."
