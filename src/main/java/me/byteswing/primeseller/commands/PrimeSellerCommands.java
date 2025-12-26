@@ -104,10 +104,8 @@ public class PrimeSellerCommands implements CommandExecutor {
 
         ItemStack handItem = player.getInventory().getItemInMainHand();
         if (handItem.getType() == Material.AIR) {
-            String errorPath = subCommand.equals("addlimited")
-                    ? "commands.addlimited-error"
-                    : "commands.addunlimited-error";
-            Chat.sendMessage(player, MessagesConfig.getMessage(errorPath));
+            Chat.sendMessage(player, MessagesConfig.getMessage("commands.additem-error")
+                    .replace("%material%", LanguageManager.translate(handItem.getType())));
             return true;
         }
 

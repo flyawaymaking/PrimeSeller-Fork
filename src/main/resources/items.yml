@@ -276,67 +276,51 @@ limited:
     TOTEM_OF_UNDYING:
       min-price: 1140
       max-price: 1200
-
     TRIDENT:
       min-price: 1520
       max-price: 1600
-
     HEAVY_CORE:
       min-price: 3800
       max-price: 4000
-
     LEATHER_HORSE_ARMOR:
       min-price: 188
       max-price: 200
-
     IRON_HORSE_ARMOR:
       min-price: 380
       max-price: 400
-
     GOLDEN_HORSE_ARMOR:
       min-price: 568
       max-price: 600
-
     DIAMOND_HORSE_ARMOR:
       min-price: 1140
       max-price: 1200
-
     ELYTRA:
       min-price: 3800
       max-price: 4000
-
     SKELETON_SKULL:
       min-price: 760
       max-price: 800
-
     CREEPER_HEAD:
       min-price: 1520
       max-price: 1600
-
     ZOMBIE_HEAD:
       min-price: 1000
       max-price: 1200
-
     PIGLIN_HEAD:
       min-price: 1000
       max-price: 1200
-
     WITHER_SKELETON_SKULL:
       min-price: 1100
       max-price: 1300
-
     DRAGON_HEAD:
       min-price: 1500
       max-price: 2000
-
     HEART_OF_THE_SEA:
       min-price: 1400
       max-price: 1500
-
     NETHER_STAR:
       min-price: 2000
       max-price: 3000
-
     NAUTILUS_SHELL:
       min-price: 380
       max-price: 400
