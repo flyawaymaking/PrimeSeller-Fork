@@ -1,36 +1,36 @@
 # PrimeSeller-Fork Configuration
 
-# формат: language_COUNTRY
-# после изменения этого параметра сервер загрузит имена материалов по умолчанию
-language: ru_RU
+# Format: language_COUNTRY
+# After changing this parameter, the server will load default material names
+language: en_US
 
-# Настройки времени
-time-zone: "Europe/Moscow"  # все time-zone: https://timeie.com/
-time-format: "hhч. mmм. ssс."
-datetime-format: "dd.MM.yy HH:mm"
+# Time settings
+time-zone: "America/New_York"  # All time zones: https://timeie.com/
+time-format: "hhh. mmm. sss."
+datetime-format: "MM/dd/yyyy HH:mm"
 
 inv-sell-priority: "LIMITED"
 
 economy:
-  # Можно использовать CoinsEngine вместо Vault
+  # You can use CoinsEngine instead of Vault
   coins-engine:
-    enable: false  # Если отключено, будет использоваться Vault.
+    enable: false  # If disabled, Vault will be used.
     currency: "money"
 
 understating-price:
-  enable: true  # Включить снижение цены при продаже
-  items: 512  # Сколько предметов надо продать для уменьшения цены
-  percent: 0.1  # Процент, на который будет снижена цена при продаже
-  min-percent: 30  # Минимальный процент от суммы, ниже которого цена не опустится
+  enable: true  # Enable price reduction on sales
+  items: 512  # How many items must be sold to reduce the price
+  percent: 0.1  # Percentage by which the price will be reduced on sale
+  min-percent: 30  # Minimum percentage of the original price below which the price will not drop
 
-# Автопродажа
+# Auto-sell
 autosell:
-  check-interval: 100  # Как часто нужно проверять инвентари для автопродажи (в тиках - 20 тиков = 1 секунда)
-  enable-autosell-messages: false  # включение сообщений об авто-продаже продаже предметов
+  check-interval: 100  # How often to check inventories for auto-selling (in ticks - 20 ticks = 1 second)
+  enable-autosell-messages: false  # Enable messages about auto-selling items
 
-prefix: "<gradient:#5637bc:#9258ff>[Скупщик]</gradient> <#b9b9b9>|"
+prefix: "<gradient:#5637bc:#9258ff>[Buyer]</gradient> <#b9b9b9>|"
 
-# Здесь Mini-Messages не поддерживается
+# Mini-Messages is not supported here
 placeholders:
-  autosell-enabled: "&aВключен"
-  autosell-disabled: "&cВыключен"
+  autosell-enabled: "&aEnabled"
+  autosell-disabled: "&cDisabled"

@@ -1,4 +1,4 @@
-# В предметах поддерживаются числа с дробной частью через "." - пример: 10.05
+# In items, numbers with fractional parts are supported using "." - example: 10.05
 unlimited:
   enable: true
   update: 14400

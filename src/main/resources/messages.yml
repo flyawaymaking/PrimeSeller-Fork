@@ -1,43 +1,43 @@
-# Поддержка MiniMessage формата: https://docs.advntr.dev/minimessage/format.html
+# MiniMessage format support: https://docs.advntr.dev/minimessage/format.html
 messages:
-  # Основные сообщения
-  sell-inventory: "<#dddddd>Вы успешно продали <yellow>свой инвентарь. <#dddddd>Результаты продажи: <yellow>%amount% <#dddddd>за <#53fb31>%price%!"
-  sell: "<#dddddd>Вы успешно продали <yellow>%item% %amount% <#dddddd>за <#53fb31>%price%!"
-  limit: "<#ff4141>Ваш лимит на продажу этого предмета исчерпан! Приходите в другой раз."
-  amount: "<#ff4141>Недостаточно предметов."
-  items-loading: "<red>Предметы скупщика всё ещё загружаются... Подождите!"
+  # Main messages
+  sell-inventory: "<#dddddd>You have successfully sold <yellow>your inventory. <#dddddd>Sale results: <yellow>%amount% <#dddddd>for <#53fb31>%price%!"
+  sell: "<#dddddd>You have successfully sold <yellow>%item% %amount% <#dddddd>for <#53fb31>%price%!"
+  limit: "<#ff4141>Your selling limit for this item has been reached! Come back another time."
+  amount: "<#ff4141>Not enough items."
+  items-loading: "<red>Buyer items are still loading... Please wait!"
 
-  # Сообщения об обновлении
+  # Update messages
   limited-update-cast:
     - ""
-    - "<#dddddd>Скупщик с лимитом обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
+    - "<#dddddd>Limited buyer has been updated! - <hover:show_text:'<#00d328>Click to open buyer'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
     - ""
   unlimited-update-cast:
     - ""
-    - "<#dddddd>Скупщик без лимита обновился! - <hover:show_text:'<#00d328>Нажмите чтобы открыть скупщик'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
+    - "<#dddddd>Unlimited buyer has been updated! - <hover:show_text:'<#00d328>Click to open buyer'><click:run_command:'/seller'><#00d328>[/seller]</click></hover>"
     - ""
 
-  # Сообщения команд
+  # Command messages
   commands:
-    reload: "<green>Конфигурация успешно перезагружена!"
-    update: "<#00d328>Список продаваемых предметов успешно обновлен!"
-    update-lim: "<#00d328>Список продаваемых предметов с лимитом успешно обновлен!"
-    update-unlim: "<#00d328>Список продаваемых предметов без лимита успешно обновлен!"
-    added: "<#dddddd>Предмет <#eaff43>%item% <#dddddd>успешно добавлен в конфиг. Его цена колеблется от <#53fb31>%min-price% <#dddddd>до <#53fb31>%max-price%<#dddddd> за штуку."
-    addlimited-use: "<red>Добавить предмет в продажу: <white>/primeseller addlimited <мин. цена> <макс. цена></white> за шт. <yellow>(Держите предмет в руке)"
-    addunlimited-use: "<red>Добавить предмет в продажу: <white>/primeseller addunlimited <мин. цена> <макс. цена></white> за шт. <yellow>(Держите предмет в руке)"
-    update-use: "<red>Обновить список торгов: <white>/primeseller update</white> - "
-    update-use-lim: "<red>Обновить нужный список торгов: <white>/primeseller update [limited|unlimited]"
-    player-only: "<red>Только для игроков!"
-    additem-error: "<white>Нельзя добавить <red>%material%<white> в список скупаемых предметов."
-    not-number: "<red>Введите правильное число."
+    reload: "<green>Configuration successfully reloaded!"
+    update: "<#00d328>List of sellable items successfully updated!"
+    update-lim: "<#00d328>Limited items list successfully updated!"
+    update-unlim: "<#00d328>Unlimited items list successfully updated!"
+    added: "<#dddddd>Item <#eaff43>%item% <#dddddd>successfully added to config. Its price fluctuates from <#53fb31>%min-price% <#dddddd>to <#53fb31>%max-price%<#dddddd> per piece."
+    addlimited-use: "<red>Add item for sale: <white>/primeseller addlimited <min price> <max price></white> per piece <yellow>(Hold item in hand)"
+    addunlimited-use: "<red>Add item for sale: <white>/primeseller addunlimited <min price> <max price></white> per piece <yellow>(Hold item in hand)"
+    update-use: "<red>Update trade list: <white>/primeseller update</white> - "
+    update-use-lim: "<red>Update specific trade list: <white>/primeseller update [limited|unlimited]"
+    player-only: "<red>Players only!"
+    additem-error: "<white>Cannot add <red>%material%<white> to the buyer's item list."
+    not-number: "<red>Please enter a valid number."
 
-  # Сообщения автопродажи
+  # Auto-sell messages
   autosell:
-    enabled: "<green>Автопродажа включена!"
-    disabled: "<red>Автопродажа выключена!"
-    added: "<green>Предмет <yellow>%item% <green>добавлен в автопродажу"
-    removed: "<red>Предмет <yellow>%item% <red>удален из автопродажи"
-    already-added: "<red>Этот предмет уже добавлен в автопродажу"
-    limit-reached: "<red>Вы достигли лимита автопродажи! Максимум: %max-slots% предметов"
-    sell: "<green>Автопродажа: <gray>продано <yellow>%amount% <gray>предметов за <green>%price%"
+    enabled: "<green>Auto-sell enabled!"
+    disabled: "<red>Auto-sell disabled!"
+    added: "<green>Item <yellow>%item% <green>added to auto-sell"
+    removed: "<red>Item <yellow>%item% <red>removed from auto-sell"
+    already-added: "<red>This item is already added to auto-sell"
+    limit-reached: "<red>You have reached the auto-sell limit! Maximum: %max-slots% items"
+    sell: "<green>Auto-sell: <gray>sold <yellow>%amount% <gray>items for <green>%price%"
