@@ -1,10 +1,11 @@
+# В предметах поддерживаются числа с дробной частью через "." - пример: 10.05
 unlimited:
   enable: true
   update: 14400
   items:
     ARROW:
-      min-price: 4
-      max-price: 5
+      min-price: 4.3
+      max-price: 5.7
     SHULKER_SHELL:
       min-price: 65
       max-price: 70
@@ -39,8 +40,8 @@ unlimited:
       min-price: 25
       max-price: 35
     SPIDER_EYE:
-      min-price: 3
-      max-price: 5
+      min-price: 3.1
+      max-price: 5.6
     ROTTEN_FLESH:
       min-price: 20
       max-price: 25
