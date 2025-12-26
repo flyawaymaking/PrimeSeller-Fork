@@ -20,19 +20,17 @@
 package me.byteswing.primeseller.listeners;
 
 import me.byteswing.primeseller.configurations.MessagesConfig;
-import me.byteswing.primeseller.configurations.database.UnlimSoldItems;
 import me.byteswing.primeseller.managers.EconomyManager;
 import me.byteswing.primeseller.managers.LanguageManager;
-import me.byteswing.primeseller.menu.AutoSellerMenu;
+import me.byteswing.primeseller.managers.SellerManager;
 import me.byteswing.primeseller.menu.SellerInventoryHolder;
 import me.byteswing.primeseller.PrimeSeller;
-import me.byteswing.primeseller.configurations.Config;
-import me.byteswing.primeseller.configurations.ItemsConfig;
+import me.byteswing.primeseller.configurations.MainConfig;
 import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.configurations.database.SellItem;
 import me.byteswing.primeseller.menu.SellerMenu;
 import me.byteswing.primeseller.util.Chat;
-import me.byteswing.primeseller.util.Understating;
+import me.byteswing.primeseller.util.MenuHelper;
 import me.byteswing.primeseller.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -41,261 +39,165 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
 public class SellerListener implements Listener {
+    private static MenuHelper menuHelper;
 
-    public SellerListener(PrimeSeller plugin) {
+    public SellerListener(@NotNull PrimeSeller plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        menuHelper = SellerMenu.getMenuHelper();
     }
 
     @EventHandler
-    public void onClick(InventoryClickEvent e) {
-        if (SellerInventoryHolder.isSellerInventory(e.getView().getTopInventory())) {
-            Player player = (Player) e.getWhoClicked();
-            e.setCancelled(true);
+    public void onClick(InventoryClickEvent event) {
+        if (SellerInventoryHolder.isSellerInventory(event.getView().getTopInventory())) {
+            event.setCancelled(true);
 
-            if (e.getClickedInventory() == player.getInventory()) {
-                e.setCancelled(true);
+            Inventory clickedInv = event.getClickedInventory();
+            if (!SellerInventoryHolder.isSellerInventory(clickedInv)) return;
+
+            Player player = (Player) event.getWhoClicked();
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem == null) return;
+
+            List<String> actions = menuHelper.getItemActions(clickedItem);
+            if (actions == null || actions.isEmpty()) return;
+
+            for (String action : actions) {
+                handleAction(clickedInv, player, action, event.getClick());
+            }
+        }
+    }
+
+    private void handleAction(@NotNull Inventory clickedInv, @NotNull Player player, @NotNull String action, @NotNull ClickType clickType) {
+        String subAction = action.substring(action.indexOf(']') + 1).trim();
+        if (action.startsWith("[close]")) {
+            player.closeInventory();
+        } else if (action.startsWith("[cmd]")) {
+            player.performCommand(subAction);
+        } else if (action.startsWith("[update]")) {
+            SellerMenu.update(player, clickedInv);
+        } else if (action.startsWith("[sell-all]")) {
+            sellAllItems(player);
+        } else if (action.startsWith("[main-item]")) {
+            int itemSlot;
+            try {
+                itemSlot = Integer.parseInt(subAction);
+            } catch (NumberFormatException e) {
                 return;
             }
-
-            MapBase sql = new MapBase();
-            ClickType clickType = e.getClick();
-            player.updateInventory();
-
-            handleSellInvSlots(e, player, sql);
-            handleAutoSellInvSlots(e, player);
-            handleExitSlots(e, player);
-            handleCountdownSlots(e, player);
-
+            int count = 0;
             if (clickType == ClickType.LEFT) {
-                sellAction(sql, e, player, 1);
+                count = 1;
             } else if (clickType == ClickType.RIGHT) {
-                sellAction(sql, e, player, 64);
-            } else {
-                if (clickType == ClickType.SHIFT_LEFT) {
-                    sellAction(sql, e, player, Util.calc(player, sql.getSlot(e.getSlot()).getMaterial()));
-                }
+                count = 64;
+            } else if (clickType == ClickType.SHIFT_LEFT) {
+                count = Util.getMaterialAmount(player, MapBase.get(itemSlot).getMaterial());
             }
+            sellAction(clickedInv, player, itemSlot, count);
         }
     }
 
-    private void handleExitSlots(InventoryClickEvent e, Player player) {
-        for (Integer i : Config.getMenuConfig().getIntegerList("exit.slots")) {
-            if (e.getSlot() == i) {
-                for (String s : Config.getMenuConfig().getStringList("exit.commands")) {
-                    if (s.startsWith("[cmd]")) {
-                        String cmd = s.replace("[cmd]", "").replace("[cmd] ", "");
-                        player.performCommand(cmd);
-                    }
-                    if (s.startsWith("[close]")) {
-                        player.closeInventory();
-                    }
-                }
-                e.setCancelled(true);
-                break;
-            }
+    private void sellAction(@NotNull Inventory inventory, @NotNull Player player, int itemSlot, int count) {
+        SellItem sellItem = MapBase.get(itemSlot);
+        if (sellItem == null) return;
+
+        if (count <= 0) {
+            Chat.sendMessage(player, MessagesConfig.getMessage("amount"));
+            return;
         }
-    }
 
-    private void handleSellInvSlots(InventoryClickEvent e, Player player, MapBase sql) {
-        for (Integer i : Config.getMenuConfig().getIntegerList("sell-inventory.slots")) {
-            if (e.getSlot() == i) {
-                sellAllItems(sql, e, player);
-                e.setCancelled(true);
-                break;
-            }
+        Material material = sellItem.getMaterial();
+        ItemStack item = ItemStack.of(material, count);
+        if (!player.getInventory().containsAtLeast(item, count)) {
+            Chat.sendMessage(player, MessagesConfig.getMessage("amount"));
+            return;
         }
-    }
 
-    private void handleCountdownSlots(InventoryClickEvent e, Player player) {
-        for (Integer i : Config.getMenuConfig().getIntegerList("countdown.slots")) {
-            if (e.getSlot() == i) {
-                SellerMenu.update(player, e.getClickedInventory());
-                e.setCancelled(true);
-                break;
-            }
-        }
-    }
-
-    private void handleAutoSellInvSlots(InventoryClickEvent e, Player player) {
-        if (!player.hasPermission("primeseller.autoseller")) return;
-        for (Integer i : Config.getMenuConfig().getIntegerList("autosell.slots")) {
-            if (e.getSlot() == i) {
-                AutoSellerMenu.openAutoSellMenu(player);
-                e.setCancelled(true);
-                break;
-            }
-        }
-    }
-
-    private void sellAction(MapBase sql, InventoryClickEvent e, Player player, int count) {
-        int slot = e.getSlot();
-        if (MapBase.database.containsKey(slot)) {
-            SellItem sellItem = sql.getSlot(slot);
-
-            if (count <= 0) {
-                Chat.sendMessage(player, MessagesConfig.getMessage("amount"));
-                e.setCancelled(true);
+        double price;
+        SellerManager.SoldData soldData;
+        if (sellItem.isLimited()) {
+            soldData = SellerManager.sellLimItem(player, sellItem, count);
+            if (soldData.amount == 0) {
+                Chat.sendMessage(player, MessagesConfig.getMessage("limit"));
                 return;
             }
+        } else {
+            soldData = SellerManager.sellUnlimItem(player, sellItem, count);
 
-            Material material = sellItem.getMaterial();
-            ItemStack item = ItemStack.of(material, count);
-            if (!player.getInventory().containsAtLeast(item, count)) {
-                Chat.sendMessage(player, MessagesConfig.getMessage("amount"));
-                e.setCancelled(true);
-                return;
-            }
-
-            if (sql.isLimited(slot)) {
-                int selledItems = UnlimSoldItems.get(player.getUniqueId());
-                int itemLimit = sellItem.getPlayerItemLimit(player);
-                int totalLimit = ItemsConfig.getConfig().getInt("limited.limit");
-                int itemLimitPerItems = ItemsConfig.getConfig().getInt("limited.limit-per-items");
-
-                int availableToSell = Math.min(totalLimit - selledItems, itemLimitPerItems - itemLimit);
-
-                if (count > availableToSell) {
-                    count = availableToSell;
-                }
-
-                if (count <= 0) {
-                    Chat.sendMessage(player, MessagesConfig.getMessage("limit"));
-                    e.setCancelled(true);
-                    return;
-                }
-
-                UnlimSoldItems.put(player.getUniqueId(), selledItems + count);
-                sellItem.addItemLimit((Player) e.getWhoClicked(), count);
-            }
-
-            double price = sql.getPrice(slot) * count;
-            Understating.takePrice(slot, count);
-            Chat.sendMessage(e.getWhoClicked(), MessagesConfig.getMessage("sell")
-                    .replace("%item%", LanguageManager.translate(material))
-                    .replace("%price%", EconomyManager.format(price))
-                    .replace("%amount%", "x" + count));
-            item.setAmount(count);
-            player.getInventory().removeItem(item);
-            EconomyManager.addBalance(player, price);
-            SellerMenu.update(player, e.getClickedInventory());
-            e.setCancelled(true);
         }
+        price = soldData.price;
+
+        Chat.sendMessage(player, MessagesConfig.getMessage("sell")
+                .replace("%item%", LanguageManager.translate(material))
+                .replace("%price%", EconomyManager.format(price))
+                .replace("%amount%", "x" + soldData.amount));
+        EconomyManager.addBalance(player, price);
+        SellerMenu.update(player, inventory);
     }
 
-    private void sellAllItems(MapBase sql, InventoryClickEvent e, Player player) {
+    private void sellAllItems(@NotNull Player player) {
         double price = 0;
         int amount = 0;
 
-        String type = Config.getConfig().getString("inv-sell-priority", "LIMITED");
+        String type = MainConfig.getSellPriority();
+        Map<Material, Integer> inventoryItems = Util.getMaterialsAmount(player);
 
         if (type.equals("LIMITED")) {
-            Data lim = sellLimited(player, sql);
-            Data unlim = sellUnLimited(player, sql);
+            SellerManager.SoldData lim = sellAllLimited(player, inventoryItems);
+            SellerManager.SoldData unlim = sellAllUnLimited(player, inventoryItems);
             amount += lim.amount + unlim.amount;
             price += lim.price + unlim.price;
         }
         if (type.equals("UNLIMITED")) {
-            Data unlim = sellUnLimited(player, sql);
-            Data lim = sellLimited(player, sql);
+            SellerManager.SoldData unlim = sellAllUnLimited(player, inventoryItems);
+            SellerManager.SoldData lim = sellAllLimited(player, inventoryItems);
             amount += lim.amount + unlim.amount;
             price += lim.price + unlim.price;
         }
 
         EconomyManager.addBalance(player, price);
-        Chat.sendMessage(e.getWhoClicked(), MessagesConfig.getMessage("sell-inventory")
+        Chat.sendMessage(player, MessagesConfig.getMessage("sell-inventory")
                 .replace("%price%", EconomyManager.format(price))
                 .replace("%amount%", "x" + amount));
     }
 
-    private Data sellUnLimited(Player player, MapBase sql) {
+    private @NotNull SellerManager.SoldData sellAllUnLimited(@NotNull Player player, @NotNull Map<Material, Integer> inventoryItems) {
         double price = 0;
         int amount = 0;
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item == null || item.getType() == Material.AIR) {
-                continue;
-            }
-
-            Material itemMaterial = item.getType();
-            for (Map.Entry<Integer, SellItem> d : MapBase.database.entrySet()) {
-                if (!d.getValue().isLimited()) {
-                    if (itemMaterial.equals(d.getValue().getMaterial())) {
-                        int slot = d.getKey();
-                        int count = Util.calc(player, itemMaterial);
-                        if (count <= 0) {
-                            continue;
-                        }
-
-                        amount += count;
-                        price += sql.getPrice(slot) * count;
-                        player.getInventory().removeItem(ItemStack.of(itemMaterial, count));
-                        Understating.takePrice(slot, count);
-                    }
+        for (SellItem sellItem : MapBase.database.values()) {
+            if (!sellItem.isLimited()) {
+                int count = inventoryItems.getOrDefault(sellItem.getMaterial(), 0);
+                if (count > 0) {
+                    SellerManager.SoldData soldData = SellerManager.sellUnlimItem(player, sellItem, count);
+                    price += soldData.price;
+                    amount += soldData.amount;
                 }
             }
         }
-        return new Data(price, amount);
+        return new SellerManager.SoldData(price, amount);
     }
 
-    private Data sellLimited(Player player, MapBase sql) {
+    private @NotNull SellerManager.SoldData sellAllLimited(@NotNull Player player, @NotNull Map<Material, Integer> inventoryItems) {
         double price = 0;
         int amount = 0;
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item == null || item.getType() == Material.AIR) {
-                continue;
-            }
-
-            Material itemMaterial = item.getType();
-            for (Map.Entry<Integer, SellItem> d : MapBase.database.entrySet()) {
-                if (d.getValue().isLimited()) {
-                    if (itemMaterial.equals(d.getValue().getMaterial())) {
-                        int count = Util.calc(player, itemMaterial);
-                        if (count <= 0) {
-                            continue;
-                        }
-                        int slot = d.getKey();
-                        SellItem sellItem = sql.getSlot(slot);
-
-                        int selledItems = UnlimSoldItems.get(player.getUniqueId());
-                        int itemLimit = sellItem.getPlayerItemLimit(player);
-                        int totalLimit = ItemsConfig.getConfig().getInt("limited.limit");
-                        int itemLimitPerItems = ItemsConfig.getConfig().getInt("limited.limit-per-items");
-
-                        int availableToSell = Math.min(totalLimit - selledItems, itemLimitPerItems - itemLimit);
-
-                        if (count > availableToSell) {
-                            count = availableToSell;
-                        }
-
-                        if (count <= 0) {
-                            continue;
-                        }
-
-                        UnlimSoldItems.put(player.getUniqueId(), selledItems + count);
-                        sellItem.addItemLimit(player, count);
-
-                        amount += count;
-                        price += sql.getPrice(slot) * count;
-                        player.getInventory().removeItem(ItemStack.of(itemMaterial, count));
-                        Understating.takePrice(slot, count);
-                    }
+        for (SellItem sellItem : MapBase.database.values()) {
+            if (sellItem.isLimited()) {
+                int count = inventoryItems.getOrDefault(sellItem.getMaterial(), 0);
+                if (count > 0) {
+                    SellerManager.SoldData soldData = SellerManager.sellLimItem(player, sellItem, count);
+                    price += soldData.price;
+                    amount += soldData.amount;
                 }
             }
         }
-        return new Data(price, amount);
-    }
-
-    public static class Data {
-        double price;
-        int amount;
-
-        public Data(double price, int amount) {
-            this.price = price;
-            this.amount = amount;
-        }
+        return new SellerManager.SoldData(price, amount);
     }
 }

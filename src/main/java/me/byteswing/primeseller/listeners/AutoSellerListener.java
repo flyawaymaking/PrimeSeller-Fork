@@ -17,14 +17,13 @@
 package me.byteswing.primeseller.listeners;
 
 import me.byteswing.primeseller.PrimeSeller;
-import me.byteswing.primeseller.configurations.Config;
 import me.byteswing.primeseller.configurations.MessagesConfig;
 import me.byteswing.primeseller.managers.AutoSellerManager;
 import me.byteswing.primeseller.managers.LanguageManager;
 import me.byteswing.primeseller.menu.AutoSellerInventoryHolder;
 import me.byteswing.primeseller.menu.AutoSellerMenu;
-import me.byteswing.primeseller.menu.SellerMenu;
 import me.byteswing.primeseller.util.Chat;
+import me.byteswing.primeseller.util.MenuHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,16 +32,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class AutoSellerListener implements Listener {
-    private final PrimeSeller plugin;
+    private static MenuHelper menuHelper;
 
-    public AutoSellerListener(PrimeSeller plugin) {
-        this.plugin = plugin;
+    public AutoSellerListener(@NotNull PrimeSeller plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        menuHelper = AutoSellerMenu.getMenuHelper();
         initOnlinePlayers();
     }
 
@@ -54,94 +55,92 @@ public class AutoSellerListener implements Listener {
 
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        AutoSellerManager.loadPlayerData(e.getPlayer());
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        AutoSellerManager.loadPlayerData(event.getPlayer());
     }
 
     @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
         AutoSellerManager.savePlayerData(player);
         AutoSellerManager.clearPlayerCache(player);
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent e) {
-        if (AutoSellerInventoryHolder.isAutoSellInventory(e.getView().getTopInventory())) {
-            handleAutoSellInventoryClick(e);
-        }
-    }
+    public void onInventoryClick(InventoryClickEvent event) {
+        Inventory topInventory = event.getView().getTopInventory();
+        if (AutoSellerInventoryHolder.isAutoSellInventory(topInventory)) {
+            event.setCancelled(true);
 
-    private void handleAutoSellInventoryClick(InventoryClickEvent e) {
-        Player player = (Player) e.getWhoClicked();
-        e.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+            if (clickedItem == null) return;
 
-        int currentPage = AutoSellerMenu.getCurrentPage(e.getView().getTopInventory());
+            Player player = (Player) event.getWhoClicked();
+            Inventory clickedInv = event.getClickedInventory();
 
-        if (e.getClickedInventory() == player.getInventory()) {
-            ItemStack clickedItem = e.getCurrentItem();
-            if (clickedItem != null && clickedItem.getType() != Material.AIR) {
-                Material material = clickedItem.getType();
-
-                if (AutoSellerManager.addAutoSellMaterial(player, material)) {
-                    AutoSellerManager.savePlayerData(player);
-                    Chat.sendMessage(player, MessagesConfig.getMessage("autosell.added")
-                            .replace("%item%", LanguageManager.translate(material)));
-                } else {
-                    if (AutoSellerManager.getAutoSellMaterials(player).size() >= AutoSellerManager.getMaxAutoSellSlots(player)) {
-                        Chat.sendMessage(player, MessagesConfig.getMessage("autosell.limit-reached")
-                                .replace("%max-slots%", String.valueOf(AutoSellerManager.getMaxAutoSellSlots(player))));
-                    } else {
-                        Chat.sendMessage(player, MessagesConfig.getMessage("autosell.already-added"));
-                    }
-                }
-
-                AutoSellerMenu.updateAutoSellMenu(player, e.getView().getTopInventory(), currentPage);
-            }
-            return;
-        }
-
-        int slot = e.getSlot();
-        ItemStack clickedItem = e.getCurrentItem();
-
-        if (clickedItem != null && clickedItem.hasItemMeta()) {
-            ItemMeta meta = clickedItem.getItemMeta();
-            Integer targetPage = meta.getPersistentDataContainer().get(AutoSellerMenu.getPageKey(), PersistentDataType.INTEGER);
-
-            if (targetPage != null) {
-                AutoSellerMenu.openAutoSellMenu(player, targetPage);
+            if (clickedInv == player.getInventory()) {
+                addItemToAutoSell(player, clickedItem, topInventory);
                 return;
             }
-        }
 
-        if (slot == Config.getAutoSellConfig().getInt("toggle-slot", 49)) {
-            AutoSellerManager.toggleAutoSell(player);
-            AutoSellerManager.savePlayerData(player);
-            AutoSellerMenu.updateAutoSellMenu(player, e.getView().getTopInventory(), currentPage);
-            return;
-        }
+            if (clickedInv != topInventory) return;
 
-        if (slot == Config.getAutoSellConfig().getInt("back-slot", 50)) {
-            if (player.hasPermission("primeseller.seller")) {
-                SellerMenu.open(player, plugin);
-            }
-            return;
-        }
+            List<String> actions = menuHelper.getItemActions(clickedItem);
+            if (actions == null || actions.isEmpty()) return;
 
-        if (isItemSlot(slot)) {
-            if (clickedItem != null && clickedItem.getType() != Material.AIR) {
-                Material material = clickedItem.getType();
-                if (AutoSellerManager.removeAutoSellMaterial(player, material)) {
-                    AutoSellerManager.savePlayerData(player);
-                    Chat.sendMessage(player, MessagesConfig.getMessage("autosell.removed")
-                            .replace("%item%", LanguageManager.translate(material)));
-                }
-                AutoSellerMenu.updateAutoSellMenu(player, e.getView().getTopInventory(), currentPage);
+            for (String action : actions) {
+                handleAction(clickedInv, player, action, clickedItem);
             }
         }
     }
 
-    private boolean isItemSlot(int slot) {
-        return AutoSellerMenu.getItemSlotsFromConfig().contains(slot);
+    private void handleAction(@NotNull Inventory clickedInv, @NotNull Player player, @NotNull String action, @NotNull ItemStack clickedItem) {
+        String subAction = action.substring(action.indexOf(']') + 1).trim();
+        if (action.startsWith("[close]")) {
+            player.closeInventory();
+        } else if (action.startsWith("[cmd]")) {
+            player.performCommand(subAction);
+        } else if (action.startsWith("[back]")) {
+            int currentPage = AutoSellerMenu.getCurrentPage(clickedInv);
+            AutoSellerMenu.updateAutoSellMenu(player, clickedInv, currentPage > 0 ? currentPage - 1 : 0);
+        } else if (action.startsWith("[next]")) {
+            int currentPage = AutoSellerMenu.getCurrentPage(clickedInv);
+            AutoSellerMenu.updateAutoSellMenu(player, clickedInv, currentPage < getMaxPage(player) ? currentPage + 1 : currentPage);
+        } else if (action.startsWith("[main-item]")) {
+            Material material = clickedItem.getType();
+            if (AutoSellerManager.removeAutoSellMaterial(player, material)) {
+                AutoSellerManager.savePlayerData(player);
+                Chat.sendMessage(player, MessagesConfig.getMessage("autosell.removed")
+                        .replace("%item%", LanguageManager.translate(material)));
+            }
+            AutoSellerMenu.updateAutoSellMenu(player, clickedInv, AutoSellerMenu.getCurrentPage(clickedInv));
+        }
+    }
+
+    private int getMaxPage(@NotNull Player player) {
+        int playerMaterialsCount = AutoSellerManager.getAutoSellMaterials(player).size();
+        int itemsSlotsCount = menuHelper.getSlots("autosell-item").size();
+        return (int) Math.ceil((double) playerMaterialsCount / itemsSlotsCount);
+    }
+
+    private void addItemToAutoSell(@NotNull Player player, @NotNull ItemStack clickedItem, @NotNull Inventory topInventory) {
+        if (clickedItem.getType() != Material.AIR) {
+            Material material = clickedItem.getType();
+
+            if (AutoSellerManager.addAutoSellMaterial(player, material)) {
+                AutoSellerManager.savePlayerData(player);
+                Chat.sendMessage(player, MessagesConfig.getMessage("autosell.added")
+                        .replace("%item%", LanguageManager.translate(material)));
+            } else {
+                if (AutoSellerManager.getAutoSellMaterials(player).size() >= AutoSellerManager.getMaxAutoSellSlots(player)) {
+                    Chat.sendMessage(player, MessagesConfig.getMessage("autosell.limit-reached")
+                            .replace("%max-slots%", String.valueOf(AutoSellerManager.getMaxAutoSellSlots(player))));
+                } else {
+                    Chat.sendMessage(player, MessagesConfig.getMessage("autosell.already-added"));
+                }
+            }
+
+            AutoSellerMenu.updateAutoSellMenu(player, topInventory, AutoSellerMenu.getCurrentPage(topInventory));
+        }
     }
 }

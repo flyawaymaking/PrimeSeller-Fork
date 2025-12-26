@@ -5,50 +5,50 @@
 package me.byteswing.primeseller.configurations.database;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class SellItem {
-    Material material;
-    int slot;
-    double price;
-    HashMap<UUID, Integer> hashItemLimit = new HashMap<>();
-    boolean isLimited;
+    private final int slot;
+    private final Material material;
+    private double price;
+    private final boolean isLimited;
+    private final HashMap<UUID, Integer> hashItemLimit = new HashMap<>();
 
-    public SellItem(Material material, int slot, double price, boolean isLimited) {
-        this.material = material;
+    public SellItem(@NotNull Material material, int slot, double price, boolean isLimited) {
         this.slot = slot;
+        this.material = material;
         this.price = price;
         this.isLimited = isLimited;
     }
 
-    public Material getMaterial() {
+    public int getSlot() {
+        return slot;
+    }
+
+    public @NotNull Material getMaterial() {
         return material;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public int getPlayerItemLimit(Player p) {
-        return hashItemLimit.getOrDefault(p.getUniqueId(), 0);
+    public int getPlayerItemLimit(UUID playerId) {
+        return hashItemLimit.getOrDefault(playerId, 0);
     }
 
     public boolean isLimited() {
         return isLimited;
     }
 
-    public void addItemLimit(Player p, int count) {
-        setItemLimit(p, getPlayerItemLimit(p) + count);
+    public double getPrice() {
+        return price;
     }
 
     public void setPrice(double price) {
         this.price = price;
     }
 
-    public void setItemLimit(Player p, int itemLimit) {
-        hashItemLimit.put(p.getUniqueId(), itemLimit);
+    public void addItemLimit(@NotNull UUID playerId, int count) {
+        hashItemLimit.put(playerId, getPlayerItemLimit(playerId) + count);
     }
 }

@@ -25,10 +25,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.util.Chat;
+import org.jetbrains.annotations.NotNull;
 
 public class AutoSellerCommand implements CommandExecutor {
 
-    public AutoSellerCommand(PrimeSeller plugin) {
+    public AutoSellerCommand(@NotNull PrimeSeller plugin) {
         plugin.getCommand("autoseller").setExecutor(this);
     }
 
@@ -40,7 +41,7 @@ public class AutoSellerCommand implements CommandExecutor {
         }
 
         if (!player.hasPermission("primeseller.autoseller")) {
-            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.permission"));
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.no-permission"));
             return true;
         }
 

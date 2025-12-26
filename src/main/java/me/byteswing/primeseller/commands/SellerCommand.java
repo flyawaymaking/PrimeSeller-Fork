@@ -13,26 +13,30 @@ import org.bukkit.entity.Player;
 import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.menu.SellerMenu;
 import me.byteswing.primeseller.util.Chat;
+import org.jetbrains.annotations.NotNull;
 
-public class OpenCommand implements CommandExecutor {
+public class SellerCommand implements CommandExecutor {
+    PrimeSeller plugin;
 
-    PrimeSeller main;
-
-    public OpenCommand(PrimeSeller main) {
-        main.getCommand("seller").setExecutor(this);
-        this.main = main;
+    public SellerCommand(@NotNull PrimeSeller plugin) {
+        this.plugin = plugin;
+        plugin.getCommand("seller").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player player) {
-            if (!player.hasPermission("primeseller.seller")) {
-                Chat.sendMessage(sender, MessagesConfig.getMessage("commands.permission"));
-                return true;
-            }
-            SellerMenu.open(player, main);
-            player.playSound(player.getLocation(), Sound.UI_TOAST_IN, 1, 1);
+        if (!(sender instanceof Player player)) {
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.player-only"));
+            return true;
         }
+
+        if (!player.hasPermission("primeseller.seller")) {
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.no-permission"));
+            return true;
+        }
+
+        SellerMenu.open(player, plugin);
+        player.playSound(player.getLocation(), Sound.UI_TOAST_IN, 1, 1);
         return true;
     }
 }

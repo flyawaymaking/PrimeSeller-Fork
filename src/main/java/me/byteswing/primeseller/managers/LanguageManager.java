@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.File;
@@ -37,7 +38,7 @@ public class LanguageManager {
     private static final Gson gson = new GsonBuilder().create();
     private static final YamlConfiguration translations = new YamlConfiguration();
 
-    public static void reload(JavaPlugin plugin) {
+    public static void reload(@NotNull JavaPlugin plugin) {
         String lang = plugin.getConfig().getString("language", "ru_ru").toLowerCase();
 
         File file = new File(plugin.getDataFolder(), "translations/" + lang + ".yml");
@@ -47,14 +48,14 @@ public class LanguageManager {
             try {
                 translations.load(file);
                 if (!translations.getKeys(false).isEmpty()) return;
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         plugin.getLogger().info("Loading the language " + lang + "...");
 
         String version = plugin.getServer().getMinecraftVersion();
-        String url = "https://api.github.com/repos/InventivetalentDev/minecraft-assets"
-                + "/contents/assets/minecraft/lang/" + lang + ".json?ref=" + version;
+        String url = "https://api.github.com/repos/InventivetalentDev/minecraft-assets" + "/contents/assets/minecraft/lang/" + lang + ".json?ref=" + version;
 
         try {
             HttpClient client = HttpClient.newHttpClient();
@@ -64,10 +65,7 @@ public class LanguageManager {
             JsonObject root = gson.fromJson(resp.body(), JsonObject.class);
             String base64Content = root.get("content").getAsString();
 
-            JsonObject json = gson.fromJson(
-                    new String(Base64Coder.decodeLines(base64Content)),
-                    JsonObject.class
-            );
+            JsonObject json = gson.fromJson(new String(Base64Coder.decodeLines(base64Content)), JsonObject.class);
 
             for (Map.Entry<String, JsonElement> e : json.entrySet()) {
 
@@ -93,7 +91,7 @@ public class LanguageManager {
         }
     }
 
-    public static String translate(Material mat) {
+    public static @NotNull String translate(@NotNull Material mat) {
         String key = mat.name().toLowerCase();
         String def = key.replace("_", " ");
         return translations.getString("material." + key, def);

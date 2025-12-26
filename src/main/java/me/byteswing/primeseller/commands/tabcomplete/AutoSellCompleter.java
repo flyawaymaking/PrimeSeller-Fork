@@ -20,14 +20,15 @@ import me.byteswing.primeseller.PrimeSeller;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class AutoSellCompleter implements TabCompleter {
 
-    public AutoSellCompleter(PrimeSeller main) {
-        main.getCommand("autoseller").setTabCompleter(this);
+    public AutoSellCompleter(@NotNull PrimeSeller plugin) {
+        plugin.getCommand("autoseller").setTabCompleter(this);
     }
 
     @Override

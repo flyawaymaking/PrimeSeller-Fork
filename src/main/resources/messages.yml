@@ -18,7 +18,6 @@ messages:
 
   # Сообщения команд
   commands:
-    permission: "<#ff4141>У Вас нет прав на использование данной команды."
     reload: "<green>Конфигурация успешно перезагружена!"
     update: "<#00d328>Список продаваемых предметов успешно обновлен!"
     update-lim: "<#00d328>Список продаваемых предметов с лимитом успешно обновлен!"
@@ -41,4 +40,4 @@ messages:
     removed: "<red>Предмет <yellow>%item% <red>удален из автопродажи"
     already-added: "<red>Этот предмет уже добавлен в автопродажу"
     limit-reached: "<red>Вы достигли лимита автопродажи! Максимум: %max-slots% предметов"
-    sell: "<green>Автопродажа: <gray>%amount% <yellow>%item% <gray>продано за <green>%price%"
+    sell: "<green>Автопродажа: <gray>продано <yellow>%amount% <gray>предметов за <green>%price%"

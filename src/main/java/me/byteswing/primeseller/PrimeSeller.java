@@ -27,6 +27,7 @@ import me.byteswing.primeseller.util.Chat;
 import me.byteswing.primeseller.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public final class PrimeSeller extends JavaPlugin {
 
@@ -67,8 +68,7 @@ public final class PrimeSeller extends JavaPlugin {
         Updater.stop();
         AutoSellerManager.disable();
         SellerMenu.disable();
-        MapBase sql = new MapBase();
-        sql.clear();
+        MapBase.clear();
         msg("██████╗░██████╗░██╗███╗░░░███╗███████╗░██████╗███████╗██╗░░░░░██╗░░░░░███████╗██████╗░");
         msg("██╔══██╗██╔══██╗██║████╗░████║██╔════╝██╔════╝██╔════╝██║░░░░░██║░░░░░██╔════╝██╔══██╗");
         msg("██████╔╝██████╔╝██║██╔████╔██║█████╗░░╚█████╗░█████╗░░██║░░░░░██║░░░░░█████╗░░██████╔╝");
@@ -78,11 +78,11 @@ public final class PrimeSeller extends JavaPlugin {
         msg("░░▀░░ ▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀▀▀▀ ▀░░▀ | Server version: (" + Bukkit.getServer().getVersion() + ")");
     }
 
-    private void msg(String msg) {
+    private void msg(@NotNull String msg) {
         getLogger().info(msg);
     }
 
-    private void loadManager(Manager manager, PrimeSeller plugin) {
+    private void loadManager(@NotNull Manager manager, @NotNull PrimeSeller plugin) {
         manager.init(plugin);
     }
 }

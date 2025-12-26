@@ -21,12 +21,13 @@ import me.byteswing.primeseller.util.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerGUITask extends BukkitRunnable {
     private final Player player;
     private final Inventory inv;
 
-    public PlayerGUITask(Inventory inv, Player player) {
+    public PlayerGUITask(@NotNull Inventory inv, @NotNull Player player) {
         this.player = player;
         this.inv = inv;
     }

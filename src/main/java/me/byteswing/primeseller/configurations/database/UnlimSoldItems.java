@@ -1,5 +1,7 @@
 package me.byteswing.primeseller.configurations.database;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -10,11 +12,11 @@ public class UnlimSoldItems {
         playerSoldItems.clear();
     }
 
-    public static void put(UUID playerId, int sold) {
+    public static void put(@NotNull UUID playerId, int sold) {
         playerSoldItems.put(playerId, sold);
     }
 
-    public static int get(UUID playerId) {
+    public static int get(@NotNull UUID playerId) {
         return playerSoldItems.getOrDefault(playerId, 0);
     }
 }

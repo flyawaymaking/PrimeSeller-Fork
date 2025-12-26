@@ -20,7 +20,7 @@
 package me.byteswing.primeseller.util;
 
 import me.byteswing.primeseller.PrimeSeller;
-import me.byteswing.primeseller.configurations.Config;
+import me.byteswing.primeseller.configurations.MainConfig;
 import me.byteswing.primeseller.configurations.ItemsConfig;
 import me.byteswing.primeseller.configurations.MessagesConfig;
 import me.byteswing.primeseller.configurations.database.MapBase;
@@ -29,6 +29,7 @@ import me.byteswing.primeseller.managers.AutoSellerManager;
 import me.byteswing.primeseller.managers.SellerManager;
 import me.byteswing.primeseller.tasks.UpdaterTask;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -59,36 +60,36 @@ public class Updater {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
-    public static String getLimitedTime() {
+    public static @NotNull String getLimitedTime() {
         int seconds = counter.get("limited");
         int hours = seconds / 3600;
         int minutes = (seconds % 3600) / 60;
         int remainingSeconds = seconds % 60;
 
-        return Config.getTimeFormat()
+        return MainConfig.getTimeFormat()
                 .replace("hh", String.valueOf(hours))
                 .replace("mm", String.valueOf(minutes))
                 .replace("ss", String.valueOf(remainingSeconds));
     }
 
-    public static String getUnLimitedTime() {
+    public static @NotNull String getUnLimitedTime() {
         int seconds = counter.get("unlimited");
         int hours = seconds / 3600;
         int minutes = (seconds % 3600) / 60;
         int remainingSeconds = seconds % 60;
 
-        return Config.getTimeFormat()
+        return MainConfig.getTimeFormat()
                 .replace("hh", String.valueOf(hours))
                 .replace("mm", String.valueOf(minutes))
                 .replace("ss", String.valueOf(remainingSeconds));
     }
 
-    public static void update(PrimeSeller plugin) {
+    public static void update(@NotNull PrimeSeller plugin) {
         clearAndCreateUnLimited(plugin, true);
         clearAndCreateLimited(plugin, true);
     }
 
-    public static void clearAndCreateLimited(PrimeSeller plugin, boolean needTaskRestart) {
+    public static void clearAndCreateLimited(@NotNull PrimeSeller plugin, boolean needTaskRestart) {
         try {
             if (needTaskRestart && limTask != null) {
                 limTask.cancel();
@@ -100,8 +101,7 @@ public class Updater {
             UnlimSoldItems.clear();
 
             AutoSellerManager.resetAllLimitedStats();
-            MapBase sql = new MapBase();
-            sql.clearLimited();
+            MapBase.clearLimited();
 
             Util.limitedFormat = Util.formattedTime(limitedUpdateSeconds);
 
@@ -119,7 +119,7 @@ public class Updater {
         }
     }
 
-    public static void clearAndCreateUnLimited(PrimeSeller plugin, boolean needTaskRestart) {
+    public static void clearAndCreateUnLimited(@NotNull PrimeSeller plugin, boolean needTaskRestart) {
         try {
             if (needTaskRestart && unlimTask != null) {
                 unlimTask.cancel();
@@ -129,8 +129,7 @@ public class Updater {
             Util.update = true;
 
             AutoSellerManager.resetAllUnlimitedStats();
-            MapBase sql = new MapBase();
-            sql.clearUnLimited();
+            MapBase.clearUnLimited();
 
             Understating.resetCounters();
 
@@ -150,7 +149,7 @@ public class Updater {
         }
     }
 
-    public static void start(PrimeSeller plugin) {
+    public static void start(@NotNull PrimeSeller plugin) {
         startCountdown();
         clearAndCreateUnLimited(plugin, true);
         clearAndCreateLimited(plugin, true);

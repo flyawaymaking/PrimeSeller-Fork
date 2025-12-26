@@ -36,6 +36,7 @@ import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.util.Util;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -49,7 +50,11 @@ public class SellerMenu {
                 "lim-item", "unlim-item", "divider");
     }
 
-    public static void open(Player player, PrimeSeller plugin) {
+    public static @NotNull MenuHelper getMenuHelper() {
+        return menuHelper;
+    }
+
+    public static void open(@NotNull Player player, @NotNull PrimeSeller plugin) {
         UUID playerId = player.getUniqueId();
         SellerInventoryHolder holder = new SellerInventoryHolder();
         Inventory inv = Bukkit.createInventory(holder, menuHelper.getSize(), menuHelper.getTitle());
@@ -63,12 +68,12 @@ public class SellerMenu {
         player.openInventory(inv);
     }
 
-    public static void update(Player player, Inventory inv) {
+    public static void update(@NotNull Player player, @NotNull Inventory inv) {
         updateSellMenu(inv, player);
         player.updateInventory();
     }
 
-    public static void deleteTask(UUID playerId) {
+    public static void deleteTask(@NotNull UUID playerId) {
         BukkitTask task = tasks.remove(playerId);
         if (task != null) {
             task.cancel();
@@ -82,25 +87,23 @@ public class SellerMenu {
         }
     }
 
-    public static void updateSellMenu(Inventory inv, Player player) {
-        MapBase sql = new MapBase();
+    public static void updateSellMenu(@NotNull Inventory inv, @NotNull Player player) {
         UUID playerId = player.getUniqueId();
-        for (Map.Entry<Integer, SellItem> entry : MapBase.database.entrySet()) {
-            int slot = entry.getKey();
-            Material material = entry.getValue().getMaterial();
-            double price = sql.getPrice(slot);
+        for (SellItem sellItem : MapBase.database.values()) {
+            Material material = sellItem.getMaterial();
+            double price = sellItem.getPrice();
             String[] placeholders = {
                     "%price-x1%", EconomyManager.format(price),
                     "%price-x64%", EconomyManager.format(price * 64),
-                    "%price-all%", EconomyManager.format(Util.calc(player, material) * price)
+                    "%price-all%", EconomyManager.format(Util.getMaterialAmount(player, material) * price)
             };
-            boolean isLimited = sql.isLimited(slot);
-            String path = isLimited? "lim-item": "unlim-item";
+            boolean isLimited = sellItem.isLimited();
+            String path = isLimited ? "lim-item" : "unlim-item";
             if (isLimited) {
                 String[] additional = {
                         "%sell%", String.valueOf(UnlimSoldItems.get(playerId)),
                         "%max%", String.valueOf(ItemsConfig.getConfig().getInt("limited.limit")),
-                        "%sell-items%", String.valueOf(sql.getSlot(slot).getPlayerItemLimit(player)),
+                        "%sell-items%", String.valueOf(sellItem.getPlayerItemLimit(player.getUniqueId())),
                         "%max-items%", String.valueOf(ItemsConfig.getConfig().getInt("limited.limit-per-items"))
                 };
                 placeholders = Stream.concat(
@@ -108,7 +111,7 @@ public class SellerMenu {
                         Arrays.stream(additional)
                 ).toArray(String[]::new);
             }
-            menuHelper.addItemByMaterial(inv, path, material, slot, placeholders);
+            menuHelper.addItemByMaterial(inv, path, material, sellItem.getSlot(), placeholders);
         }
         String[] placeholders = {
                 "%lim-time%", Updater.getLimitedTime(),

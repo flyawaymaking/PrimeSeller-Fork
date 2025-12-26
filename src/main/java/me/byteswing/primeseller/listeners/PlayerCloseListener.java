@@ -30,13 +30,13 @@ import java.util.UUID;
 
 public class PlayerCloseListener implements Listener {
 
-    public PlayerCloseListener(PrimeSeller main) {
-        Bukkit.getPluginManager().registerEvents(this, main);
+    public PlayerCloseListener(PrimeSeller plugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
-    public void onClose(InventoryCloseEvent e) {
-        UUID playerId = e.getPlayer().getUniqueId();
+    public void onClose(InventoryCloseEvent event) {
+        UUID playerId = event.getPlayer().getUniqueId();
         SellerMenu.deleteTask(playerId);
     }
 }

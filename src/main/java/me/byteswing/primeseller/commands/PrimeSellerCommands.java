@@ -33,19 +33,21 @@ import me.byteswing.primeseller.configurations.ItemsConfig;
 import me.byteswing.primeseller.managers.ConfigManager;
 import me.byteswing.primeseller.util.Chat;
 import me.byteswing.primeseller.util.Updater;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PrimeSellerCommands implements CommandExecutor {
     private final PrimeSeller plugin;
 
-    public PrimeSellerCommands(PrimeSeller main) {
-        this.plugin = main;
-        main.getCommand("primeseller").setExecutor(this);
+    public PrimeSellerCommands(@NotNull PrimeSeller plugin) {
+        this.plugin = plugin;
+        plugin.getCommand("primeseller").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("primeseller.admin")) {
-            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.permission"));
+            Chat.sendMessage(sender, MessagesConfig.getMessage("commands.no-permission"));
             return true;
         }
 
@@ -91,7 +93,7 @@ public class PrimeSellerCommands implements CommandExecutor {
         return handleItemCommands(player, subCommand, args);
     }
 
-    private boolean handleItemCommands(Player player, String subCommand, String[] args) {
+    private boolean handleItemCommands(@NotNull Player player, @NotNull String subCommand, @NotNull String[] args) {
         if (args.length < 3) {
             sendUsageMessages(player);
             return true;
@@ -127,7 +129,7 @@ public class PrimeSellerCommands implements CommandExecutor {
         Chat.init(plugin);
     }
 
-    private Double parsePrice(String priceStr) {
+    private @Nullable Double parsePrice(@NotNull String priceStr) {
         try {
             return Double.parseDouble(priceStr);
         } catch (NumberFormatException e) {
@@ -135,12 +137,12 @@ public class PrimeSellerCommands implements CommandExecutor {
         }
     }
 
-    private void sendUsageMessages(Player player) {
+    private void sendUsageMessages(@NotNull Player player) {
         Chat.sendMessage(player, MessagesConfig.getMessage("commands.addlimited-use"));
         Chat.sendMessage(player, MessagesConfig.getMessage("commands.addunlimited-use"));
     }
 
-    private void sendAddedMessage(Player player, String itemName, double minPrice, double maxPrice) {
+    private void sendAddedMessage(@NotNull Player player, @NotNull String itemName, double minPrice, double maxPrice) {
         String message = MessagesConfig.getMessage("commands.added")
                 .replace("%item%", itemName)
                 .replace("%min-price%", EconomyManager.format(minPrice))

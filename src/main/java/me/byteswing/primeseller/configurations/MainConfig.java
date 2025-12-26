@@ -21,9 +21,10 @@ package me.byteswing.primeseller.configurations;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 
-public class Config {
+public class MainConfig {
     private static Plugin plugin;
     private static FileConfiguration config;
 
@@ -33,16 +34,16 @@ public class Config {
         config = plugin.getConfig();
     }
 
-    public static void reloadConfig() {
+    public void reloadConfig() {
         plugin.reloadConfig();
         config = plugin.getConfig();
     }
 
-    public static FileConfiguration getConfig() {
+    public static @NotNull FileConfiguration getConfig() {
         return config;
     }
 
-    public static String getTimeFormat() {
+    public static @NotNull String getTimeFormat() {
         return config.getString("time-format", "hhh. mmm. sss.");
     }
 
@@ -60,5 +61,9 @@ public class Config {
 
     public static int getUnderstandingPriceMinPercent() {
         return config.getInt("understating-price.min-percent", 30);
+    }
+
+    public static @NotNull String getSellPriority() {
+        return config.getString("inv-sell-priority", "LIMITED");
     }
 }

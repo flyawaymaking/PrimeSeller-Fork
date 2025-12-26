@@ -25,6 +25,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,23 +34,27 @@ import java.util.Set;
 public class AutoSellerMenu {
     private static MenuHelper menuHelper;
 
-    public static void init(PrimeSeller plugin) {
+    public static void init(@NotNull PrimeSeller plugin) {
         menuHelper = new MenuHelper(plugin, "autoseller-menu",
                 "autosell-item", "divider", "toggle-button", "navigation");
     }
 
-    public static int getCurrentPage(Inventory inventory) {
+    public static @NotNull MenuHelper getMenuHelper() {
+        return menuHelper;
+    }
+
+    public static int getCurrentPage(@NotNull Inventory inventory) {
         if (inventory.getHolder() instanceof AutoSellerInventoryHolder holder) {
             return holder.getCurrentPage();
         }
         return 0;
     }
 
-    public static void openAutoSellMenu(Player player) {
+    public static void openAutoSellMenu(@NotNull Player player) {
         openAutoSellMenu(player, 0);
     }
 
-    public static void openAutoSellMenu(Player player, int page) {
+    public static void openAutoSellMenu(@NotNull Player player, int page) {
         AutoSellerInventoryHolder holder = new AutoSellerInventoryHolder();
         Inventory inv = Bukkit.createInventory(holder, menuHelper.getSize(), menuHelper.getTitle("%page%", page > 0 ? "[" + (page + 1) + "]" : ""));
         holder.setInventory(inv);
@@ -59,7 +64,7 @@ public class AutoSellerMenu {
         player.openInventory(inv);
     }
 
-    public static void updateAutoSellMenu(Player player, Inventory inv, int page) {
+    public static void updateAutoSellMenu(@NotNull Player player, @NotNull Inventory inv, int page) {
         inv.clear();
 
         if (inv.getHolder() instanceof AutoSellerInventoryHolder holder) {
@@ -67,7 +72,7 @@ public class AutoSellerMenu {
         }
 
         Set<Material> allMaterials = AutoSellerManager.getAutoSellMaterials(player);
-        List<Integer> itemSlots = getAutoSellSlots();
+        List<Integer> itemSlots = menuHelper.getSlots("autosell-item");
         int totalPages = (int) Math.ceil((double) allMaterials.size() / itemSlots.size());
         String[] placeholders = {
                 "%slots%", String.valueOf(allMaterials.size()),
@@ -78,13 +83,13 @@ public class AutoSellerMenu {
 
         createAutoSellSlots(inv, player, page, allMaterials, itemSlots);
         createToggleButton(inv, player, placeholders);
-        createNavigationButtons(inv, player, page, totalPages, placeholders);
+        createNavigationButtons(inv, page, totalPages, placeholders);
         createCustomButtons(inv, placeholders);
         createDividers(inv, player, page, itemSlots);
     }
 
-    private static void createAutoSellSlots(Inventory inv, Player player, int page, Set<Material> allMaterials,
-                                            List<Integer> itemSlots) {
+    private static void createAutoSellSlots(@NotNull Inventory inv, @NotNull Player player, int page,
+                                            @NotNull Set<Material> allMaterials, @NotNull List<Integer> itemSlots) {
         List<Material> materialsList = new ArrayList<>(allMaterials);
 
         int startIndex = page * itemSlots.size();
@@ -106,7 +111,7 @@ public class AutoSellerMenu {
         }
     }
 
-    private static void createToggleButton(Inventory inv, Player player, String... placeholders) {
+    private static void createToggleButton(@NotNull Inventory inv, @NotNull Player player, @NotNull String... placeholders) {
         boolean enabled = AutoSellerManager.isAutoSellEnabled(player);
 
         String path = enabled ? "toggle-button.enabled" : "toggle-button.disabled";
@@ -115,7 +120,7 @@ public class AutoSellerMenu {
         menuHelper.setItemToSlots(inv, "toggle-button", item);
     }
 
-    private static void createNavigationButtons(Inventory inv, Player player, int page, int totalPages, String... placeholders) {
+    private static void createNavigationButtons(@NotNull Inventory inv, int page, int totalPages, @NotNull String... placeholders) {
         if (page > 0) {
             String previousPagePath = "navigation.previous-page";
             ItemStack previousButton = menuHelper.createCustomItem(previousPagePath, placeholders);
@@ -129,11 +134,11 @@ public class AutoSellerMenu {
         }
     }
 
-    private static void createCustomButtons(Inventory inv, String... placeholders) {
+    private static void createCustomButtons(@NotNull Inventory inv, @NotNull String... placeholders) {
         menuHelper.addCustomItems(inv, placeholders);
     }
 
-    private static void createDividers(Inventory inv, Player player, int page, List<Integer> itemSlots) {
+    private static void createDividers(@NotNull Inventory inv, @NotNull Player player, int page, @NotNull List<Integer> itemSlots) {
         if (!menuHelper.isEnabled("divider")) return;
         ItemStack divider = menuHelper.createCustomItem("divider");
 
@@ -155,9 +160,5 @@ public class AutoSellerMenu {
                 inv.setItem(i, divider);
             }
         }
-    }
-
-    private static List<Integer> getAutoSellSlots() {
-        return menuHelper.getSlots("autosell-items");
     }
 }

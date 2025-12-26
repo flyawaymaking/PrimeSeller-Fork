@@ -19,10 +19,11 @@
 
 package me.byteswing.primeseller.util;
 
-import me.byteswing.primeseller.configurations.Config;
+import me.byteswing.primeseller.configurations.MainConfig;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -34,9 +35,9 @@ public class Util {
     public static String limitedFormat = "Loading...";
     public static String unlimitedFormat = "Loading...";
 
-    public static String formattedTime(int time) {
+    public static @NotNull String formattedTime(int time) {
         String defaultFormat = "yy-MM-dd HH:mm";
-        String fmt = Config.getConfig().getString("datetime-format", defaultFormat);
+        String fmt = MainConfig.getConfig().getString("datetime-format", defaultFormat);
         SimpleDateFormat format;
         try {
             format = new SimpleDateFormat(fmt);
@@ -45,7 +46,7 @@ public class Util {
         }
         long milliseconds = time * 1000L;
 
-        String timeZone = Config.getConfig().getString("time-zone");
+        String timeZone = MainConfig.getConfig().getString("time-zone");
 
         switch (timeZone) {
             case "GMT+2":
@@ -133,16 +134,37 @@ public class Util {
         return format.format(milliseconds);
     }
 
-    public static int calc(Player player, Material material) {
+    public static int getMaterialAmount(@NotNull Player player, @NotNull Material material) {
         int count = 0;
-        for (int i = 0; i < player.getInventory().getSize(); ++i) {
-            if (i != 40 && i != 38 && i != 37 && i != 36 && i != 39) {
-                ItemStack stack = player.getInventory().getItem(i);
-                if (stack != null && stack.getType() == material) {
-                    count += stack.getAmount();
-                }
+        ItemStack[] contents = player.getInventory().getContents();
+
+        for (int i = 0; i < contents.length; i++) {
+            if (i == 36 || i == 37 || i == 38 || i == 39 || i == 40) {
+                continue;
+            }
+
+            ItemStack stack = contents[i];
+            if (stack != null && stack.getType() == material) {
+                count += stack.getAmount();
             }
         }
         return count;
+    }
+
+    public static Map<Material, Integer> getMaterialsAmount(@NotNull Player player) {
+        Map<Material, Integer> inventoryItems = new HashMap<>();
+
+        ItemStack[] contents = player.getInventory().getContents();
+
+        for (int i = 0; i < contents.length; i++) {
+            if (i == 36 || i == 37 || i == 38 || i == 39 || i == 40) {
+                continue;
+            }
+            ItemStack stack = contents[i];
+            if (stack == null) continue;
+
+            inventoryItems.merge(stack.getType(), stack.getAmount(), Integer::sum);
+        }
+        return inventoryItems;
     }
 }

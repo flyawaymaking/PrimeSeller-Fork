@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,22 +19,31 @@
 
 package me.byteswing.primeseller.managers;
 
+import me.byteswing.primeseller.configurations.MenuConfig;
+import me.byteswing.primeseller.configurations.MessagesConfig;
 import org.bukkit.plugin.Plugin;
-import me.byteswing.primeseller.configurations.Config;
+import me.byteswing.primeseller.configurations.MainConfig;
 import me.byteswing.primeseller.configurations.ItemsConfig;
+import org.jetbrains.annotations.NotNull;
 
 public class ConfigManager {
 
-    private static final ItemsConfig i = new ItemsConfig();
-    private static final Config c = new Config();
+    private static final MainConfig config = new MainConfig();
+    private static final ItemsConfig itemsConfig = new ItemsConfig();
+    private static final MenuConfig menuConfig = new MenuConfig();
+    private static final MessagesConfig messagesConfig = new MessagesConfig();
 
-    public static void loadConfigurations(Plugin plugin) {
-        c.loadConfig(plugin);
-        i.loadItemsYaml(plugin);
+    public static void loadConfigurations(@NotNull Plugin plugin) {
+        config.loadConfig(plugin);
+        itemsConfig.loadConfig(plugin);
+        menuConfig.loadConfig(plugin);
+        messagesConfig.loadConfig(plugin);
     }
 
     public static void reloadConfigurations() {
-        Config.reloadConfig();
-        ItemsConfig.reloadConfig();
+        config.reloadConfig();
+        itemsConfig.reloadConfig();
+        menuConfig.reloadConfig();
+        messagesConfig.reloadConfig();
     }
 }

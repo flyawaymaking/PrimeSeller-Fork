@@ -5,6 +5,7 @@
 package me.byteswing.primeseller.configurations.database;
 
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 
@@ -12,36 +13,23 @@ public class MapBase {
 
     public static final LinkedHashMap<Integer, SellItem> database = new LinkedHashMap<>();
 
-    public static void saveMaterial(Material material, int slot, double p, boolean limited) {
-        database.put(slot, new SellItem(material, slot, p, limited));
+    public static void saveMaterial(@NotNull Material material, int itemSlot, double p, boolean limited) {
+        database.put(itemSlot, new SellItem(material, itemSlot, p, limited));
     }
 
-    public SellItem getSlot(int slot) {
-        return database.get(slot);
+    public static SellItem get(int itemSlot) {
+        return database.get(itemSlot);
     }
 
-    public double getPrice(int slot) {
-        return getSlot(slot).getPrice();
-    }
-
-    public void setPrice(int slot, double p) {
-        SellItem item = getSlot(slot);
-        item.setPrice(p);
-    }
-
-    public void clear() {
+    public static void clear() {
         database.clear();
     }
 
-    public void clearLimited() {
-        database.keySet().removeIf(this::isLimited);
+    public static void clearLimited() {
+        database.entrySet().removeIf(entry -> entry.getValue().isLimited());
     }
 
-    public void clearUnLimited() {
-        database.keySet().removeIf(s -> !isLimited(s));
-    }
-
-    public boolean isLimited(int slot) {
-        return getSlot(slot).isLimited();
+    public static void clearUnLimited() {
+        database.entrySet().removeIf(entry -> !entry.getValue().isLimited());
     }
 }

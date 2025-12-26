@@ -36,7 +36,7 @@ seller-menu:
 
   # Настраиваемые поля (Можно добавлять свои предметы).
   # Заполнители: %lim-time%, %unlim-time%, %lim-time-format%, %unlim-time-format%, %autosell-slots%, %autosell-max-slots%
-  # Доступные actions: [close, cmd, sell-all, autoseller, update]
+  # Доступные actions: [close, cmd, sell-all, update]
   sell-inventory:
     material: "CHEST"
     model-data: [ ]
@@ -55,7 +55,7 @@ seller-menu:
       - "<gray>Добавленные предметы: <yellow>%autosell-slots%/%autosell-max-slots%"
     slots: [ 50 ]
     actions:
-      - "[autoseller]"
+      - "[cmd] autoseller"
 
   exit:
     material: "RED_STAINED_GLASS_PANE"
@@ -132,7 +132,7 @@ autoseller-menu:
         - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
         - "<gray>Статус: <green>ВКЛЮЧЕНО"
       actions:
-        - "[toggle]"
+        - "[cmd] autoseller toggle"
     disabled:
       material: "RED_DYE"
       model-data: [ ]
@@ -144,7 +144,7 @@ autoseller-menu:
         - "<gray>Добавлено предметов: <yellow>%slots%/%max-slots%"
         - "<gray>Статус: <red>ВЫКЛЮЧЕНО"
       actions:
-        - "[toggle]"
+        - "[cmd] autoseller toggle"
     slots: [ 48 ]
 
   navigation:
@@ -179,7 +179,7 @@ autoseller-menu:
 
   # Настраиваемые поля (Можно добавлять свои предметы).
   # Заполнители: %slots%, %max-slots%, %current-page%, %total-pages%
-  # Доступные actions: [close, cmd, toggle, back, next]
+  # Доступные actions: [close, cmd, back, next]
   info:
     material: "BOOK"
     model-data: [ ]
@@ -206,5 +206,4 @@ autoseller-menu:
       - "<gray>Вернуться в меню скупщика"
     slots: [ 49 ]
     actions:
-      - "[close]"
       - "[cmd] seller"

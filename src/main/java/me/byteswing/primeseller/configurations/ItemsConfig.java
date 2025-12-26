@@ -25,6 +25,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,16 +37,24 @@ public class ItemsConfig {
     private static File file;
     private static FileConfiguration config;
 
-    public void loadItemsYaml(Plugin main) {
-        plugin = main;
-        file = new File(main.getDataFolder(), "items.yml");
+    public void loadConfig(@NotNull Plugin plugin) {
+        ItemsConfig.plugin = plugin;
+        file = new File(plugin.getDataFolder(), "items.yml");
         if (!file.exists()) {
-            main.saveResource("items.yml", true);
+            plugin.saveResource("items.yml", true);
         }
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    public static void addItem(ItemStack item, double min, double max, boolean limited) {
+    public void reloadConfig() {
+        try {
+            config.load(file);
+        } catch (IOException | InvalidConfigurationException e) {
+            plugin.getLogger().warning("Failed to upload items.yml!");
+        }
+    }
+
+    public static void addItem(@NotNull ItemStack item, double min, double max, boolean limited) {
         String name = item.getType().name();
         String path = limited ? "limited" : "unlimited";
         config.set(path + ".items." + name + ".min-price", min);
@@ -57,32 +66,23 @@ public class ItemsConfig {
         }
     }
 
-    public static void reloadConfig() {
-        try {
-            config.load(file);
-        } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().warning("Failed to upload items.yml!");
-        }
-
-    }
-
-    public static List<String> getUnlimItems() {
+    public static @NotNull List<String> getUnlimItems() {
         ConfigurationSection section = config.getConfigurationSection("unlimited.items");
         if (section == null) {
             section = config.createSection("unlimited.items");
-        };
+        }
         return new ArrayList<>(section.getKeys(false));
     }
 
-    public static List<String> getLimItems() {
+    public static @NotNull List<String> getLimItems() {
         ConfigurationSection section = config.getConfigurationSection("limited.items");
         if (section == null) {
             section = config.createSection("limited.items");
-        };
+        }
         return new ArrayList<>(section.getKeys(false));
     }
 
-    public static FileConfiguration getConfig() {
+    public static @NotNull FileConfiguration getConfig() {
         return config;
     }
 

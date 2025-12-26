@@ -51,7 +51,7 @@ public class PrimeSellerExpansions extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, String params) {
+    public String onRequest(@NotNull OfflinePlayer player, @NotNull String params) {
         if (params.equalsIgnoreCase("psell_unlimited_time_formatted")) {
             return Util.unlimitedFormat;
         }

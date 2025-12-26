@@ -36,6 +36,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -50,11 +51,11 @@ public class MenuHelper {
         this.excludedKeys = new HashSet<>(Arrays.asList(excludedKeys));
     }
 
-    private ConfigurationSection getConfigSection() {
+    private @NotNull ConfigurationSection getConfigSection() {
         return MenuConfig.getConfigurationSection(menuPath);
     }
 
-    public Component getTitle(String... placeholders) {
+    public @NotNull Component getTitle(@NotNull String... placeholders) {
         String title = getConfigSection().getString("title", "<red>Title");
         return Chat.toComponent(replacePlaceholders(title, placeholders));
     }
@@ -63,15 +64,15 @@ public class MenuHelper {
         return getConfigSection().getInt("size", 54);
     }
 
-    public List<Integer> getSlots(String path) {
+    public @NotNull List<Integer> getSlots(@NotNull String path) {
         return getConfigSection().getIntegerList(path);
     }
 
-    public boolean isEnabled(String path) {
+    public boolean isEnabled(@NotNull String path) {
         return getConfigSection().getBoolean(path, true);
     }
 
-    public void setItemToSlots(Inventory inv, String path, ItemStack item) {
+    public void setItemToSlots(@NotNull Inventory inv, @NotNull String path, @NotNull ItemStack item) {
         List<Integer> slots = getConfigSection().getIntegerList(path + ".slots");
         for (int slot : slots) {
             if (slot >= 0 && slot < inv.getSize()) {
@@ -80,7 +81,7 @@ public class MenuHelper {
         }
     }
 
-    public void addItemByMaterial(Inventory inventory, String path, Material material, int slot, String... placeholders) {
+    public void addItemByMaterial(@NotNull Inventory inventory, @NotNull String path, @NotNull Material material, int slot, @NotNull String... placeholders) {
         if (slot < 0 || slot >= inventory.getSize()) {
             return;
         }
@@ -92,12 +93,12 @@ public class MenuHelper {
 
         ItemStack item = new ItemStack(material);
 
-        applyMetaToItem(item, name, lore, null, List.of("main-item"));
+        applyMetaToItem(item, name, lore, null, List.of("[main-item] " + slot));
 
         inventory.setItem(slot, item);
     }
 
-    public void addCustomItems(Inventory inventory,String... placeholders) {
+    public void addCustomItems(@NotNull Inventory inventory, @NotNull String... placeholders) {
         for (String key : getConfigSection().getKeys(false)) {
             if (excludedKeys.contains(key)) {
                 continue;
@@ -111,7 +112,7 @@ public class MenuHelper {
         }
     }
 
-    public ItemStack createCustomItem(String path, String... placeholders) {
+    public @NotNull ItemStack createCustomItem(@NotNull String path, @NotNull String... placeholders) {
         String materialName = getConfigSection().getString(path + ".material");
         Material material = null;
 
@@ -140,7 +141,7 @@ public class MenuHelper {
         return item;
     }
 
-    private ItemStack getSkull(String base64Texture) {
+    private @NotNull ItemStack getSkull(@NotNull String base64Texture) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
 
@@ -160,7 +161,7 @@ public class MenuHelper {
         return skull;
     }
 
-    private List<Component> getLore(String path, String... placeholders) {
+    private @NotNull List<Component> getLore(@NotNull String path, @NotNull String... placeholders) {
         List<String> loreStrings = getConfigSection().getStringList(path + ".lore");
         List<Component> lore = new ArrayList<>();
         for (String loreLine : loreStrings) {
@@ -170,7 +171,7 @@ public class MenuHelper {
         return lore;
     }
 
-    private void applyMetaToItem(ItemStack item, String displayName, List<Component> lore, List<Double> modelDataList, List<String> actions) {
+    private void applyMetaToItem(@NotNull ItemStack item, @Nullable String displayName, @NotNull List<Component> lore, @Nullable List<Double> modelDataList, @Nullable List<String> actions) {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             if (displayName != null) {
@@ -190,7 +191,7 @@ public class MenuHelper {
         }
     }
 
-    private void applyCustomModelData(ItemMeta meta, @NotNull List<Double> modelDataList) {
+    private void applyCustomModelData(@NotNull ItemMeta meta, @NotNull List<Double> modelDataList) {
         if (modelDataList.isEmpty()) {
             return;
         }
@@ -206,7 +207,7 @@ public class MenuHelper {
         meta.setCustomModelDataComponent(customData);
     }
 
-    private String replacePlaceholders(String text, String... placeholders) {
+    private @NotNull String replacePlaceholders(@NotNull String text, @NotNull String... placeholders) {
         if (placeholders == null || placeholders.length % 2 != 0) {
             return text;
         }
@@ -218,7 +219,7 @@ public class MenuHelper {
         return result;
     }
 
-    public List<String> getItemActions(ItemStack item) {
+    public @Nullable List<String> getItemActions(@Nullable ItemStack item) {
         if (item == null || !item.hasItemMeta()) return null;
 
         ItemMeta meta = item.getItemMeta();

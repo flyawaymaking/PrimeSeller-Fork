@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,8 +19,9 @@
 
 package me.byteswing.primeseller.util;
 
-import me.byteswing.primeseller.configurations.Config;
+import me.byteswing.primeseller.configurations.MainConfig;
 import me.byteswing.primeseller.configurations.database.MapBase;
+import me.byteswing.primeseller.configurations.database.SellItem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,32 +31,32 @@ public class Understating {
     public static final HashMap<Integer, Double> standardPrice = new HashMap<>();
     private static final Map<Integer, Integer> soldItemsCount = new HashMap<>();
 
-    public static void takePrice(int item, int count) {
-        if (!Config.isUnderstandingEnabled()) {
+    public static void takePrice(int itemSlot, int count) {
+        if (!MainConfig.isUnderstandingEnabled()) {
             return;
         }
 
-        int itemsThreshold = Config.getUnderstandingPriceItems();
+        int itemsThreshold = MainConfig.getUnderstandingPriceItems();
 
-        soldItemsCount.put(item, soldItemsCount.getOrDefault(item, 0) + count);
+        soldItemsCount.put(itemSlot, soldItemsCount.getOrDefault(itemSlot, 0) + count);
 
-        if (soldItemsCount.get(item) < itemsThreshold) {
+        if (soldItemsCount.get(itemSlot) < itemsThreshold) {
             return;
         }
 
-        int batches = soldItemsCount.get(item) / itemsThreshold;
-        soldItemsCount.put(item, soldItemsCount.get(item) % itemsThreshold);
+        int batches = soldItemsCount.get(itemSlot) / itemsThreshold;
+        soldItemsCount.put(itemSlot, soldItemsCount.get(itemSlot) % itemsThreshold);
 
-        MapBase h2 = new MapBase();
-        if (!standardPrice.containsKey(item)) {
-            standardPrice.put(item, h2.getPrice(item));
+        SellItem sellItem = MapBase.get(itemSlot);
+        if (!standardPrice.containsKey(itemSlot)) {
+            standardPrice.put(itemSlot, sellItem.getPrice());
         }
 
-        double currentPrice = h2.getPrice(item);
-        double originalPrice = standardPrice.get(item);
+        double currentPrice = sellItem.getPrice();
+        double originalPrice = standardPrice.get(itemSlot);
 
-        double percent = Config.getUnderstandingPricePercent();
-        int minPercent = Config.getUnderstandingPriceMinPercent();
+        double percent = MainConfig.getUnderstandingPricePercent();
+        int minPercent = MainConfig.getUnderstandingPriceMinPercent();
 
         double minPrice = originalPrice * minPercent / 100.0;
 
@@ -81,7 +82,7 @@ public class Understating {
         if (totalReduction > 0) {
             double newPrice = currentPrice - totalReduction;
             newPrice = Math.max(minPrice, newPrice);
-            h2.setPrice(item, newPrice);
+            sellItem.setPrice(newPrice);
         }
     }
 
