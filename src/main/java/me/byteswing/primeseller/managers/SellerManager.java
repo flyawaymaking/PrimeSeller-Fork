@@ -19,7 +19,7 @@
 
 package me.byteswing.primeseller.managers;
 
-import me.byteswing.primeseller.configurations.MenuConfig;
+import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.configurations.database.SellItem;
 import me.byteswing.primeseller.configurations.database.UnlimSoldItems;
 import me.byteswing.primeseller.util.Understating;
@@ -40,9 +40,9 @@ public class SellerManager {
         return ThreadLocalRandom.current().nextDouble(min, max + 0.000000001);
     }
 
-    public static void createUnLimItems() {
+    public static void createUnLimItems(@NotNull PrimeSeller plugin) {
         List<String> unlimItems = ItemsConfig.getUnlimItems();
-        List<Integer> unlimSlots = MenuConfig.getUnlimItemsSlots();
+        List<Integer> unlimSlots = plugin.getSellerMenuHelper().getSlots("unlim-item");
 
         for (Integer unlimSlot : unlimSlots) {
             if (unlimItems.isEmpty()) {
@@ -55,15 +55,15 @@ public class SellerManager {
             double price = generate(min, max);
             Material material = Material.getMaterial(itemName);
             if (material != null) {
-                MapBase.saveMaterial(material, unlimSlot, price, true);
+                MapBase.saveMaterial(material, unlimSlot, price, false);
             }
             unlimItems.remove(random);
         }
     }
 
-    public static void createLimItems() {
+    public static void createLimItems(@NotNull PrimeSeller plugin) {
         List<String> limItems = ItemsConfig.getLimItems();
-        List<Integer> limSlots = MenuConfig.getLimItemsSlots();
+        List<Integer> limSlots = plugin.getSellerMenuHelper().getSlots("lim-item");
 
         for (Integer limSlot : limSlots) {
             if (limItems.isEmpty()) {

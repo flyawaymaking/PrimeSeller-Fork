@@ -46,12 +46,7 @@ public class SellerMenu {
     private static MenuHelper menuHelper;
 
     public static void init(PrimeSeller plugin) {
-        menuHelper = new MenuHelper(plugin, "seller-menu",
-                "lim-item", "unlim-item", "divider");
-    }
-
-    public static @NotNull MenuHelper getMenuHelper() {
-        return menuHelper;
+        menuHelper = plugin.getSellerMenuHelper();
     }
 
     public static void open(@NotNull Player player, @NotNull PrimeSeller plugin) {

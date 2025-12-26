@@ -106,7 +106,7 @@ public class Updater {
             Util.limitedFormat = Util.formattedTime(limitedUpdateSeconds);
 
             if (!ItemsConfig.isLimitedEnable()) return;
-            SellerManager.createLimItems();
+            SellerManager.createLimItems(plugin);
             Chat.broadcast(MessagesConfig.getMessageList("limited-update-cast"));
 
             if (needTaskRestart) {
@@ -136,7 +136,7 @@ public class Updater {
             Util.unlimitedFormat = Util.formattedTime(unlimitedUpdateSeconds);
 
             if (!ItemsConfig.isUnlimitedEnable()) return;
-            SellerManager.createUnLimItems();
+            SellerManager.createUnLimItems(plugin);
             Chat.broadcast(MessagesConfig.getMessageList("unlimited-update-cast"));
 
             if (needTaskRestart) {

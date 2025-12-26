@@ -31,6 +31,7 @@ autosell:
 
 prefix: "<gradient:#5637bc:#9258ff>[Скупщик]</gradient> <#b9b9b9>|"
 
+# Здесь Mini-Messages не поддерживается
 placeholders:
   autosell-enabled: "&aВключен"
   autosell-disabled: "&cВыключен"

@@ -51,7 +51,7 @@ public class SellerListener implements Listener {
 
     public SellerListener(@NotNull PrimeSeller plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        menuHelper = SellerMenu.getMenuHelper();
+        menuHelper = plugin.getSellerMenuHelper();
     }
 
     @EventHandler

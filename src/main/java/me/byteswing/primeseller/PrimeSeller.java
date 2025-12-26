@@ -24,12 +24,15 @@ import me.byteswing.primeseller.configurations.database.MapBase;
 import me.byteswing.primeseller.menu.AutoSellerMenu;
 import me.byteswing.primeseller.menu.SellerMenu;
 import me.byteswing.primeseller.util.Chat;
+import me.byteswing.primeseller.util.MenuHelper;
 import me.byteswing.primeseller.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public final class PrimeSeller extends JavaPlugin {
+    private MenuHelper sellerMenuHelper;
+    private MenuHelper autoSellerMenuHelper;
 
     @Override
     public void onEnable() {
@@ -40,7 +43,8 @@ public final class PrimeSeller extends JavaPlugin {
         msg("██║░░░░░██║░░██║██║██║░╚═╝░██║███████╗██████╔╝███████╗███████╗███████╗███████╗██║░░██║");
         msg("╚═╝░░░░░╚═╝░░╚═╝╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░╚══════╝╚══════╝╚══════╝╚══════╝╚═╝░░╚═╝");
         msg("░░▀░░ ▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀▀▀▀ ▀░░▀ | Server version: (" + Bukkit.getServer().getVersion() + ")");
-
+        sellerMenuHelper = new MenuHelper(this, "seller-menu",
+                "lim-item", "unlim-item", "divider");
         ConfigManager.loadConfigurations(this);
         saveDefaultConfig();
         EconomyManager.init(this);
@@ -84,5 +88,13 @@ public final class PrimeSeller extends JavaPlugin {
 
     private void loadManager(@NotNull Manager manager, @NotNull PrimeSeller plugin) {
         manager.init(plugin);
+    }
+
+    public MenuHelper getSellerMenuHelper() {
+        return sellerMenuHelper;
+    }
+
+    public MenuHelper getAutoSellerMenuHelper() {
+        return autoSellerMenuHelper;
     }
 }

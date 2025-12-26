@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class MenuConfig {
     private static Plugin plugin;
@@ -31,14 +30,6 @@ public class MenuConfig {
         } catch (IOException | InvalidConfigurationException e) {
             plugin.getLogger().warning("Failed to upload menu.yml!");
         }
-    }
-
-    public static @NotNull List<Integer> getLimItemsSlots() {
-        return config.getIntegerList("seller-menu.lim-item.slots");
-    }
-
-    public static @NotNull List<Integer> getUnlimItemsSlots() {
-        return config.getIntegerList("seller-menu.unlim-item.slots");
     }
 
     public static @NotNull ConfigurationSection getConfigurationSection(@NotNull String path) {
