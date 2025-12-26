@@ -65,8 +65,10 @@ public final class PrimeSeller extends JavaPlugin {
         loadManager(new ListenerManager(), this);
         loadManager(new CommandManager(), this);
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PrimeSellerExpansions(this).register();
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            PrimeSellerExpansions primeSellerExpansion = new PrimeSellerExpansions(this);
+            primeSellerExpansion.register();
+            getLogger().info("PlaceholderAPI расширение зарегистрировано");
         }
     }
 

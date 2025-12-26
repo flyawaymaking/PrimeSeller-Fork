@@ -54,12 +54,12 @@ in-game currency. Features both a manual seller interface and a fully automated 
 
 If PlaceholderAPI is installed, the following placeholders are available:
 
-* `%primeseller_psell_autoseller_status%` - Returns the player's auto-sell status (e.g., "enabled" / "disabled").
-* `%primeseller_psell_sold_items_number%` - Returns how many limited items the player has sold in the current period.
-* `%primeseller_psell_limited_time%` - Time until the next Limited item update (raw format).
-* `%primeseller_psell_limited_time_formatted%` - Formatted time until the next Limited item update.
-* `%primeseller_psell_unlimited_time%` - Time until the next Unlimited item update (raw format).
-* `%primeseller_psell_unlimited_time_formatted%` - Formatted time until the next Unlimited item update.
+* `%primeseller_autoseller_status%` - Returns the player's auto-sell status (e.g., "enabled" / "disabled").
+* `%primeseller_sold_items_number%` - Returns how many limited items the player has sold in the current period.
+* `%primeseller_limited_time%` - Time until the next Limited item update (raw format).
+* `%primeseller_limited_time_formatted%` - Formatted time until the next Limited item update.
+* `%primeseller_unlimited_time%` - Time until the next Unlimited item update (raw format).
+* `%primeseller_unlimited_time_formatted%` - Formatted time until the next Unlimited item update.
 
 ## Adding Sellable Items
 

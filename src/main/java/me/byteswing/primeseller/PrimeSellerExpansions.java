@@ -37,7 +37,7 @@ public class PrimeSellerExpansions extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier() {
-        return plugin.getName();
+        return "primeseller";
     }
 
     @Override
@@ -52,22 +52,22 @@ public class PrimeSellerExpansions extends PlaceholderExpansion {
 
     @Override
     public String onRequest(@NotNull OfflinePlayer player, @NotNull String params) {
-        if (params.equalsIgnoreCase("psell_unlimited_time_formatted")) {
+        if (params.equalsIgnoreCase("unlimited_time_formatted")) {
             return Util.unlimitedFormat;
         }
-        if (params.equalsIgnoreCase("psell_unlimited_time")) {
+        if (params.equalsIgnoreCase("unlimited_time")) {
             return Updater.getUnLimitedTime();
         }
-        if (params.equalsIgnoreCase("psell_limited_time_formatted")) {
+        if (params.equalsIgnoreCase("limited_time_formatted")) {
             return Util.limitedFormat;
         }
-        if (params.equalsIgnoreCase("psell_limited_time")) {
+        if (params.equalsIgnoreCase("limited_time")) {
             return Updater.getLimitedTime();
         }
-        if (params.equalsIgnoreCase("psell_sold_items_number")) {
+        if (params.equalsIgnoreCase("sold_items_number")) {
             return String.valueOf(UnlimSoldItems.get(player.getUniqueId()));
         }
-        if (params.equalsIgnoreCase("psell_autoseller_status")) {
+        if (params.equalsIgnoreCase("autoseller_status")) {
             Player onlinePlayer = player.getPlayer();
             if (onlinePlayer == null) {
                 String playerName = player.getName();
