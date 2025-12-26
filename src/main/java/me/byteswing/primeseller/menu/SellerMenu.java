@@ -108,6 +108,7 @@ public class SellerMenu {
             }
             menuHelper.addItemByMaterial(inv, path, material, sellItem.getSlot(), placeholders);
         }
+
         String[] placeholders = {
                 "%lim-time%", Updater.getLimitedTime(),
                 "%unlim-time%", Updater.getUnLimitedTime(),

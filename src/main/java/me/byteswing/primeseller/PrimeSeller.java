@@ -43,24 +43,27 @@ public final class PrimeSeller extends JavaPlugin {
         msg("██║░░░░░██║░░██║██║██║░╚═╝░██║███████╗██████╔╝███████╗███████╗███████╗███████╗██║░░██║");
         msg("╚═╝░░░░░╚═╝░░╚═╝╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░╚══════╝╚══════╝╚══════╝╚══════╝╚═╝░░╚═╝");
         msg("░░▀░░ ▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀▀▀▀ ▀░░▀ | Server version: (" + Bukkit.getServer().getVersion() + ")");
-        sellerMenuHelper = new MenuHelper(this, "seller-menu",
-                "lim-item", "unlim-item", "divider");
+
         ConfigManager.loadConfigurations(this);
-        saveDefaultConfig();
         EconomyManager.init(this);
         if (!EconomyManager.isEconomyAvailable()) {
             getLogger().severe("Plugin disabled - economy system not available");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+        sellerMenuHelper = new MenuHelper(this, "seller-menu",
+                "lim-item", "unlim-item", "divider");
+        autoSellerMenuHelper = new MenuHelper(this, "autoseller-menu",
+                "autosell-item", "divider", "toggle-button", "navigation");
+
         Chat.init(this);
         Updater.start(this);
         LanguageManager.reload(this);
         AutoSellerManager.init(this);
-        loadManager(new ListenerManager(), this);
-        loadManager(new CommandManager(), this);
         SellerMenu.init(this);
         AutoSellerMenu.init(this);
+        loadManager(new ListenerManager(), this);
+        loadManager(new CommandManager(), this);
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PrimeSellerExpansions(this).register();

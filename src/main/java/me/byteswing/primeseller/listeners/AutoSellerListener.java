@@ -43,7 +43,7 @@ public class AutoSellerListener implements Listener {
 
     public AutoSellerListener(@NotNull PrimeSeller plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        menuHelper = AutoSellerMenu.getMenuHelper();
+        menuHelper = plugin.getAutoSellerMenuHelper();
         initOnlinePlayers();
     }
 

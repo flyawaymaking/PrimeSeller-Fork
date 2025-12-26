@@ -35,12 +35,7 @@ public class AutoSellerMenu {
     private static MenuHelper menuHelper;
 
     public static void init(@NotNull PrimeSeller plugin) {
-        menuHelper = new MenuHelper(plugin, "autoseller-menu",
-                "autosell-item", "divider", "toggle-button", "navigation");
-    }
-
-    public static @NotNull MenuHelper getMenuHelper() {
-        return menuHelper;
+        menuHelper = plugin.getAutoSellerMenuHelper();
     }
 
     public static int getCurrentPage(@NotNull Inventory inventory) {

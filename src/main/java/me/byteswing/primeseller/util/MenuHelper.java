@@ -65,7 +65,7 @@ public class MenuHelper {
     }
 
     public @NotNull List<Integer> getSlots(@NotNull String path) {
-        return getConfigSection().getIntegerList(path);
+        return getConfigSection().getIntegerList(path + ".slots");
     }
 
     public boolean isEnabled(@NotNull String path) {
