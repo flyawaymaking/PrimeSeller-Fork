@@ -73,7 +73,7 @@ public class MenuHelper {
     }
 
     public void setItemToSlots(@NotNull Inventory inv, @NotNull String path, @NotNull ItemStack item) {
-        List<Integer> slots = getConfigSection().getIntegerList(path + ".slots");
+        List<Integer> slots = getSlots(path);
         for (int slot : slots) {
             if (slot >= 0 && slot < inv.getSize()) {
                 inv.setItem(slot, item.clone());
@@ -104,11 +104,9 @@ public class MenuHelper {
                 continue;
             }
 
-            String itemPath = menuPath + "." + key;
+            ItemStack item = createCustomItem(key, placeholders);
 
-            ItemStack item = createCustomItem(itemPath, placeholders);
-
-            setItemToSlots(inventory, itemPath, item);
+            setItemToSlots(inventory, key, item);
         }
     }
 

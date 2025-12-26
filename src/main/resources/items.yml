@@ -269,9 +269,9 @@ unlimited:
 
 limited:
   enable: true
-  limit: 20
   update: 21600
-  limit-per-items: 32
+  limit: 16
+  limit-per-items: 128
   items:
     TOTEM_OF_UNDYING:
       min-price: 1140
