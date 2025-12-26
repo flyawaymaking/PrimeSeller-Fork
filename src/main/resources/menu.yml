@@ -1,3 +1,4 @@
+# Поддержка MiniMessage формата: https://docs.advntr.dev/minimessage/format.html
 seller-menu:
   title: "<gradient:#5637bc:#9258ff><italic>Скупщик предметов</italic></gradient>"
   size: 54

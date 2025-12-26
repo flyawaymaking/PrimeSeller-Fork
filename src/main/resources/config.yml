@@ -1,5 +1,4 @@
 # PrimeSeller-Fork Configuration
-# Поддержка MiniMessage формата: https://docs.advntr.dev/minimessage/format.html
 
 # формат: language_COUNTRY
 # после изменения этого параметра сервер загрузит имена материалов по умолчанию

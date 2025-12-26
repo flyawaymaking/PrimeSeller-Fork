@@ -1,3 +1,4 @@
+# Поддержка MiniMessage формата: https://docs.advntr.dev/minimessage/format.html
 messages:
   # Основные сообщения
   sell-inventory: "<#dddddd>Вы успешно продали <yellow>свой инвентарь. <#dddddd>Результаты продажи: <yellow>%amount% <#dddddd>за <#53fb31>%price%!"
