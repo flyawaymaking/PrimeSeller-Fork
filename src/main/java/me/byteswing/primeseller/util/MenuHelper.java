@@ -40,11 +40,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class MenuHelper {
+    private final PrimeSeller plugin;
     private final String menuPath;
     private final NamespacedKey actionsKey;
     private final Set<String> excludedKeys;
 
     public MenuHelper(PrimeSeller plugin, String menuPath, String... excludedKeys) {
+        this.plugin = plugin;
         this.actionsKey = new NamespacedKey(plugin, "actions");
         this.menuPath = menuPath;
         this.excludedKeys = new HashSet<>(Arrays.asList(excludedKeys));
@@ -117,8 +119,9 @@ public class MenuHelper {
             material = Material.getMaterial(materialName.toUpperCase());
         }
 
-        if (material == null) {
-            material = Material.STONE;
+        if (material == null || material.isAir() || !material.isItem()) {
+            plugin.getLogger().info("Material " + materialName + " is invalid, using BEDROCK material!");
+            material = Material.BEDROCK;
         }
 
         ItemStack item;
