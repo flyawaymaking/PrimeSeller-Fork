@@ -30,7 +30,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -194,15 +193,20 @@ public class MenuHelper {
             return;
         }
 
-        CustomModelDataComponent customData = meta.getCustomModelDataComponent();
+        try {
+            var component = meta.getCustomModelDataComponent();
 
-        List<Float> floatIds = new ArrayList<>();
-        for (Double value : modelDataList) {
-            floatIds.add(value.floatValue());
+            List<Float> floats = new ArrayList<>();
+            for (Double value : modelDataList) {
+                floats.add(value.floatValue());
+            }
+
+            component.setFloats(floats);
+            meta.setCustomModelDataComponent(component);
+        } catch (NoSuchMethodError e) {
+            // old version
+            meta.setCustomModelData(modelDataList.getFirst().intValue());
         }
-
-        customData.setFloats(floatIds);
-        meta.setCustomModelDataComponent(customData);
     }
 
     private @NotNull String replacePlaceholders(@NotNull String text, @NotNull String... placeholders) {
