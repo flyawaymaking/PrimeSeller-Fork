@@ -37,6 +37,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class SellerManager {
 
     public static double generate(double min, double max) {
+        if (min > max) {
+            return min;
+        }
         return ThreadLocalRandom.current().nextDouble(min, max + 0.000000001);
     }
 
