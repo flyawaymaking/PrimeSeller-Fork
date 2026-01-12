@@ -41,7 +41,7 @@ public class Chat {
         if (text == null || text.isEmpty()) {
             return Component.empty();
         }
-        return miniMessage.deserialize(text);
+        return miniMessage.deserialize("<!italic>" + text);
     }
 
     public static void sendMessage(@NotNull CommandSender sender, @Nullable String msg) {
