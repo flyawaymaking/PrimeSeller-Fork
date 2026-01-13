@@ -7,6 +7,8 @@
 
 ## About
 
+* Русский перевод расположен [ЗДЕСЬ](/src/main/resources/ru)
+
 A powerful and customizable Minecraft plugin for Paper servers (1.21+) that allows players to sell items to a buyer for
 in-game currency. Features both a manual seller interface and a fully automated auto-sell system.
 
