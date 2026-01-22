@@ -95,7 +95,10 @@ public class AutoSellerListener implements Listener {
     }
 
     private void handleAction(@NotNull Inventory clickedInv, @NotNull Player player, @NotNull String action, @NotNull ItemStack clickedItem) {
-        String subAction = action.substring(action.indexOf(']') + 1).trim();
+        int idx = action.indexOf(']');
+        if (idx == -1) return;
+        String subAction = action.substring(idx + 1).trim();
+
         if (action.startsWith("[close]")) {
             player.closeInventory();
         } else if (action.startsWith("[cmd]")) {
