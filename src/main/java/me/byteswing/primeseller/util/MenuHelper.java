@@ -49,7 +49,11 @@ public class MenuHelper {
         this.plugin = plugin;
         this.actionsKey = new NamespacedKey(plugin, "actions");
         this.menuPath = menuPath;
-        this.excludedKeys = new HashSet<>(Arrays.asList(excludedKeys));
+
+        Set<String> allExcludedKeys = new HashSet<>(Arrays.asList(excludedKeys));
+        allExcludedKeys.add("size");
+        allExcludedKeys.add("title");
+        this.excludedKeys = allExcludedKeys;
     }
 
     private @NotNull ConfigurationSection getConfigSection() {
