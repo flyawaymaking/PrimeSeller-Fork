@@ -30,7 +30,6 @@ autosell:
 
 prefix: "<gradient:#5637bc:#9258ff>[Buyer]</gradient> <#b9b9b9>|"
 
-# Mini-Messages is not supported here
 placeholders:
   autosell-enabled: "&aEnabled"
   autosell-disabled: "&cDisabled"
