@@ -136,14 +136,9 @@ public class Util {
 
     public static int getMaterialAmount(@NotNull Player player, @NotNull Material material) {
         int count = 0;
-        ItemStack[] contents = player.getInventory().getContents();
+        ItemStack[] contents = player.getInventory().getStorageContents();
 
-        for (int i = 0; i < contents.length; i++) {
-            if (i == 36 || i == 37 || i == 38 || i == 39 || i == 40) {
-                continue;
-            }
-
-            ItemStack stack = contents[i];
+        for (ItemStack stack : contents) {
             if (stack != null && stack.getType() == material) {
                 count += stack.getAmount();
             }
@@ -154,15 +149,10 @@ public class Util {
     public static Map<Material, Integer> getMaterialsAmount(@NotNull Player player) {
         Map<Material, Integer> inventoryItems = new HashMap<>();
 
-        ItemStack[] contents = player.getInventory().getContents();
+        ItemStack[] contents = player.getInventory().getStorageContents();
 
-        for (int i = 0; i < contents.length; i++) {
-            if (i == 36 || i == 37 || i == 38 || i == 39 || i == 40) {
-                continue;
-            }
-            ItemStack stack = contents[i];
+        for (ItemStack stack : contents) {
             if (stack == null) continue;
-
             inventoryItems.merge(stack.getType(), stack.getAmount(), Integer::sum);
         }
         return inventoryItems;
