@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AutoSellerManager {
     private static PrimeSeller plugin;
@@ -44,6 +46,8 @@ public class AutoSellerManager {
 
     private static File dataFile;
     private static YamlConfiguration dataConfig;
+
+    static final Pattern AUTOSELLER_LIMIT_PATTERN = Pattern.compile("^primeseller\\.autosell(?:er)?\\.(\\d+)$");
 
     public static void init(@NotNull PrimeSeller plugin) {
         AutoSellerManager.plugin = plugin;
@@ -131,15 +135,12 @@ public class AutoSellerManager {
         for (PermissionAttachmentInfo permInfo : player.getEffectivePermissions()) {
             String permission = permInfo.getPermission().toLowerCase();
 
-            if (permission.startsWith("primeseller.autosell.")) {
-                try {
-                    String numberStr = permission.substring("primeseller.autosell.".length());
-                    int slots = Integer.parseInt(numberStr);
+            Matcher matcher = AUTOSELLER_LIMIT_PATTERN.matcher(permission);
 
-                    if (slots > maxSlots) {
-                        maxSlots = slots;
-                    }
-                } catch (NumberFormatException ignored) {
+            if (matcher.matches()) {
+                int slots = Integer.parseInt(matcher.group(1));
+                if (slots > maxSlots) {
+                    maxSlots = slots;
                 }
             }
         }
@@ -148,7 +149,8 @@ public class AutoSellerManager {
     }
 
     public static boolean hasBypassPermission(@NotNull Player player) {
-        return player.hasPermission("primeseller.autosell.bypass");
+        return player.hasPermission("primeseller.autosell.bypass")
+                || player.hasPermission("primeseller.autoseller.bypass");
     }
 
     public static void savePlayerData(@NotNull Player player) {

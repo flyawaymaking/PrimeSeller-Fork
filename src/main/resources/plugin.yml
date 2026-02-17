@@ -33,10 +33,10 @@ permissions:
   primeseller.autoseller:
     description: Право открытия меню автопродажи
     default: true
-  primeseller.autosell.*:
+  primeseller.autoseller.*:
     description: Лимит на предметы в автопродаже
     default: false
-  primeseller.autosell.bypass:
+  primeseller.autoseller.bypass:
     description: Отключение лимита предметов в автопродаже
     default: op
   primeseller.admin:
