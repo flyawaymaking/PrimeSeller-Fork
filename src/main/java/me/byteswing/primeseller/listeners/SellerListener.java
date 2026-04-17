@@ -96,13 +96,15 @@ public class SellerListener implements Listener {
             } catch (NumberFormatException e) {
                 return;
             }
-            int count = 0;
+            int count;
             if (clickType == ClickType.LEFT) {
                 count = 1;
             } else if (clickType == ClickType.RIGHT) {
                 count = 64;
             } else if (clickType == ClickType.SHIFT_LEFT) {
-                count = Util.getMaterialAmount(player, MapBase.get(itemSlot).getMaterial());
+                count = Integer.MAX_VALUE;
+            } else {
+                return;
             }
             sellAction(clickedInv, player, itemSlot, count);
         }
@@ -112,36 +114,30 @@ public class SellerListener implements Listener {
         SellItem sellItem = MapBase.get(itemSlot);
         if (sellItem == null) return;
 
-        if (count <= 0) {
-            Chat.sendMessage(player, MessagesConfig.getMessage("amount"));
-            return;
-        }
-
-        Material material = sellItem.getMaterial();
-        ItemStack item = ItemStack.of(material, count);
-        if (!player.getInventory().containsAtLeast(item, count)) {
-            Chat.sendMessage(player, MessagesConfig.getMessage("amount"));
-            return;
-        }
-
-        double price;
         SellerManager.SoldData soldData;
+
         if (sellItem.isLimited()) {
             soldData = SellerManager.sellLimItem(player, sellItem, count);
-            if (soldData.amount == 0) {
+            if (soldData.amount == -1) {
                 Chat.sendMessage(player, MessagesConfig.getMessage("limit"));
                 return;
             }
         } else {
             soldData = SellerManager.sellUnlimItem(player, sellItem, count);
-
         }
-        price = soldData.price;
+
+        if (soldData.amount <= 0) {
+            Chat.sendMessage(player, MessagesConfig.getMessage("amount"));
+            return;
+        }
+
+        double price = soldData.price;
 
         Chat.sendMessage(player, MessagesConfig.getMessage("sell")
-                .replace("%item%", LanguageManager.translate(material))
+                .replace("%item%", LanguageManager.translate(sellItem.getMaterial()))
                 .replace("%price%", EconomyManager.format(price))
                 .replace("%amount%", "x" + soldData.amount));
+
         EconomyManager.addBalance(player, price);
         SellerMenu.update(player, inventory);
     }

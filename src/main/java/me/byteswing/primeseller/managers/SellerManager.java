@@ -23,6 +23,7 @@ import me.byteswing.primeseller.PrimeSeller;
 import me.byteswing.primeseller.configurations.database.SellItem;
 import me.byteswing.primeseller.configurations.database.UnlimSoldItems;
 import me.byteswing.primeseller.util.Understating;
+import me.byteswing.primeseller.util.Util;
 import org.bukkit.Material;
 import me.byteswing.primeseller.configurations.ItemsConfig;
 import me.byteswing.primeseller.configurations.database.MapBase;
@@ -91,6 +92,7 @@ public class SellerManager {
 
     public static @NotNull SoldData sellLimItem(@NotNull Player player, @NotNull SellItem sellItem, int count) {
         UUID playerId = player.getUniqueId();
+
         int selledItems = UnlimSoldItems.get(playerId);
         int itemLimit = sellItem.getPlayerItemLimit(playerId);
         int totalLimit = ItemsConfig.getConfig().getInt("limited.limit");
@@ -98,26 +100,36 @@ public class SellerManager {
 
         int availableToSell = Math.min(totalLimit - selledItems, itemLimitPerItems - itemLimit);
 
-        if (count > availableToSell) {
-            count = availableToSell;
-        }
+        count = Math.min(count, availableToSell);
 
         if (count <= 0) {
+            return new SoldData(0, -1);
+        }
+
+        int taken = Util.takeItems(player, sellItem.getMaterial(), count);
+
+        if (taken <= 0) {
             return new SoldData(0, 0);
         }
 
-        UnlimSoldItems.put(playerId, selledItems + count);
-        sellItem.addItemLimit(playerId, count);
+        UnlimSoldItems.put(playerId, selledItems + taken);
+        sellItem.addItemLimit(playerId, taken);
 
-        player.getInventory().removeItem(ItemStack.of(sellItem.getMaterial(), count));
-        Understating.takePrice(sellItem.getSlot(), count);
-        return new SoldData(sellItem.getPrice() * count, count);
+        Understating.takePrice(sellItem.getSlot(), taken);
+
+        return new SoldData(sellItem.getPrice() * taken, taken);
     }
 
     public static @NotNull SoldData sellUnlimItem(@NotNull Player player, @NotNull SellItem sellItem, int count) {
-        player.getInventory().removeItem(ItemStack.of(sellItem.getMaterial(), count));
-        Understating.takePrice(sellItem.getSlot(), count);
-        return new SoldData(sellItem.getPrice() * count, count);
+        int taken = Util.takeItems(player, sellItem.getMaterial(), count);
+
+        if (taken <= 0) {
+            return new SoldData(0, 0);
+        }
+
+        Understating.takePrice(sellItem.getSlot(), taken);
+
+        return new SoldData(sellItem.getPrice() * taken, taken);
     }
 
     public static class SoldData {

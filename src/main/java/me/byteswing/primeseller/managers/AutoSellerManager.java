@@ -217,27 +217,30 @@ public class AutoSellerManager {
         for (SellItem sellItem : MapBase.database.values()) {
             Material sellMaterial = sellItem.getMaterial();
 
-            if (materials.contains(sellMaterial)) {
-                int totalCount = inventoryItems.getOrDefault(sellMaterial, 0);
+            if (!materials.contains(sellMaterial)) continue;
 
-                if (totalCount <= 0) {
-                    continue;
-                }
+            int totalCount = inventoryItems.getOrDefault(sellMaterial, 0);
 
-                SellerManager.SoldData soldData;
-                if (sellItem.isLimited()) {
-                    soldData = SellerManager.sellLimItem(player, sellItem, totalCount);
-                    if (soldData.amount == 0) {
-                        continue;
-                    }
-                } else {
-                    soldData = SellerManager.sellUnlimItem(player, sellItem, totalCount);
-                }
-                price += soldData.price;
-                count += soldData.amount;
-                getItemStats(player, sellMaterial).addSale(count, price);
+            if (totalCount <= 0) continue;
+
+            SellerManager.SoldData soldData;
+
+            if (sellItem.isLimited()) {
+                soldData = SellerManager.sellLimItem(player, sellItem, totalCount);
+            } else {
+                soldData = SellerManager.sellUnlimItem(player, sellItem, totalCount);
             }
+
+            if (soldData.amount <= 0) continue;
+
+            price += soldData.price;
+            count += soldData.amount;
+
+            getItemStats(player, sellMaterial).addSale(soldData.amount, soldData.price);
         }
+
+        if (price <= 0) return;
+
         EconomyManager.addBalance(player, price);
 
         if (MainConfig.getConfig().getBoolean("autosell.enable-autosell-messages", false)) {

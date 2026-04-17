@@ -23,6 +23,8 @@ import me.byteswing.primeseller.configurations.MainConfig;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
@@ -34,6 +36,10 @@ public class Util {
 
     public static String limitedFormat = "Loading...";
     public static String unlimitedFormat = "Loading...";
+
+    private static final Set<Material> ALLOWED_WITH_META = Set.of(
+            Material.ENCHANTED_BOOK
+    );
 
     public static @NotNull String formattedTime(int time) {
         String defaultFormat = "yy-MM-dd HH:mm";
@@ -139,9 +145,10 @@ public class Util {
         ItemStack[] contents = player.getInventory().getStorageContents();
 
         for (ItemStack stack : contents) {
-            if (stack != null && stack.getType() == material) {
-                count += stack.getAmount();
-            }
+            if (!isPlainItem(stack)) continue;
+            if (stack.getType() != material) continue;
+
+            count += stack.getAmount();
         }
         return count;
     }
@@ -152,9 +159,62 @@ public class Util {
         ItemStack[] contents = player.getInventory().getStorageContents();
 
         for (ItemStack stack : contents) {
-            if (stack == null) continue;
+            if (!isPlainItem(stack)) continue;
             inventoryItems.merge(stack.getType(), stack.getAmount(), Integer::sum);
         }
         return inventoryItems;
+    }
+
+    public static boolean isPlainItem(ItemStack stack) {
+        if (stack == null) return false;
+
+        if (ALLOWED_WITH_META.contains(stack.getType())) {
+            return true;
+        }
+
+        if (!stack.hasItemMeta()) return true;
+
+        ItemMeta meta = stack.getItemMeta();
+        if (meta == null) return true;
+
+        if (meta.hasEnchants()) return false;
+
+        if (!meta.getPersistentDataContainer().isEmpty()) return false;
+
+        if (meta instanceof Damageable damageable) {
+            return !damageable.hasDamage() || damageable.getDamage() <= 0;
+        }
+
+        return true;
+    }
+
+    public static int takeItems(Player player, Material material, int amount) {
+        int remaining = amount;
+
+        ItemStack[] contents = player.getInventory().getStorageContents();
+
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack stack = contents[i];
+            if (stack == null) continue;
+
+            if (stack.getType() != material) continue;
+
+            if (!isPlainItem(stack)) continue;
+
+            int take = Math.min(stack.getAmount(), remaining);
+
+            stack.setAmount(stack.getAmount() - take);
+            remaining -= take;
+
+            if (stack.getAmount() <= 0) {
+                contents[i] = null;
+            }
+
+            if (remaining <= 0) break;
+        }
+
+        player.getInventory().setStorageContents(contents);
+
+        return amount - remaining;
     }
 }
