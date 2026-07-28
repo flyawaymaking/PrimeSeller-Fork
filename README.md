@@ -9,7 +9,7 @@
 
 * Русский перевод расположен [ЗДЕСЬ](/src/main/resources/ru)
 
-A powerful and customizable Minecraft plugin for Paper servers (1.21+) that allows players to sell items to a buyer for
+A powerful and customizable Minecraft plugin for Paper servers (1.21.8+) that allows players to sell items to a buyer for
 in-game currency. Features both a manual seller interface and a fully automated auto-sell system.
 
 ## Features
@@ -18,7 +18,7 @@ in-game currency. Features both a manual seller interface and a fully automated 
   inventory.
 * **Smart Auto-Seller:** Automatically sells specific items from your inventory on a configurable timer. Manage your
   auto-sell list via a dedicated GUI (`/autoseller`).
-* **Dual Economy Support:** Seamlessly integrates with **Vault** or **CoinsEngine** for handling transactions.
+* **Dual Economy Support:** Seamlessly integrates with **Vault** or **ExcellentEconomy** for handling transactions.
 * **Dynamic Pricing:** Items can be categorized as **Limited** (with per-player daily limits) or **Unlimited**. Prices
   for unlimited items can gradually decrease based on server sales to simulate market saturation.
 * **Multi-language Material Names:** Automatically fetches and uses correct item names in the player's configured
@@ -91,10 +91,10 @@ The plugin will generate a random price between min and max for the item each ti
 
 ## Installation
 
-1. Ensure your server is running **Paper 1.21 or later**.
+1. Ensure your server is running **Paper 1.21.8 or later**.
 2. Install the required dependencies:
     * **[Vault](https://www.spigotmc.org/resources/vault.34315/)** (or
-      ensure [CoinsEngine](https://github.com/nulli0n/CoinsEngine-spigot) is installed if using that economy).
+      ensure [ExcellentEconomy](https://github.com/nulli0n/ExcellentEconomy) is installed if using that economy).
     * (Optional) **[PlaceholderAPI](https://github.com/PlaceholderAPI/PlaceholderAPI)** for placeholder support.
 3. Download the latest `PrimeSeller-Fork.jar` from the [Releases](../../releases) page.
 4. Place the JAR file into your server's `plugins` folder.
@@ -117,13 +117,14 @@ After the first run, the plugin will generate several configuration files in `pl
 
 By default, the plugin uses **Vault**. Ensure you have a Vault-compatible economy plugin (like EssentialsX) installed.
 
-To use **CoinsEngine**, set the following in `config.yml`:
+To use **ExcellentEconomy**, set the following in `config.yml`:
 
 ```yml
 economy:
-  coins-engine:
-    enable: true
-    currency: "money" # Your CoinsEngine currency name
+  # You can use ExcellentEconomy instead of Vault
+  excellent-economy:
+    enable: false  # If disabled, Vault will be used.
+    currency: "money"
 ```
 
 ## Support

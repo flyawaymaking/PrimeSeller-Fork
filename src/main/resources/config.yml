@@ -12,8 +12,8 @@ datetime-format: "MM/dd/yyyy HH:mm"
 inv-sell-priority: "LIMITED"
 
 economy:
-  # You can use CoinsEngine instead of Vault
-  coins-engine:
+  # You can use ExcellentEconomy instead of Vault
+  excellent-economy:
     enable: false  # If disabled, Vault will be used.
     currency: "money"
 

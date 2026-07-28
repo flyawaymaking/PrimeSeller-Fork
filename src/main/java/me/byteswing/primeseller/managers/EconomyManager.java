@@ -16,7 +16,7 @@
 
 package me.byteswing.primeseller.managers;
 
-import me.byteswing.primeseller.economy.CoinsEngineEconomy;
+import me.byteswing.primeseller.economy.ExcellentEconomy;
 import me.byteswing.primeseller.economy.EconomyProvider;
 import me.byteswing.primeseller.economy.VaultEconomy;
 import me.byteswing.primeseller.PrimeSeller;
@@ -33,10 +33,10 @@ public class EconomyManager {
     }
 
     public static void reload() {
-        boolean isCoinsEngine = plugin.getConfig().getBoolean("economy.coins-engine.enable", false);
+        boolean isExcellentEconomy = plugin.getConfig().getBoolean("economy.excellent-economy.enable", false);
 
-        if (isCoinsEngine) {
-            currentEconomy = new CoinsEngineEconomy(plugin);
+        if (isExcellentEconomy) {
+            currentEconomy = new ExcellentEconomy(plugin);
         } else {
             currentEconomy = new VaultEconomy(plugin);
         }

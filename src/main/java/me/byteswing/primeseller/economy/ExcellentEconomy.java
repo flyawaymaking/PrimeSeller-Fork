@@ -17,28 +17,33 @@
 package me.byteswing.primeseller.economy;
 
 import me.byteswing.primeseller.PrimeSeller;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
-import su.nightexpress.coinsengine.api.CoinsEngineAPI;
-import su.nightexpress.coinsengine.api.currency.Currency;
+import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI;
+import su.nightexpress.excellenteconomy.api.currency.ExcellentCurrency;
 
 import java.text.DecimalFormat;
 
-public class CoinsEngineEconomy implements EconomyProvider {
+public class ExcellentEconomy implements EconomyProvider {
     private final PrimeSeller plugin;
-    private Currency currency;
+    private ExcellentCurrency currency;
+    private ExcellentEconomyAPI api;
     private final DecimalFormat format = new DecimalFormat("##.##");
 
-    public CoinsEngineEconomy(@NotNull PrimeSeller plugin) {
+    public ExcellentEconomy(@NotNull PrimeSeller plugin) {
         this.plugin = plugin;
-        String currencyName = plugin.getConfig().getString("economy.coins-engine.currency", "money");
-        if (plugin.getServer().getPluginManager().getPlugin("CoinsEngine") != null) {
-            currency = CoinsEngineAPI.getCurrency(currencyName);
+        String currencyName = plugin.getConfig().getString("economy.excellent-economy.currency", "money");
+        RegisteredServiceProvider<ExcellentEconomyAPI> provider = Bukkit.getServer().getServicesManager().getRegistration(ExcellentEconomyAPI.class);
+        if (provider != null) {
+            api = provider.getProvider();
+            currency = api.getCurrency(currencyName);
         }
         if (currency == null) {
-            plugin.getLogger().warning("Currency '" + currencyName + "' not found in CoinsEngine!");
+            plugin.getLogger().warning("Currency '" + currencyName + "' not found in ExcellentEconomy!");
         } else {
-            plugin.getLogger().info("CoinsEngineEconomy use '" + currencyName + "' currency!");
+            plugin.getLogger().info("ExcellentEconomy use '" + currencyName + "' currency!");
         }
     }
 
@@ -48,7 +53,7 @@ public class CoinsEngineEconomy implements EconomyProvider {
         }
 
         try {
-            CoinsEngineAPI.addBalance(player, currency, amount);
+            api.deposit(player, currency, amount);
         } catch (Exception e) {
             plugin.getLogger().warning("AddBalance error: " + e.getMessage());
         }
