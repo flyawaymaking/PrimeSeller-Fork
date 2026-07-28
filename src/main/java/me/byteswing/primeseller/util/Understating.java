@@ -31,59 +31,75 @@ public class Understating {
     public static final HashMap<Integer, Double> standardPrice = new HashMap<>();
     private static final Map<Integer, Integer> soldItemsCount = new HashMap<>();
 
+    public static double calculateSellPrice(int itemSlot, int amount) {
+        return simulate(itemSlot, amount, false);
+    }
+
     public static void takePrice(int itemSlot, int count) {
-        if (!MainConfig.isUnderstandingEnabled()) {
-            return;
-        }
+        simulate(itemSlot, count, true);
+    }
 
-        int itemsThreshold = MainConfig.getUnderstandingPriceItems();
-
-        soldItemsCount.put(itemSlot, soldItemsCount.getOrDefault(itemSlot, 0) + count);
-
-        if (soldItemsCount.get(itemSlot) < itemsThreshold) {
-            return;
-        }
-
-        int batches = soldItemsCount.get(itemSlot) / itemsThreshold;
-        soldItemsCount.put(itemSlot, soldItemsCount.get(itemSlot) % itemsThreshold);
-
+    private static double simulate(int itemSlot, int amount, boolean apply) {
         SellItem sellItem = MapBase.get(itemSlot);
-        if (!standardPrice.containsKey(itemSlot)) {
-            standardPrice.put(itemSlot, sellItem.getPrice());
+
+        if (sellItem == null || amount <= 0) {
+            return 0;
         }
 
         double currentPrice = sellItem.getPrice();
-        double originalPrice = standardPrice.get(itemSlot);
 
-        double percent = MainConfig.getUnderstandingPricePercent();
-        int minPercent = MainConfig.getUnderstandingPriceMinPercent();
-
-        double minPrice = originalPrice * minPercent / 100.0;
-
-        if (currentPrice <= minPrice) {
-            return;
+        if (!MainConfig.isUnderstandingEnabled()) {
+            return currentPrice * amount;
         }
 
-        double totalReduction = 0;
-        double tempPrice = currentPrice;
+        int threshold = MainConfig.getUnderstandingPriceItems();
 
-        for (int i = 0; i < batches; i++) {
-            double reduction = tempPrice * percent / 100.0;
+        if (threshold <= 0) {
+            return currentPrice * amount;
+        }
 
-            if (tempPrice - reduction < minPrice) {
-                totalReduction += (tempPrice - minPrice);
-                break;
-            } else {
-                totalReduction += reduction;
-                tempPrice -= reduction;
+        standardPrice.putIfAbsent(itemSlot, currentPrice);
+
+        double originalPrice = standardPrice.get(itemSlot);
+        double minPrice = originalPrice * MainConfig.getUnderstandingPriceMinPercent() / 100.0;
+        double percent = MainConfig.getUnderstandingPricePercent();
+
+        int counter = soldItemsCount.getOrDefault(itemSlot, 0);
+
+        if (apply) {
+            counter += amount;
+
+            int batches = counter / threshold;
+            counter %= threshold;
+
+            double newPrice = currentPrice;
+
+            for (int i = 0; i < batches && newPrice > minPrice; i++) {
+                newPrice = Math.max(newPrice - newPrice * percent / 100.0, minPrice);
+            }
+
+            sellItem.setPrice(newPrice);
+            soldItemsCount.put(itemSlot, counter);
+
+            return currentPrice * amount;
+        }
+
+        double simulatedPrice = currentPrice;
+        double total = 0;
+
+        for (int i = 0; i < amount; i++) {
+            total += simulatedPrice;
+
+            if (++counter >= threshold) {
+                counter = 0;
+
+                if (simulatedPrice > minPrice) {
+                    simulatedPrice = Math.max(simulatedPrice - simulatedPrice * percent / 100.0, minPrice);
+                }
             }
         }
 
-        if (totalReduction > 0) {
-            double newPrice = currentPrice - totalReduction;
-            newPrice = Math.max(minPrice, newPrice);
-            sellItem.setPrice(newPrice);
-        }
+        return total;
     }
 
     public static void resetCounters() {

@@ -69,12 +69,7 @@ public class AutoSellerMenu {
         Set<Material> allMaterials = AutoSellerManager.getAutoSellMaterials(player);
         List<Integer> itemSlots = menuHelper.getSlots("autosell-item");
         int totalPages = (int) Math.ceil((double) allMaterials.size() / itemSlots.size());
-        String[] placeholders = {
-                "%slots%", String.valueOf(allMaterials.size()),
-                "%max-slots%", String.valueOf(AutoSellerManager.getMaxAutoSellSlots(player)),
-                "%current-page%", String.valueOf(page + 1),
-                "%total-pages%", String.valueOf(totalPages)
-        };
+        String[] placeholders = {"%slots%", String.valueOf(allMaterials.size()), "%max-slots%", String.valueOf(AutoSellerManager.getMaxAutoSellSlots(player)), "%current-page%", String.valueOf(page + 1), "%total-pages%", String.valueOf(totalPages)};
 
         createAutoSellSlots(inv, player, page, allMaterials, itemSlots);
         createToggleButton(inv, player, placeholders);
@@ -83,8 +78,7 @@ public class AutoSellerMenu {
         createDividers(inv, player, page, itemSlots);
     }
 
-    private static void createAutoSellSlots(@NotNull Inventory inv, @NotNull Player player, int page,
-                                            @NotNull Set<Material> allMaterials, @NotNull List<Integer> itemSlots) {
+    private static void createAutoSellSlots(@NotNull Inventory inv, @NotNull Player player, int page, @NotNull Set<Material> allMaterials, @NotNull List<Integer> itemSlots) {
         List<Material> materialsList = new ArrayList<>(allMaterials);
 
         int startIndex = page * itemSlots.size();
@@ -99,9 +93,7 @@ public class AutoSellerMenu {
             int itemsSold = AutoSellerManager.getItemsSoldForMaterial(player, material);
             double moneyEarned = AutoSellerManager.getMoneyEarnedForMaterial(player, material);
 
-            menuHelper.addItemByMaterial(inv, "autosell-item", material, itemSlots.get(itemIndex),
-                    "%items-sold%", String.valueOf(itemsSold),
-                    "%money-earned%", EconomyManager.format(moneyEarned));
+            menuHelper.addItemByMaterial(inv, "autosell-item", material, itemSlots.get(itemIndex), "%items-sold%", String.valueOf(itemsSold), "%money-earned%", EconomyManager.format(moneyEarned));
 
         }
     }

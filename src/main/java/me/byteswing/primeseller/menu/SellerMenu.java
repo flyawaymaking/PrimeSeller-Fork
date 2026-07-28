@@ -27,6 +27,7 @@ import me.byteswing.primeseller.managers.AutoSellerManager;
 import me.byteswing.primeseller.managers.EconomyManager;
 import me.byteswing.primeseller.tasks.PlayerGUITask;
 import me.byteswing.primeseller.util.MenuHelper;
+import me.byteswing.primeseller.util.Understating;
 import me.byteswing.primeseller.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -89,34 +90,19 @@ public class SellerMenu {
             double price = sellItem.getPrice();
             String[] placeholders = {
                     "%price-x1%", EconomyManager.format(price),
-                    "%price-x64%", EconomyManager.format(price * 64),
-                    "%price-all%", EconomyManager.format(Util.getMaterialAmount(player, material) * price)
+                    "%price-x64%", EconomyManager.format(Understating.calculateSellPrice(sellItem.getSlot(), 64)),
+                    "%price-all%", EconomyManager.format(Understating.calculateSellPrice(sellItem.getSlot(), Util.getMaterialAmount(player, material)))
             };
             boolean isLimited = sellItem.isLimited();
             String path = isLimited ? "lim-item" : "unlim-item";
             if (isLimited) {
-                String[] additional = {
-                        "%sell%", String.valueOf(UnlimSoldItems.get(playerId)),
-                        "%max%", String.valueOf(ItemsConfig.getConfig().getInt("limited.limit")),
-                        "%sell-items%", String.valueOf(sellItem.getPlayerItemLimit(player.getUniqueId())),
-                        "%max-items%", String.valueOf(ItemsConfig.getConfig().getInt("limited.limit-per-items"))
-                };
-                placeholders = Stream.concat(
-                        Arrays.stream(placeholders),
-                        Arrays.stream(additional)
-                ).toArray(String[]::new);
+                String[] additional = {"%sell%", String.valueOf(UnlimSoldItems.get(playerId)), "%max%", String.valueOf(ItemsConfig.getConfig().getInt("limited.limit")), "%sell-items%", String.valueOf(sellItem.getPlayerItemLimit(player.getUniqueId())), "%max-items%", String.valueOf(ItemsConfig.getConfig().getInt("limited.limit-per-items"))};
+                placeholders = Stream.concat(Arrays.stream(placeholders), Arrays.stream(additional)).toArray(String[]::new);
             }
             menuHelper.addItemByMaterial(inv, path, material, sellItem.getSlot(), placeholders);
         }
 
-        String[] placeholders = {
-                "%lim-time%", Updater.getLimitedTime(),
-                "%unlim-time%", Updater.getUnLimitedTime(),
-                "%lim-time-format%", Util.limitedFormat,
-                "%unlim-time-format%", Util.unlimitedFormat,
-                "%autosell-slots%", String.valueOf(AutoSellerManager.getAutoSellMaterials(player).size()),
-                "%autosell-max-slots%", String.valueOf(AutoSellerManager.getMaxAutoSellSlots(player))
-        };
+        String[] placeholders = {"%lim-time%", Updater.getLimitedTime(), "%unlim-time%", Updater.getUnLimitedTime(), "%lim-time-format%", Util.limitedFormat, "%unlim-time-format%", Util.unlimitedFormat, "%autosell-slots%", String.valueOf(AutoSellerManager.getAutoSellMaterials(player).size()), "%autosell-max-slots%", String.valueOf(AutoSellerManager.getMaxAutoSellSlots(player))};
         menuHelper.addCustomItems(inv, placeholders);
         if (!menuHelper.isEnabled("divider")) return;
         for (int i = 0; i < inv.getSize(); i++) {
