@@ -23,6 +23,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 
 public class MainConfig {
     private static Plugin plugin;
@@ -65,5 +67,9 @@ public class MainConfig {
 
     public static @NotNull String getSellPriority() {
         return config.getString("inv-sell-priority", "LIMITED");
+    }
+
+    public static List<String> getAllowedSellGameModes() {
+        return config.getStringList("allowed-sell-gamemode");
     }
 }

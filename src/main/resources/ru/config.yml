@@ -11,6 +11,10 @@ datetime-format: "dd.MM.yy HH:mm"
 
 inv-sell-priority: "LIMITED"
 
+# В каких режимах игры разрешено пользоваться скупщиком: survival, creative, adventure, spectator
+allowed-sell-gamemode:
+  - survival
+
 economy:
   # Можно использовать ExcellentEconomy вместо Vault
   excellent-economy:

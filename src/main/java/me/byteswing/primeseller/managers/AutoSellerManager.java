@@ -94,8 +94,7 @@ public class AutoSellerManager {
     }
 
     public static boolean isAutoSellEnabled(@NotNull Player player) {
-        return player.hasPermission("primeseller.autoseller")
-                && autoSellEnabled.getOrDefault(player.getUniqueId(), false);
+        return player.hasPermission("primeseller.autoseller") && autoSellEnabled.getOrDefault(player.getUniqueId(), false);
     }
 
     public static void setAutoSellEnabled(@NotNull Player player, boolean enabled) {
@@ -149,8 +148,7 @@ public class AutoSellerManager {
     }
 
     public static boolean hasBypassPermission(@NotNull Player player) {
-        return player.hasPermission("primeseller.autosell.bypass")
-                || player.hasPermission("primeseller.autoseller.bypass");
+        return player.hasPermission("primeseller.autosell.bypass") || player.hasPermission("primeseller.autoseller.bypass");
     }
 
     public static void savePlayerData(@NotNull Player player) {
@@ -201,6 +199,10 @@ public class AutoSellerManager {
             return;
         }
 
+        if (!Util.canUseSeller(player)) {
+            return;
+        }
+
         Set<Material> materials = getAutoSellMaterials(player);
         if (materials.isEmpty()) {
             return;
@@ -244,9 +246,7 @@ public class AutoSellerManager {
         EconomyManager.addBalance(player, price);
 
         if (MainConfig.getConfig().getBoolean("autosell.enable-autosell-messages", false)) {
-            Chat.sendMessage(player, MessagesConfig.getMessage("autosell.sell")
-                    .replace("%price%", EconomyManager.format(price))
-                    .replace("%amount%", "x" + count));
+            Chat.sendMessage(player, MessagesConfig.getMessage("autosell.sell").replace("%price%", EconomyManager.format(price)).replace("%amount%", "x" + count));
         }
     }
 

@@ -20,6 +20,8 @@
 package me.byteswing.primeseller.util;
 
 import me.byteswing.primeseller.configurations.MainConfig;
+import me.byteswing.primeseller.configurations.MessagesConfig;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Util {
 
@@ -37,9 +40,7 @@ public class Util {
     public static String limitedFormat = "Loading...";
     public static String unlimitedFormat = "Loading...";
 
-    private static final Set<Material> ALLOWED_WITH_META = Set.of(
-            Material.ENCHANTED_BOOK
-    );
+    private static final Set<Material> ALLOWED_WITH_META = Set.of(Material.ENCHANTED_BOOK);
 
     public static @NotNull String formattedTime(int time) {
         String defaultFormat = "yy-MM-dd HH:mm";
@@ -216,5 +217,31 @@ public class Util {
         player.getInventory().setStorageContents(contents);
 
         return amount - remaining;
+    }
+
+    public static boolean canUseSeller(Player player) {
+        List<String> allowed = MainConfig.getAllowedSellGameModes();
+
+        if (allowed.isEmpty()) {
+            return true;
+        }
+
+        GameMode current = player.getGameMode();
+
+        for (String mode : allowed) {
+            if (current.name().equalsIgnoreCase(mode)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static void sendMessageNotAllowedGameMode(Player player) {
+        List<String> allowed = MainConfig.getAllowedSellGameModes();
+
+        String gamemodes = allowed.stream().map(String::toUpperCase).collect(Collectors.joining(", "));
+
+        player.sendMessage(MessagesConfig.getMessage("commands.invalid-gamemode").replace("%gamemodes%", gamemodes));
     }
 }

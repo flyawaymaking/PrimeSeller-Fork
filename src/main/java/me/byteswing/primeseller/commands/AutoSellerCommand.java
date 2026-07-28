@@ -57,9 +57,7 @@ public class AutoSellerCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("toggle")) {
                 AutoSellerManager.toggleAutoSell(player);
                 boolean enabled = AutoSellerManager.isAutoSellEnabled(player);
-                Chat.sendMessage(player, enabled ?
-                        MessagesConfig.getMessage("autosell.enabled") :
-                        MessagesConfig.getMessage("autosell.disabled"));
+                Chat.sendMessage(player, enabled ? MessagesConfig.getMessage("autosell.enabled") : MessagesConfig.getMessage("autosell.disabled"));
                 return true;
             }
         }

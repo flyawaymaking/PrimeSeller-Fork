@@ -31,6 +31,7 @@ messages:
     player-only: "<red>Только для игроков!"
     additem-error: "<white>Нельзя добавить <red>%material%<white> в список скупаемых предметов."
     not-number: "<red>Введите правильное число."
+    invalid-gamemode: "<red>Использовать скупщика можно только в режимах: <yellow>%gamemodes%"
 
   # Сообщения автопродажи
   autosell:

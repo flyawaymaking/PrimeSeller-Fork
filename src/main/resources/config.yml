@@ -11,6 +11,10 @@ datetime-format: "MM/dd/yyyy HH:mm"
 
 inv-sell-priority: "LIMITED"
 
+# In which gamemodes is it allowed to use the seller: survival, creative, adventure, spectator
+allowed-sell-gamemode:
+  - survival
+
 economy:
   # You can use ExcellentEconomy instead of Vault
   excellent-economy:

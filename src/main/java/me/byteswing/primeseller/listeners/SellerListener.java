@@ -114,6 +114,11 @@ public class SellerListener implements Listener {
         SellItem sellItem = MapBase.get(itemSlot);
         if (sellItem == null) return;
 
+        if (!Util.canUseSeller(player)) {
+            Util.sendMessageNotAllowedGameMode(player);
+            return;
+        }
+
         SellerManager.SoldData soldData;
 
         if (sellItem.isLimited()) {
@@ -133,16 +138,18 @@ public class SellerListener implements Listener {
 
         double price = soldData.price;
 
-        Chat.sendMessage(player, MessagesConfig.getMessage("sell")
-                .replace("%item%", LanguageManager.translate(sellItem.getMaterial()))
-                .replace("%price%", EconomyManager.format(price))
-                .replace("%amount%", "x" + soldData.amount));
+        Chat.sendMessage(player, MessagesConfig.getMessage("sell").replace("%item%", LanguageManager.translate(sellItem.getMaterial())).replace("%price%", EconomyManager.format(price)).replace("%amount%", "x" + soldData.amount));
 
         EconomyManager.addBalance(player, price);
         SellerMenu.update(player, inventory);
     }
 
     private void sellAllItems(@NotNull Player player) {
+        if (!Util.canUseSeller(player)) {
+            Util.sendMessageNotAllowedGameMode(player);
+            return;
+        }
+
         double price = 0;
         int amount = 0;
 
@@ -163,9 +170,7 @@ public class SellerListener implements Listener {
         }
 
         EconomyManager.addBalance(player, price);
-        Chat.sendMessage(player, MessagesConfig.getMessage("sell-inventory")
-                .replace("%price%", EconomyManager.format(price))
-                .replace("%amount%", "x" + amount));
+        Chat.sendMessage(player, MessagesConfig.getMessage("sell-inventory").replace("%price%", EconomyManager.format(price)).replace("%amount%", "x" + amount));
     }
 
     private @NotNull SellerManager.SoldData sellAllUnLimited(@NotNull Player player, @NotNull Map<Material, Integer> inventoryItems) {

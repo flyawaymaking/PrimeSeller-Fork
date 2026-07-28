@@ -31,6 +31,7 @@ messages:
     player-only: "<red>Players only!"
     additem-error: "<white>Cannot add <red>%material%<white> to the buyer's item list."
     not-number: "<red>Please enter a valid number."
+    invalid-gamemode: "<red>The seller can only be used in the following gamemodes: <yellow>%gamemodes%"
 
   # Auto-sell messages
   autosell:
