@@ -242,6 +242,6 @@ public class Util {
 
         String gamemodes = allowed.stream().map(String::toUpperCase).collect(Collectors.joining(", "));
 
-        player.sendMessage(MessagesConfig.getMessage("commands.invalid-gamemode").replace("%gamemodes%", gamemodes));
+        Chat.sendMessage(player, MessagesConfig.getMessage("commands.invalid-gamemode").replace("%gamemodes%", gamemodes));
     }
 }
