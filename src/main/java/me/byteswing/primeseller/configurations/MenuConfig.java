@@ -18,9 +18,6 @@ public class MenuConfig {
     public void loadConfig(@NotNull Plugin plugin) {
         MenuConfig.plugin = plugin;
         file = new File(plugin.getDataFolder(), "menu.yml");
-        if (!file.exists()) {
-            plugin.saveResource("menu.yml", true);
-        }
         config = YamlConfiguration.loadConfiguration(file);
     }
 

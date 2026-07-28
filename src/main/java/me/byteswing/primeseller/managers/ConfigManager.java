@@ -21,10 +21,17 @@ package me.byteswing.primeseller.managers;
 
 import me.byteswing.primeseller.configurations.MenuConfig;
 import me.byteswing.primeseller.configurations.MessagesConfig;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import me.byteswing.primeseller.configurations.MainConfig;
 import me.byteswing.primeseller.configurations.ItemsConfig;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class ConfigManager {
 
@@ -34,10 +41,59 @@ public class ConfigManager {
     private static final MessagesConfig messagesConfig = new MessagesConfig();
 
     public static void loadConfigurations(@NotNull Plugin plugin) {
+        updateConfigFiles(plugin);
+
         config.loadConfig(plugin);
         itemsConfig.loadConfig(plugin);
         menuConfig.loadConfig(plugin);
         messagesConfig.loadConfig(plugin);
+    }
+
+    private static void updateConfigFiles(@NotNull Plugin plugin) {
+        updateConfig(plugin, "config.yml");
+        updateConfig(plugin, "menu.yml");
+        updateConfig(plugin, "messages.yml");
+    }
+
+    private static void updateConfig(@NotNull Plugin plugin, @NotNull String fileName) {
+        File file = new File(plugin.getDataFolder(), fileName);
+
+        if (!file.exists()) {
+            plugin.saveResource(fileName, false);
+            return;
+        }
+
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration defaults;
+
+        try (InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(plugin.getResource(fileName)), StandardCharsets.UTF_8)) {
+            defaults = YamlConfiguration.loadConfiguration(reader);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to load default " + fileName);
+            return;
+        }
+
+        boolean changed = false;
+
+        for (String key : defaults.getKeys(true)) {
+            if (defaults.isConfigurationSection(key)) {
+                continue;
+            }
+
+            if (!config.contains(key)) {
+                config.set(key, defaults.get(key));
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            try {
+                config.save(file);
+                plugin.getLogger().info("Updated " + fileName);
+            } catch (IOException e) {
+                plugin.getLogger().warning("Failed to save " + fileName);
+            }
+        }
     }
 
     public static void reloadConfigurations() {

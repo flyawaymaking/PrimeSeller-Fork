@@ -18,9 +18,6 @@ public class MessagesConfig {
     public void loadConfig(@NotNull Plugin plugin) {
         MessagesConfig.plugin = plugin;
         file = new File(plugin.getDataFolder(), "messages.yml");
-        if (!file.exists()) {
-            plugin.saveResource("messages.yml", true);
-        }
         config = YamlConfiguration.loadConfiguration(file);
     }
 

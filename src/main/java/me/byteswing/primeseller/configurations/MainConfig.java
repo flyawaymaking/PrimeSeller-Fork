@@ -32,7 +32,6 @@ public class MainConfig {
 
     public void loadConfig(Plugin main) {
         plugin = main;
-        plugin.saveDefaultConfig();
         config = plugin.getConfig();
     }
 
