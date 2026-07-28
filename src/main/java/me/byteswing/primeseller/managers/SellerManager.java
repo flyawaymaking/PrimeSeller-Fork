@@ -115,9 +115,9 @@ public class SellerManager {
         UnlimSoldItems.put(playerId, selledItems + taken);
         sellItem.addItemLimit(playerId, taken);
 
-        Understating.takePrice(sellItem.getSlot(), taken);
+        double price = Understating.takePrice(sellItem.getSlot(), taken);
 
-        return new SoldData(sellItem.getPrice() * taken, taken);
+        return new SoldData(price, taken);
     }
 
     public static @NotNull SoldData sellUnlimItem(@NotNull Player player, @NotNull SellItem sellItem, int count) {
@@ -127,9 +127,8 @@ public class SellerManager {
             return new SoldData(0, 0);
         }
 
-        Understating.takePrice(sellItem.getSlot(), taken);
-
-        return new SoldData(sellItem.getPrice() * taken, taken);
+        double price = Understating.takePrice(sellItem.getSlot(), taken);
+        return new SoldData(price, taken);
     }
 
     public static class SoldData {

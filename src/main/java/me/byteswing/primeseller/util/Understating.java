@@ -35,8 +35,8 @@ public class Understating {
         return simulate(itemSlot, amount, false);
     }
 
-    public static void takePrice(int itemSlot, int count) {
-        simulate(itemSlot, count, true);
+    public static double takePrice(int itemSlot, int amount) {
+        return simulate(itemSlot, amount, true);
     }
 
     private static double simulate(int itemSlot, int amount, boolean apply) {
@@ -53,7 +53,6 @@ public class Understating {
         }
 
         int threshold = MainConfig.getUnderstandingPriceItems();
-
         if (threshold <= 0) {
             return currentPrice * amount;
         }
@@ -65,38 +64,24 @@ public class Understating {
         double percent = MainConfig.getUnderstandingPricePercent();
 
         int counter = soldItemsCount.getOrDefault(itemSlot, 0);
-
-        if (apply) {
-            counter += amount;
-
-            int batches = counter / threshold;
-            counter %= threshold;
-
-            double newPrice = currentPrice;
-
-            for (int i = 0; i < batches && newPrice > minPrice; i++) {
-                newPrice = Math.max(newPrice - newPrice * percent / 100.0, minPrice);
-            }
-
-            sellItem.setPrice(newPrice);
-            soldItemsCount.put(itemSlot, counter);
-
-            return currentPrice * amount;
-        }
-
-        double simulatedPrice = currentPrice;
+        double price = currentPrice;
         double total = 0;
 
         for (int i = 0; i < amount; i++) {
-            total += simulatedPrice;
+            total += price;
 
             if (++counter >= threshold) {
                 counter = 0;
 
-                if (simulatedPrice > minPrice) {
-                    simulatedPrice = Math.max(simulatedPrice - simulatedPrice * percent / 100.0, minPrice);
+                if (price > minPrice) {
+                    price = Math.max(price - price * percent / 100.0, minPrice);
                 }
             }
+        }
+
+        if (apply) {
+            sellItem.setPrice(price);
+            soldItemsCount.put(itemSlot, counter);
         }
 
         return total;
