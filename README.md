@@ -7,15 +7,17 @@
 
 ## About
 
-* Русский перевод расположен [ЗДЕСЬ](/src/main/resources/ru)
-
 A powerful and customizable Minecraft plugin for Paper servers (1.21.8+) that allows players to sell items to a buyer for
 in-game currency. Features both a manual seller interface and a fully automated auto-sell system.
 
-### Dependency:
-**Java 25**
+* Русский перевод расположен [ЗДЕСЬ](/src/main/resources/ru)
 
-> The last version compatible with Java 21 is 2.0.6
+## 🧩 Version Compatibility
+
+| **Plugin version** | **Supported Paper** | **Java** |
+|--------------------|---------------------|----------|
+| `2.1.0`            | `1.21.8` – `26.2`   | 25       |
+| `2.0.6`            | `1.21` – `1.21.11`  | 21       |
 
 ## Features
 
