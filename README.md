@@ -12,6 +12,11 @@
 A powerful and customizable Minecraft plugin for Paper servers (1.21.8+) that allows players to sell items to a buyer for
 in-game currency. Features both a manual seller interface and a fully automated auto-sell system.
 
+### Dependency:
+**Java 25**
+
+> The last version compatible with Java 21 is 2.0.6
+
 ## Features
 
 * **Interactive Seller GUI:** Open a configurable menu (`/seller`) to sell items individually, in stacks, or your entire
