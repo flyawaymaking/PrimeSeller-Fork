@@ -24,13 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI;
 import su.nightexpress.excellenteconomy.api.currency.ExcellentCurrency;
 
-import java.text.DecimalFormat;
-
 public class ExcellentEconomy implements EconomyProvider {
     private final PrimeSeller plugin;
     private ExcellentCurrency currency;
     private ExcellentEconomyAPI api;
-    private final DecimalFormat format = new DecimalFormat("##.##");
 
     public ExcellentEconomy(@NotNull PrimeSeller plugin) {
         this.plugin = plugin;
@@ -60,10 +57,13 @@ public class ExcellentEconomy implements EconomyProvider {
     }
 
     public @NotNull String format(double amount) {
+        double rounded = round(amount);
+
         if (currency == null) {
-            return format.format(amount);
+            return String.valueOf(rounded);
         }
-        return currency.format(Double.parseDouble(format.format(amount).replace(",", ".")));
+
+        return currency.format(rounded);
     }
 
     public boolean isAvailable() {

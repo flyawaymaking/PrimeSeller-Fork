@@ -17,20 +17,23 @@
 package me.byteswing.primeseller.economy;
 
 import me.byteswing.primeseller.PrimeSeller;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DecimalFormat;
-
 public class VaultEconomy implements EconomyProvider {
     private final PrimeSeller plugin;
     private final Economy economy;
-    private final DecimalFormat format = new DecimalFormat("##.##");
+
+    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private static final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.legacySection();
 
     public VaultEconomy(@NotNull PrimeSeller plugin) {
         this.plugin = plugin;
+
         if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
             plugin.getLogger().warning("Vault plugin not found!");
             economy = null;
@@ -38,6 +41,7 @@ public class VaultEconomy implements EconomyProvider {
         }
 
         RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
+
         if (rsp == null) {
             plugin.getLogger().warning("No economy provider found for Vault!");
             economy = null;
@@ -61,10 +65,16 @@ public class VaultEconomy implements EconomyProvider {
     }
 
     public @NotNull String format(double amount) {
+        double rounded = round(amount);
+
         if (economy == null) {
-            return format.format(amount);
+            return String.format("%.2f", rounded);
         }
-        return economy.format(Double.parseDouble(format.format(amount).replace(",", ".")));
+
+        String formatted = economy.format(rounded);
+
+        // Vault может вернуть legacy-коды вида §a, §f и т.д.
+        return miniMessage.serialize(legacySerializer.deserialize(formatted));
     }
 
     public boolean isAvailable() {
