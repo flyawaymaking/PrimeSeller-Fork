@@ -24,13 +24,13 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Base64;
 import java.util.Map;
 
 public class LanguageManager {
@@ -65,7 +65,7 @@ public class LanguageManager {
             JsonObject root = gson.fromJson(resp.body(), JsonObject.class);
             String base64Content = root.get("content").getAsString();
 
-            JsonObject json = gson.fromJson(new String(Base64Coder.decodeLines(base64Content)), JsonObject.class);
+            JsonObject json = gson.fromJson(new String(Base64.getMimeDecoder().decode(base64Content)), JsonObject.class);
 
             for (Map.Entry<String, JsonElement> e : json.entrySet()) {
 

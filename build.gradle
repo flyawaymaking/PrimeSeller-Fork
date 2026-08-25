@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'me.byteswing.primeseller'
-version = '2.1.1'
+version = '2.1.2'
 
 java {
     toolchain {
@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'io.papermc.paper:paper-api:26.2.build.84-stable'
+    compileOnly 'io.papermc.paper:paper-api:26.2.build.117-stable'
     compileOnly 'su.nightexpress.nightcore:main:2.16.4'
     compileOnly 'su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0'
     compileOnly 'me.clip:placeholderapi:2.12.3'
