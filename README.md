@@ -16,7 +16,7 @@ in-game currency. Features both a manual seller interface and a fully automated 
 
 | **Plugin version** | **Supported Paper** | **Java** | **Required dependency**   |
 |--------------------|---------------------|----------|---------------------------|
-| `2.1.0`            | `1.21` – `26.2`     | 25       | Vault or ExcellentEconomy |
+| `2.1.0+`           | `1.21` – `26.2`     | 25       | Vault or ExcellentEconomy |
 | `2.0.6`            | `1.21` – `1.21.11`  | 21       | Vault or CoinsEngine      |
 
 ## Features
