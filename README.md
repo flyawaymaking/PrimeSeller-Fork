@@ -1,5 +1,8 @@
 # PrimeSeller-Fork
 
+[![Modrinth Downloads](https://img.shields.io/modrinth/dt/primeseller-fork?logo=modrinth&label=downloads&color=1bd96a)](https://modrinth.com/plugin/primeseller-fork)
+[![Modrinth Followers](https://img.shields.io/modrinth/followers/primeseller-fork?logo=modrinth&label=followers&color=1bd96a)](https://modrinth.com/plugin/primeseller-fork)
+
 **Fork maintained by [flyawaymaking](https://github.com/flyawaymaking)**  
 *Original plugin by [destroydevs](https://github.com/destroydevs/primeseller)*
 
